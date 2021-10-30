@@ -1,2 +1,2 @@
 
-char *read_program(char *filename);
+char *read_program(FILE *fp);

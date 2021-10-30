@@ -9,23 +9,27 @@ int main(int argc, char **argv) {
 		printf("Please provide a program to compilate\n");
 		return 2;
 	}
-	read_program(file);
+	FILE *fp = fopen(file, "r");
+	if (fp == NULL) {
+		printf("Failed to open file %s, exit\n", file);
+		return 2;
+	}
+	printf("%s\n", read_program(file));
 	return 0;
 	
 	
 }
-char *read_program(char *filename) {
+char *read_program(FILE *fp) {
 	// determine file size
-	FILE *fp;
-	fp = fopen(filename, "r");
-	if (fp == NULL) {
-		printf("Failed to open file %s, exit\n", filename);
-		exit(2);
-	}
 	fseek(fp, 0L, SEEK_END);
 	size_t size = ftell(fp);
 	rewind(fp);
-	printf("Size is %d\n", size);
-	return "Hello";
-
+	
+	char *code = malloc(size * sizeof(char));
+	size_t pos = 0;
+	while ((code[pos] = fgetc(fp)) != EOF) {
+		pos++;
+	}
+	
+	return code;
 }
