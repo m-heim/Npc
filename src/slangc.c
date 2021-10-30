@@ -1,12 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "slangc.h"
 
 
 int main(int argc, char **argv) {
 	char *file = argv[1];
-	char *source = 
 	if (argc <= 1) {
-		prinf("Please provide a program to compilate\n");
+		printf("Please provide a program to compilate\n");
 		return 2;
 	}
 	read_program(file);
@@ -17,12 +17,13 @@ int main(int argc, char **argv) {
 char *read_program(char *filename) {
 	// determine file size
 	FILE *fp;
-	if (fp = fopen(filename, 'r') == NULL) {
+	fp = fopen(filename, "r");
+	if (fp == NULL) {
 		printf("Failed to open file %s, exit\n", filename);
 		exit(2);
 	}
 	fseek(fp, 0L, SEEK_END);
-	size = ftell(fp);
+	size_t size = ftell(fp);
 	rewind(fp);
 	printf("Size is %d\n", size);
 	return "Hello";
