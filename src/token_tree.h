@@ -2,6 +2,7 @@
 #define TOKEN_TREE_H
 
 #include "token.h"
+#include <stdlib.h>
 #define TOKEN_TREE_INIT_SIZE 10
 typedef struct {
 	enum token_type token;

@@ -1,10 +1,8 @@
 #include <stdio.h>
-#include "token_tree.h"
+#include "parser.h"
 
-token_tree *parse_program(char *code) {
-	unsigned long position = 0;
-	token_tree *tree = new_token_tree();
-	while (code[position] != '\0') {
-		
-	}
+token_tree *parse_program(token *tokens, unsigned long len) {
+	unsigned long position;
+	token_tree *tree = make_token_tree();
+	return tree;
 }

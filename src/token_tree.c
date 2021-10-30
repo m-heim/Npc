@@ -18,4 +18,3 @@ void add_child(token_tree *parent, token_tree *tree) {
 	tree->parent = parent;
 	return;
 }
-

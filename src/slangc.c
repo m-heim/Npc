@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "slangc.h"
+#include "parser.h"
 
 
 int main(int argc, char **argv) {
@@ -14,7 +15,7 @@ int main(int argc, char **argv) {
 		printf("Failed to open file %s, exit\n", file);
 		return 2;
 	}
-	printf("%s\n", read_program(file));
+	printf("%s\n", read_program(fp));
 	return 0;
 	
 	
@@ -25,7 +26,7 @@ char *read_program(FILE *fp) {
 	size_t size = ftell(fp);
 	rewind(fp);
 	
-	char *code = malloc(size * sizeof(char));
+	char *code = malloc((1 + size) * sizeof(char));
 	size_t pos = 0;
 	while ((code[pos] = fgetc(fp)) != EOF) {
 		pos++;
