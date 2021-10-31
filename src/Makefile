@@ -1,7 +1,7 @@
-prog: slangc.o
-	gcc -o slangc slangc.o parser.o scanner.o token.o token_tree.o
-slangc.o: slangc.c
-	gcc -c slangc.c
+npcc: npcc.o parser.o scanner.o token.o token_tree.o
+	gcc -o npcc npcc.o parser.o scanner.o token.o token_tree.o
+npcc.o: npcc.c
+	gcc -c npcc.c
 parser.o: parser.c
 	gcc -c parser.c
 scanner.o: scanner.c

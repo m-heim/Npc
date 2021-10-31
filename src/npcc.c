@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "slangc.h"
+#include "npcc.h"
 #include "parser.h"
 
 
