@@ -3,7 +3,6 @@
 #include "npcc.h"
 #include "parser.h"
 
-
 int main(int argc, char **argv) {
 	char *file = argv[1];
 	if (argc <= 1) {

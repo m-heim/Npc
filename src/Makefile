@@ -10,3 +10,6 @@ token.o: token.c
 	gcc -c token.c
 token_tree.o: token_tree.c
 	gcc -c token_tree.c
+clean:
+	@echo "Cleaning.."
+	rm *.o
