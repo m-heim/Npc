@@ -1,5 +1,6 @@
 #include "symbol_table.h"
 #include <stdlib.h>
+#include <string.h>
 
 symbol_table * make_symbol_table() {
 	// allocate memory for a table
@@ -33,9 +34,13 @@ void add_symbol_table_entry(symbol_table *table, long id, long position, long li
 	table->id[used] = id;
 	table->position[used] = position;
 	table->line[used] = line;
-	table->value[used] = value;
+	// make storage for the value
+	table->value[used] = malloc((strlen(value) + 1) * sizeof(char));
+	// now copy value into that storage
+	strcpy(table->value[used], value);
 	// now we increment used;
 	table->used += 1;
 
 	return;
 }
+
