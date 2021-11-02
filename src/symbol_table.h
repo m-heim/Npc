@@ -16,4 +16,10 @@ symbol_table *make_symbol_table();
 
 void add_symbol_table_entry(symbol_table *table, long id, long position, long line, char *value);
 
+long get_symbol_position(symbol_table *table, long id);
+
+long get_symbol_line(symbol_table *table, long id);
+
+char *get_symbol_value(symbol_table *table, long id);
+
 #endif
