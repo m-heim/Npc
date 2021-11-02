@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-symbol_table * make_symbol_table() {
+symbol_table * symbol_table_make() {
 	// allocate memory for a table
 	symbol_table *table = malloc(sizeof(symbol_table));
 	// allocate memory for the id array ....
@@ -18,7 +18,7 @@ symbol_table * make_symbol_table() {
 }
 
 // add an entry to the symbol table
-void add_symbol_table_entry(symbol_table *table, long id, long position, long line, char *value) {
+void symbol_table_add(symbol_table *table, long id, long position, long line, char *value) {
 	// store the length
 	long used = table->used;
 	// if our array is full
@@ -44,14 +44,14 @@ void add_symbol_table_entry(symbol_table *table, long id, long position, long li
 	return;
 }
 
-long get_symbol_position(symbol_table *table, long id) {
+long symbol_table_get_position(symbol_table *table, long id) {
 	return table->position[id];
 }
 
-long get_symbol_line(symbol_table *table, long id) {
+long symbol_table_get_line(symbol_table *table, long id) {
 	return table->line[id];
 }
 
-char *get_symbol_value(symbol_table *table, long id) {
+char *symbol_table_get_value(symbol_table *table, long id) {
 	return table->value[id];
 }

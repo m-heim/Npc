@@ -12,14 +12,14 @@ typedef struct {
 	size_t used;
 } symbol_table;
 
-symbol_table *make_symbol_table();
+symbol_table *symbol_table_make();
 
-void add_symbol_table_entry(symbol_table *table, long id, long position, long line, char *value);
+void symbol_table_add(symbol_table *table, long id, long position, long line, char *value);
 
-long get_symbol_position(symbol_table *table, long id);
+long symbol_table_get_position(symbol_table *table, long id);
 
-long get_symbol_line(symbol_table *table, long id);
+long symbol_table_get_line(symbol_table *table, long id);
 
-char *get_symbol_value(symbol_table *table, long id);
+char *symbol_table_get_value(symbol_table *table, long id);
 
 #endif
