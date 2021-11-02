@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 
-token_tree *make_token_tree() {
+token_tree *token_tree_make() {
 	token_tree *tree = malloc(sizeof(token_tree));
 	tree->children = malloc(TOKEN_TREE_INIT_SIZE * sizeof(void*));
 	tree->used = 0;
@@ -10,7 +10,7 @@ token_tree *make_token_tree() {
 	return tree;
 }
 
-void add_child(token_tree *parent, token_tree *tree) {
+void token_tree_add(token_tree *parent, token_tree *tree) {
 	if (parent->used == parent->size) {
 		parent->children = realloc(parent->children, (parent->size * 2) * sizeof(void*));
 		parent->size *= 2;

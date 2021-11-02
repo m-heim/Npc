@@ -14,8 +14,8 @@ struct token_tree{
 	unsigned int size;
 };
 
-token_tree *make_token_tree();
+token_tree *token_tree_make();
 
-void add_child(token_tree *parent, token_tree *tree);
+void token_tree_add(token_tree *parent, token_tree *tree);
 
 #endif
