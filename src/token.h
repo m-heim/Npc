@@ -39,8 +39,9 @@ typedef struct {
 	size_t size;
 } token_array;
 
-token_array *make_token_array();
+token_array *token_array_make();
+void token_array_add(token_array *arr, token tkn);
 
-token *make_token(token_type type, long value);
+token *token_make(token_type type, long value);
 
 #endif
