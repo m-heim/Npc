@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 		printf("Failed to open file %s, exit\n", file);
 		return 2;
 	}
-	printf("%s\n", read_program(fp));
+	printf("%s", read_program(fp));
 	return 0;
 	
 	
@@ -25,9 +25,10 @@ char *read_program(FILE *fp) {
 	size_t size = ftell(fp);
 	rewind(fp);
 	
-	char *code = malloc((1 + size) * sizeof(char));
+	char *code = malloc((size + 1) * sizeof(char));
 	size_t pos = 0;
-	while ((code[pos] = fgetc(fp)) != EOF) {
+	while (pos != size) {
+		code[pos] = fgetc(fp);
 		pos++;
 	}
 	
