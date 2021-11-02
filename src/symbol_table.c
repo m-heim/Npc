@@ -44,3 +44,14 @@ void add_symbol_table_entry(symbol_table *table, long id, long position, long li
 	return;
 }
 
+long get_symbol_position(symbol_table *table, long id) {
+	return table->position[id];
+}
+
+long get_symbol_line(symbol_table *table, long id) {
+	return table->line[id];
+}
+
+char *get_symbol_value(symbol_table *table, long id) {
+	return table->value[id];
+}
