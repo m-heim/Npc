@@ -1,6 +1,6 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-
+#define TOKEN_ARRAY_INIT_SIZE
 #include <stdlib.h>
 typedef enum{
 	assignment,
@@ -33,6 +33,14 @@ typedef struct {
 	long value;
 } token;
 
-token *new_token(token_type type, long value);
+typedef struct {
+	token *arr;
+	size_t used;
+	size_t size;
+} token_array;
+
+token_array *make_token_array();
+
+token *make_token(token_type type, long value);
 
 #endif
