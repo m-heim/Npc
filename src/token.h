@@ -1,6 +1,6 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-#define TOKEN_ARRAY_INIT_SIZE
+#define TOKEN_ARRAY_INIT_SIZE 10
 #include <stdlib.h>
 typedef enum{
 	assignment,
@@ -34,7 +34,7 @@ typedef struct {
 } token;
 
 typedef struct {
-	token *arr;
+	token *tkn_array;
 	size_t used;
 	size_t size;
 } token_array;

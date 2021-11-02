@@ -9,7 +9,7 @@ token *token_make(token_type type, long value) {
 
 token_array *token_array_make() {
 	token_array *arr = malloc(sizeof(token_array));
-	arr->arr = malloc(sizeof(token) * TOKEN_ARRAY_INIT_SIZE);
+	arr->tkn_array = malloc(sizeof(token) * TOKEN_ARRAY_INIT_SIZE);
 	arr->used = 0;
 	arr->size = TOKEN_ARRAY_INIT_SIZE;
 	return arr;
@@ -17,9 +17,9 @@ token_array *token_array_make() {
 
 void token_array_add(token_array *arr, token tkn) {
 	if (arr->used == arr->size) {
-		arr->arr = malloc(arr->size * 2 * sizeof(token));
+		arr->tkn_array = malloc(arr->size * 2 * sizeof(token));
 		arr->size *= 2;
 	}
-	arr->arr[arr->used] = tkn;
+	arr->tkn_array[arr->used] = tkn;
 	arr->used += 1;
 }

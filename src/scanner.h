@@ -3,9 +3,8 @@
 #include "symbol_table.h"
 #include "token.h"
 typedef struct {
-	token * 
+	token_array *tkn_array;
 	symbol_table *table;
 } scanner_result;
-
 
 #endif
