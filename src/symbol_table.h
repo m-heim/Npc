@@ -1,7 +1,7 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
-#define SYMBOL_TABLE_INIT_SIZE = 10;
-#inluce <stdlib.h>
+#define SYMBOL_TABLE_INIT_SIZE 10
+#include <stdlib.h>
 
 typedef struct {
 	long *id;

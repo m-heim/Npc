@@ -19,7 +19,7 @@ symbol_table * make_symbol_table() {
 // add an entry to the symbol table
 void add_symbol_table_entry(symbol_table *table, long id, long position, long line, char *value) {
 	// store the length
-	used = table->used;
+	long used = table->used;
 	// if our array is full
 	if (table->size == table->used) {
 		// double the size of it
