@@ -12,12 +12,11 @@ token *lex(char *code) {
 
 	size_t position = 0;
 	char *cur;
-	int terminal_states[] = {}
 	int state = 0;
 	size_t line = 0;
 
 
-	while ((cur = code + position) != '\0’) {
+	while (code + position != '\0') {
 		if (state == 0) {
 			if (*cur == ' ') {
 				
