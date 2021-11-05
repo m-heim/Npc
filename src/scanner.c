@@ -22,7 +22,7 @@ token *lex(char *code) {
 				
 			} else if (*cur == '\n') {
 			
-			} else if ((*cur >= 65 && *cur <= 90) || (*cur >= 97 && *cur <= 122) || (*cur >= 48 && *cur <=57) || *cur == 95) {
+			} else if () {
 				state = 1;
 			}
 		} else if (state == 1) {
