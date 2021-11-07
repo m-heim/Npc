@@ -3,47 +3,51 @@
 #define TOKEN_ARRAY_INIT_SIZE 10
 #include <stdlib.h>
 typedef enum{
-	assignment,
+	assignment = 127,
 
-	selector,
-	semicolon,
-	colon,
+	selector = 128,
+	semicolon = 130,
+	colon = 131,
 
-	plus_operator,
-	minus_operator,
-	multiplication_operator,
-	division_operator,
-	mod_operator,
-	pot_operator,
-	floor_div_operator,
+	comma = 133,
+	
+	directive = 132,
 
-	imm_plus_operator,
-	imm_minus_operator,
-	imm_mul_operator,
-	imm_division_operator,
-	decrement_operator,
-	increment_operator,
+	plus_operator = 108,
+	minus_operator = 103,
+	multiplication_operator = 113,
+	division_operator = 116,
+	mod_operator = 129,
+	pot_operator = 115,
+	floor_div_operator = 118,
 
-	gt_operator,
-	lt_operator,
-	le_operator,
-	lt_operator,
+	imm_plus_operator = 106,
+	imm_minus_operator = 102,
+	imm_mul_operator = 114,
+	imm_division_operator = 117,
+	decrement_operator = 104,
+	increment_operator = 107,
 
-	identifier,
+	gt_operator = 109,
+	lt_operator = 111,
+	le_operator = 112,
+	ge_operator = 110,
 
-	opening_bracket,
-	closing_bracket,
+	identifier = 100,
 
-	opening_s_bracket,
-	closing_s_bracket,
+	opening_bracket = 121,
+	closing_bracket = 122,
 
-	opening_c_bracket,
-	closing_c_bracket,
+	opening_s_bracket = 126,
+	closing_s_bracket = 125,
 
-	string_type,
-	char_type,
-	int_type,
-	float_type,
+	opening_c_bracket = 123,
+	closing_c_bracket = 124,
+
+	string_type = 119,
+	char_type = 120,
+	int_type = 105,
+	float_type = 101,
 
 	return_keyword,
 	for_keyword,

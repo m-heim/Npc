@@ -17,7 +17,7 @@ token_array *token_array_make() {
 
 void token_array_add(token_array *arr, token_type type, long value) {
 	if (arr->used == arr->size) {
-		arr->tkn_array = malloc(arr->size * 2 * sizeof(token));
+		arr->tkn_array = realloc(arr->tkn_array, arr->size * 2 * sizeof(token));
 		arr->size *= 2;
 	}
 	arr->tkn_array[arr->used].type = type;;

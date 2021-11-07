@@ -3,13 +3,14 @@
 #include "symbol_table.h"
 #include <stdlib.h>
 #include "char_utils.h"
+#include <stdio.h>
 
 void lexing_error(size_t position, size_t line) {
 	printf("Error on char %lu in line %lu\n", position, line);
 	exit(1);
 }
 
-token *lex(char *code) {
+scanner_result lex(char *code) {
 	symbol_table *table = symbol_table_make();
 	token_array *arr = token_array_make();
 	scanner_result result;
@@ -17,15 +18,19 @@ token *lex(char *code) {
 	result.tkn_array = arr;
 	//int transition[43][128] = {};
 	size_t position = 0;
-	char *cur;
+	size_t start_position = 0;
+	size_t len = 0;
+	char *cur = code;
+	char *start = code;
+
 	int state = 0;
 	size_t line = 0;
-	size_t token_len = 0;
 	size_t token_index = 0;
 
 
-	while (code + position != '\0') {
+	while (*(code + position) != '\0') {
 		cur = code + position;
+		printf("Current char is %c, state is %d\n", *cur, state);
 		if (state == 0) {
 			if (is_latin(cur) || is_underscore(cur)) {
 				state = 1;
@@ -33,9 +38,11 @@ token *lex(char *code) {
 				state = 200;
 			} else if (*cur == '\n') {
 				state = 201;
+			} else if (*cur == '\t') {
+				state = 202;	
 			} else if (*cur == '"') {
 				state = 41;
-			} else if (*cur == ''') {
+			} else if (*cur == '\'') {
 				state = 38;
 			} else if (*cur == '+') {
 				state = 4;
@@ -52,7 +59,7 @@ token *lex(char *code) {
 			} else if (is_number(cur)) {
 				state = 5;
 			} else if (*cur == '(') {
-				state = 121
+				state = 121;
 			} else if (*cur == ')') {
 				state = 122;
 			} else if (*cur == '{') {
@@ -73,12 +80,16 @@ token *lex(char *code) {
 				state = 130;
 			} else if (*cur == ':') {
 				state = 131;
+			} else if (*cur == '#') {
+				state = 43;	
+			} else if (*cur == ','){
+				state = 133;
 			} else {
 				lexing_error(position, line);
 			}
 		// id
 		} else if (state == 1) {
-			if (is_latin(cur) || is_underscore(cur || is_number(cur)) {
+			if (is_latin(cur) || is_underscore(cur) || is_number(cur)) {
 				state = 1;
 			} else {
 				state = 100;
@@ -107,17 +118,23 @@ token *lex(char *code) {
 		} else if(state == 41) {
 			if (*cur == '"') {
 				state = 119;
-			} else if (*cur == '\') {
+			} else if (*cur == '\\') {
 				state = 42;
 			} else {
 				state = 41;
 			}
 		} else if (state == 42) {
 			state = 41;
+		} else if (state == 43) {
+			if (is_latin(cur)) {
+				state = 43;
+			} else {
+				state = 132;
+			}
 		} else if (state == 38) {
 			state = 39;
 		} else if (state == 39) {
-			if (*cur == ''') {
+			if (*cur == '\'') {
 				state = 120;
 			} else {
 				lexing_error(position, line);
@@ -170,7 +187,6 @@ token *lex(char *code) {
 			if (state == 100) {
 				type = identifier;
 				position--;
-				token_len--;
 			} else if (state == 102) {
 				type = imm_minus_operator;
 			} else if (state == 103) {
@@ -180,11 +196,9 @@ token *lex(char *code) {
 			} else if (state == 105) {
 				type = int_type;
 				position--;
-				token_len--;
 			} else if (state == 101) {
 				position--;
 				type = float_type;
-				token_len--;
 			} else if (state == 106) {
 				type = imm_plus_operator;
 			} else if (state == 107) {
@@ -194,13 +208,11 @@ token *lex(char *code) {
 			} else if (state == 109) {
 				type = gt_operator;
 				position--;
-				token_len--;
 			} else if (state == 110) {
 				type = ge_operator;
 			} else if (state == 111) {
 				type = lt_operator;
 				position--;
-				token_len--;
 			} else if (state == 112) {
 				type = le_operator;
 			} else if (state == 113) {
@@ -214,7 +226,7 @@ token *lex(char *code) {
 			} else if (state == 117) {
 				type = imm_division_operator;
 			} else if (state == 118) {
-				type = floor_division_operator;
+				type = floor_div_operator;
 			} else if (state == 119) {
 				type = string_type;
 			} else if (state == 120) {
@@ -241,25 +253,40 @@ token *lex(char *code) {
 				type = semicolon;
 			} else if (state == 131) {
 				type = colon;
+			} else if (state == 132) {
+				type = directive;	
+				position--;
+			} else if (state == 133) {
+				type = comma;
 			} else {
 				printf("Not implemented, state %d", state);
 			}
+			printf("Found %d\n", state);
+			cur = code + position;
+			len = cur - start;
+
 			token_array_add(arr, type, token_index);
-			symbol_table_add(table, token_index, position - token_len, line, cur - token_len, token_len);
+			symbol_table_add(table, token_index, (long) start_position, line, start, len);
+
 			token_index++;
-			token_len = 0;
+			start = cur + 1;
+			start_position = position + 1;
 			state = 0;
 		} else if (state > 199) {
 			if (state == 200) {
-				int i = 1;
+				state = 0;
 			} else if (state == 201) {
 				line++;
+				state = 0;
+			} else if (state == 202) {
+				state = 0;
 			}
 		} else if (state > 299) {
-			token_len++;
+			state = 0;
 		}
 		position++;
 	}
+	return result;
 	
 
 }

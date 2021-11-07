@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "npcc.h"
 #include "parser.h"
+#include "scanner.h"
 
 int main(int argc, char **argv) {
 	char *file = argv[1];
@@ -14,7 +15,11 @@ int main(int argc, char **argv) {
 		printf("Failed to open file %s, exit\n", file);
 		return 2;
 	}
-	printf("%s", read_program(fp));
+	scanner_result result = lex(read_program(fp));
+	int i;
+	for(i = 0; i < result.tkn_array->used; i++) {
+		printf("%d\n", result.tkn_array->tkn_array[i].type);
+	}
 	return 0;
 	
 	
