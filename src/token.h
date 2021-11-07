@@ -5,15 +5,40 @@
 typedef enum{
 	assignment,
 
+	selector,
+	semicolon,
+	colon,
+
 	plus_operator,
 	minus_operator,
 	multiplication_operator,
 	division_operator,
+	mod_operator,
+	pot_operator,
+	floor_div_operator,
+
+	imm_plus_operator,
+	imm_minus_operator,
+	imm_mul_operator,
+	imm_division_operator,
+	decrement_operator,
+	increment_operator,
+
+	gt_operator,
+	lt_operator,
+	le_operator,
+	lt_operator,
 
 	identifier,
 
 	opening_bracket,
 	closing_bracket,
+
+	opening_s_bracket,
+	closing_s_bracket,
+
+	opening_c_bracket,
+	closing_c_bracket,
 
 	string_type,
 	char_type,
@@ -40,7 +65,7 @@ typedef struct {
 } token_array;
 
 token_array *token_array_make();
-void token_array_add(token_array *arr, token tkn);
+void token_array_add(token_array *arr, token_type type, long value);
 
 token *token_make(token_type type, long value);
 

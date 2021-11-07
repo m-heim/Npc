@@ -15,11 +15,12 @@ token_array *token_array_make() {
 	return arr;
 }
 
-void token_array_add(token_array *arr, token tkn) {
+void token_array_add(token_array *arr, token_type type, long value) {
 	if (arr->used == arr->size) {
 		arr->tkn_array = malloc(arr->size * 2 * sizeof(token));
 		arr->size *= 2;
 	}
-	arr->tkn_array[arr->used] = tkn;
+	arr->tkn_array[arr->used].type = type;;
+	arr->tkn_array[arr->used].value = value;
 	arr->used += 1;
 }

@@ -18,7 +18,7 @@ symbol_table * symbol_table_make() {
 }
 
 // add an entry to the symbol table
-void symbol_table_add(symbol_table *table, long id, long position, long line, char *value) {
+void symbol_table_add(symbol_table *table, long id, long position, long line, char *value, size_t val_len) {
 	// store the length
 	long used = table->used;
 	// if our array is full
@@ -37,7 +37,7 @@ void symbol_table_add(symbol_table *table, long id, long position, long line, ch
 	// make storage for the value
 	table->value[used] = malloc((strlen(value) + 1) * sizeof(char));
 	// now copy value into that storage
-	strcpy(table->value[used], value);
+	strncpy(table->value[used], value, val_len);
 	// now we increment used;
 	table->used += 1;
 
