@@ -185,79 +185,79 @@ scanner_result lex(char *code) {
 		if (state > 99 && state <= 199) {
 			token_type type;
 			if (state == 100) {
-				type = identifier;
+				type = identifier_token;
 				position--;
 			} else if (state == 102) {
-				type = imm_minus_operator;
+				type = imm_minus_operator_token;
 			} else if (state == 103) {
-				type = minus_operator;
+				type = minus_operator_token;
 			} else if (state == 104) {
-				type = decrement_operator;
+				type = decrement_operator_token;
 			} else if (state == 105) {
-				type = int_type;
+				type = int_type_token;
 				position--;
 			} else if (state == 101) {
 				position--;
-				type = float_type;
+				type = float_type_token;
 			} else if (state == 106) {
-				type = imm_plus_operator;
+				type = imm_plus_operator_token;
 			} else if (state == 107) {
-				type = increment_operator;
+				type = increment_operator_token;
 			} else if (state == 108) {
-				type = plus_operator;
+				type = plus_operator_token;
 			} else if (state == 109) {
-				type = gt_operator;
+				type = gt_operator_token;
 				position--;
 			} else if (state == 110) {
-				type = ge_operator;
+				type = ge_operator_token;
 			} else if (state == 111) {
-				type = lt_operator;
+				type = lt_operator_token;
 				position--;
 			} else if (state == 112) {
-				type = le_operator;
+				type = le_operator_token;
 			} else if (state == 113) {
-				type = multiplication_operator;
+				type = multiplication_operator_token;
 			} else if (state == 114) {
-				type = imm_mul_operator;
+				type = imm_mul_operator_token;
 			} else if (state == 115) {
-				type = pot_operator;
+				type = pot_operator_token;
 			} else if (state == 116) {
-				type = division_operator;
+				type = division_operator_token;
 			} else if (state == 117) {
-				type = imm_division_operator;
+				type = imm_division_operator_token;
 			} else if (state == 118) {
-				type = floor_div_operator;
+				type = floor_div_operator_token;
 			} else if (state == 119) {
-				type = string_type;
+				type = string_type_token;
 			} else if (state == 120) {
-				type = char_type;
+				type = char_type_token;
 			} else if (state == 121) {
-				type = opening_bracket;
+				type = opening_bracket_token;
 			} else if (state == 122) {
-				type = closing_bracket;
+				type = closing_bracket_token;
 			} else if (state == 123) {
-				type = opening_c_bracket;
+				type = opening_c_bracket_token;
 			} else if (state == 124) {
-				type = closing_c_bracket;
+				type = closing_c_bracket_token;
 			} else if (state == 125) {
-				type = closing_s_bracket;
+				type = closing_s_bracket_token;
 			} else if (state == 126) {
-				type = opening_s_bracket;
+				type = opening_s_bracket_token;
 			} else if (state == 127) {
-				type = assignment;
+				type = assignment_token;
 			} else if (state == 128) {
-				type = selector;
+				type = selector_token;
 			} else if (state == 129) {
-				type = mod_operator;
+				type = mod_operator_token;
 			} else if (state == 130) {
-				type = semicolon;
+				type = semicolon_token;
 			} else if (state == 131) {
-				type = colon;
+				type = colon_token;
 			} else if (state == 132) {
-				type = directive;	
+				type = directive_token;	
 				position--;
 			} else if (state == 133) {
-				type = comma;
+				type = comma_token;
 			} else {
 				printf("Not implemented, state %d", state);
 			}

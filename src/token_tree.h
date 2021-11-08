@@ -6,7 +6,7 @@
 #define TOKEN_TREE_INIT_SIZE 10
 typedef struct token_tree token_tree;
 struct token_tree{
-	token_type token;
+	token t;
 	// Pointer to the array of children
 	token_tree **children;
 	token_tree *parent;
@@ -14,7 +14,7 @@ struct token_tree{
 	unsigned int size;
 };
 
-token_tree *token_tree_make();
+token_tree *token_tree_make(token *tkn);
 
 void token_tree_add(token_tree *parent, token_tree *tree);
 

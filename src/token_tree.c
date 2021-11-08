@@ -2,11 +2,12 @@
 #include <stdlib.h>
 
 
-token_tree *token_tree_make() {
+token_tree *token_tree_make(token *tkn) {
 	token_tree *tree = malloc(sizeof(token_tree));
 	tree->children = malloc(TOKEN_TREE_INIT_SIZE * sizeof(void*));
 	tree->used = 0;
 	tree->size = TOKEN_TREE_INIT_SIZE;
+	tree->t = tkn;
 	return tree;
 }
 

@@ -24,3 +24,11 @@ void token_array_add(token_array *arr, token_type type, long value) {
 	arr->tkn_array[arr->used].value = value;
 	arr->used += 1;
 }
+
+token_type token_array_get_token_type(token_array *arr, long position) {
+	return (arr->tkn_array[position]).type;
+}
+
+token *token_array_get_token(token_array *arr, long position) {
+	return arr->tkn_array[position];
+}
