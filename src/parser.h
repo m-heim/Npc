@@ -1,8 +1,19 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "token_tree.h"
+#include "ast.h"
+#include "scanner.h"
 
-token_tree *parse_program(token *tokens, unsigned long len);
+ast *parse_program(scanner_result res);
+
+void parse_syntax_err(long line);
+
+void program(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void program_directive(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void secondary_directive_list(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void match(node_array *arr, symbol_table *table, node_type type, long *lookahead);
 
 #endif

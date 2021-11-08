@@ -1,7 +1,7 @@
-#MODULE main
-#using std.map
-#using std.array_list
-#using std.system.println
+#PROGRAM main;
+#using std.map;
+#using std.array_list;
+#using std.system.println;
 
 int main(string[] argv) {
 	if (argv.length < 2) {

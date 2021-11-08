@@ -1,5 +1,5 @@
-#ifndef SLANGC_H
-#define SLANGC_H
+#ifndef NPCC_H
+#define NPCC_H
 
 char *read_program(FILE *fp);
 

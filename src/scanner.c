@@ -1,9 +1,10 @@
-#include "token.h"
+#include "node.h"
 #include "scanner.h"
 #include "symbol_table.h"
 #include <stdlib.h>
 #include "char_utils.h"
 #include <stdio.h>
+#include <string.h>
 
 void lexing_error(size_t position, size_t line) {
 	printf("Error on char %lu in line %lu\n", position, line);
@@ -12,11 +13,10 @@ void lexing_error(size_t position, size_t line) {
 
 scanner_result lex(char *code) {
 	symbol_table *table = symbol_table_make();
-	token_array *arr = token_array_make();
+	node_array *arr = node_array_make();
 	scanner_result result;
 	result.table = table;
-	result.tkn_array = arr;
-	//int transition[43][128] = {};
+	result.node_array = arr;
 	size_t position = 0;
 	size_t start_position = 0;
 	size_t len = 0;
@@ -25,7 +25,7 @@ scanner_result lex(char *code) {
 
 	int state = 0;
 	size_t line = 0;
-	size_t token_index = 0;
+	size_t node_index = 0;
 
 
 	while (*(code + position) != '\0') {
@@ -39,7 +39,7 @@ scanner_result lex(char *code) {
 			} else if (*cur == '\n') {
 				state = 201;
 			} else if (*cur == '\t') {
-				state = 202;	
+				state = 202;
 			} else if (*cur == '"') {
 				state = 41;
 			} else if (*cur == '\'') {
@@ -81,7 +81,7 @@ scanner_result lex(char *code) {
 			} else if (*cur == ':') {
 				state = 131;
 			} else if (*cur == '#') {
-				state = 43;	
+				state = 43;
 			} else if (*cur == ','){
 				state = 133;
 			} else {
@@ -111,7 +111,7 @@ scanner_result lex(char *code) {
 			} else if (*cur == '=') {
 				state = 102;
 			} else if (is_number(cur)) {
-				state = 5;	
+				state = 5;
 			} else {
 				state = 103;
 			}
@@ -183,10 +183,19 @@ scanner_result lex(char *code) {
 			}
 		}
 		if (state > 99 && state <= 199) {
-			token_type type;
+			node_type type;
 			if (state == 100) {
 				type = identifier_token;
 				position--;
+				if (strncmp(start, "int", len)) {
+					type = int_type_type_token;
+				} else if (strncmp(start, "string", len)) {
+					type = string_type_type_token;
+				} else if (strncmp(start, "char", len)) {
+                    type = char_type_type_token;
+				} else if (strncmp(start, "float", len)) {
+                    type = float_type_type_token;
+                }
 			} else if (state == 102) {
 				type = imm_minus_operator_token;
 			} else if (state == 103) {
@@ -254,8 +263,18 @@ scanner_result lex(char *code) {
 			} else if (state == 131) {
 				type = colon_token;
 			} else if (state == 132) {
-				type = directive_token;	
+				type = directive_token;
+				len = position - start_position + 1;
 				position--;
+				if (strncmp(start, "#PROGRAM", len)) {
+					type = program_directive_token;
+				} else if (strncmp(start, "#MODULE", len)) {
+					type = module_directive_token;
+				} else if (strncmp(start, "#using", len)) {
+                    type = include_directive_token;
+				} else if (strncmp(start, "#macro", len)) {
+                    type = macro_directive_token;
+                }
 			} else if (state == 133) {
 				type = comma_token;
 			} else {
@@ -265,10 +284,10 @@ scanner_result lex(char *code) {
 			cur = code + position;
 			len = cur - start;
 
-			token_array_add(arr, type, token_index);
-			symbol_table_add(table, token_index, (long) start_position, line, start, len);
+			node_array_add(arr, type, node_index);
+			symbol_table_add(table, node_index, (long) start_position, line, start, len);
 
-			token_index++;
+			node_index++;
 			start = cur + 1;
 			start_position = position + 1;
 			state = 0;
@@ -287,6 +306,6 @@ scanner_result lex(char *code) {
 		position++;
 	}
 	return result;
-	
+
 
 }

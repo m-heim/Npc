@@ -17,11 +17,12 @@ int main(int argc, char **argv) {
 	}
 	scanner_result result = lex(read_program(fp));
 	int i;
-	for(i = 0; i < result.tkn_array->used; i++) {
-		printf("%d\n", result.tkn_array->tkn_array[i].type);
+	for(i = 0; i < result.node_array->used; i++) {
+		printf("%d\n", result.node_array->node_array[i].type);
 	}
+	printf("Parsing\n");
+	parse_program(result);
 	return 0;
-	
 	
 }
 char *read_program(FILE *fp) {

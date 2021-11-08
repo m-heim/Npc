@@ -1,5 +1,5 @@
-npcc: npcc.o parser.o scanner.o token.o token_tree.o symbol_table.o char_utils.o
-	gcc -o ../build/npcc npcc.o parser.o scanner.o token.o token_tree.o symbol_table.o char_utils.o
+npcc: npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o
+	gcc -o ../build/npcc npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o
 	rm *.o
 	@echo "linking"
 npcc.o: npcc.c
@@ -11,15 +11,15 @@ parser.o: parser.c
 scanner.o: scanner.c
 	gcc -c scanner.c
 	@echo "compiling scanner"
-token.o: token.c
-	gcc -c token.c
-	@echo "compiling token"
+node.o: node.c
+	gcc -c node.c
+	@echo "compiling node"
 symbol_table.o: symbol_table.c
 	gcc -c symbol_table.c
 	@echo "compiling symbols"
-token_tree.o: token_tree.c
-	gcc -c token_tree.c
-	@echo "compiling token_tree"
+ast.o: ast.c
+	gcc -c ast.c
+	@echo "compiling ast.h"
 char_utils.o: char_utils.c
 	gcc -c char_utils.c
 	@echo "compiling char_utils"

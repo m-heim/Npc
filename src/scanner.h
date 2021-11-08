@@ -1,9 +1,9 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 #include "symbol_table.h"
-#include "token.h"
+#include "node.h"
 typedef struct {
-	token_array *tkn_array;
+	node_array *node_array;
 	symbol_table *table;
 } scanner_result;
 
