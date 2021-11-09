@@ -2,9 +2,9 @@ unop 			::= ! | ++ | --
 binop 			::= + | - | * | / | ** | % | += | -= | *= | /= | < | <= | > | >=
 type            ::= float | int | char | string
 
-program			::= <program_directive> <secondary_directive_list> <main_function> <functions>
+program			::= <program_directive> <secondary_directive_list>? <main_function> <functions>
 module			::= <module_directive> <secondary_directive_list> <functions>
-function		::= <type> <identifier>(parameter_list) {statement}
+function		::= <function_token> <identifier> (parameter_list):<type> {statement}
 functions		::= function functions | function
 
 compound_statement	::= <statement> <compound_statement> | <statement>
@@ -38,5 +38,6 @@ include_directive_token	::= #using
 macro_directive_token	::= #macro
 identifier_token	::= [A-z_][a-Z_0-9]*
 main_identifier_token	::= main
+function_token          ::= fun
 
 module_subselect	::= <identifier> . <module_subselect> | <identifier>

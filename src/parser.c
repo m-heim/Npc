@@ -19,16 +19,39 @@ void parse_syntax_err(long line) {
 }
 
 void program(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	ast_set_node(tree, node_make(program_n, -1));
 	program_directive(tree, arr, table, lookahead);
-	secondary_directive_list(tree, arr, table, lookahead);
+
+	ast_add(tree, ast_make());
+	if (node_array_get_node_type(arr, lookahead) == secondarydirective_n) {
+		secondary_directive_list(tree, arr, table, lookahead);
+	} else {
+		parse_syntax_err(symbol_table_get_line(table, *lookahead));
+	}
 	function(tree, arr, table, lookahead);
 }
 
 void function(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
-	type(tree, arr, table, lookahead);
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(program_directive_token, -1));
+
+	tree = ast_get_last(tree);
+
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
+	match(arr, table, function_token, lookahead);
+
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 	match(arr, table, identifier_token, lookahead);
+
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 	match(arr, table, opening_bracket_token, lookahead);
+
 	if (node_array_get_node_type(arr, *lookahead) == closing_bracket_token) {
+		ast_add(tree, ast_make());
+		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 		match(arr, table, closing_bracket_token, lookahead);
 	} else {
 	parameter_list(tree, arr, table, lookahead);
@@ -117,6 +140,9 @@ void binop(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 }
 
 void program_directive(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(program_directive_token, -1));
+	
 	tree = ast_get_last(tree);
 
 	ast_add(tree, ast_make());

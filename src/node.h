@@ -68,15 +68,18 @@ typedef enum{
 	if_keyword_token,
 	else_keyword_token,
 	elif_keyword_token,
+	function_token,
 
 	// Ntm
 	program_n,
 	module_n,
+	secondarydirective_n,
 	function_n,
 	unop_n,
 	binop_n,
 	parameter_n,
-	parameter_list_n
+	parameter_list_n,
+	type_n
 
 } node_type;
 
@@ -98,6 +101,7 @@ node_type node_array_get_node_type(node_array *arr, long position);
 
 node *node_array_get_node(node_array *arr, long position);
 
+long *node_array_get_val(node_array *arr, long position);
 node *node_make(node_type type, long value);
 
 #endif

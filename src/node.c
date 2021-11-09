@@ -37,3 +37,7 @@ node_type node_array_get_node_type(node_array *arr, long position) {
 node *node_array_get_node(node_array *arr, long position) {
 	return &(arr->node_array[position]);
 }
+
+long *node_array_get_val(node_array *arr, long position) {
+	return &(arr->node_array[position].value);
+}
