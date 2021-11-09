@@ -36,6 +36,7 @@ typedef enum{
 	imm_division_operator_token = 117,
 	// UNARY OPERATORS
 	decrement_operator_token = 104,
+	not_token,
 	increment_operator_token = 107,
 
 	// STRUCTURE //

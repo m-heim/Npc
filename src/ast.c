@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 
+// Make a new empty ast
 ast *ast_make() {
 	ast *tree = malloc(sizeof(ast));
 	tree->children = malloc(AST_INIT_SIZE * sizeof(void*));
@@ -11,6 +12,7 @@ ast *ast_make() {
 	return tree;
 }
 
+// Add a new tree to the ast
 void ast_add(ast *parent, ast *tree) {
 	if (parent->used == parent->size) {
 		parent->children = realloc(parent->children, (parent->size * 2) * sizeof(void*));
@@ -22,14 +24,22 @@ void ast_add(ast *parent, ast *tree) {
 	return;
 }
 
-void *ast_set_node(ast *tree, node *n) {
-	ast->n = *n;
+// Set the node of the ast
+void ast_set_node(ast *tree, node *n) {
+	tree->n = *n;
+	return;
 }
 
-node *ast_get_last(ast *tree) {
-	return tree->children[(tree->used) - 1];
+// Get a pointer to the last ast, returns NULL if the tree doesn\'t have any children
+ast *ast_get_last(ast *tree) {
+	if (tree->used == 0) {
+		return NULL;
+	} else {
+		return tree->children[(tree->used) - 1];
+	}
 }
 
+// Get the parent of the ast
 ast *ast_get_parent(ast *tree) {
 	return tree->parent;
 }
