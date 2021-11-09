@@ -10,8 +10,8 @@ struct ast{
 	// Pointer to the array of children
 	ast **children;
 	ast *parent;
-	unsigned int used;
-	unsigned int size;
+	long used;
+	long size;
 };
 
 ast *ast_make();

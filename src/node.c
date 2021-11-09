@@ -20,7 +20,7 @@ void node_array_add(node_array *arr, node_type type, long value) {
 		arr->node_array = realloc(arr->node_array, arr->size * 2 * sizeof(node));
 		arr->size *= 2;
 	}
-	arr->node_array[arr->used].type = type;;
+	arr->node_array[arr->used].type = type;
 	arr->node_array[arr->used].value = value;
 	arr->used += 1;
 }

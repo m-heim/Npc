@@ -21,3 +21,15 @@ void ast_add(ast *parent, ast *tree) {
 	tree->parent = parent;
 	return;
 }
+
+void *ast_set_node(ast *tree, node *n) {
+	ast->n = *n;
+}
+
+node *ast_get_last(ast *tree) {
+	return tree->children[(tree->used) - 1];
+}
+
+ast *ast_get_parent(ast *tree) {
+	return tree->parent;
+}
