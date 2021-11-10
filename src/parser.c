@@ -23,7 +23,7 @@ void program(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 	program_directive(tree, arr, table, lookahead);
 
 	ast_add(tree, ast_make());
-	if (node_array_get_node_type(arr, lookahead) == secondarydirective_n) {
+	if (node_array_get_node_type(arr, *lookahead) == secondarydirective_n) {
 		secondary_directive_list(tree, arr, table, lookahead);
 	} else {
 		parse_syntax_err(symbol_table_get_line(table, *lookahead));
@@ -79,9 +79,8 @@ void parameter_list(ast *tree, node_array *arr, symbol_table *table, long *looka
 	ast_set_node(ast_get_last(tree), node_make(parameter_n, -1));
 	parameter(tree, arr, table, lookahead);
 	if (node_array_get_node_type(arr, *lookahead) == comma_token) {
-		
+		int i = 0;
 	}
-	ast = ast_get_parent(ast);
 }
 
 void type(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
