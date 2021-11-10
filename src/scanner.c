@@ -183,100 +183,143 @@ scanner_result lex(char *code) {
 			}
 		}
 		if (state > 99 && state <= 199) {
-			node_type type;
+			node_type ntype;
+			node_type_class type_class;
 			if (state == 100) {
-				type = identifier_token;
+				ntype = identifier_token;
+				type_class = nac_c;
 				position--;
 				if (strncmp(start, "int", len)) {
-					type = int_type_type_token;
+					ntype = int_type_token;
+					type_class = type_c;
 				} else if (strncmp(start, "string", len)) {
-					type = string_type_type_token;
+					ntype = string_type_token;
+					type_class = type_c;
 				} else if (strncmp(start, "char", len)) {
-                    type = char_type_type_token;
+                    ntype = char_type_token;
+					type_class = type_c;
 				} else if (strncmp(start, "float", len)) {
-                    type = float_type_type_token;
+                    ntype = float_type_token;
+					type_class = type_c;
                 }
 			} else if (state == 102) {
-				type = imm_minus_operator_token;
+				ntype = imm_minus_operator_token;
+				type_class = assign_c;
 			} else if (state == 103) {
-				type = minus_operator_token;
+				ntype = minus_operator_token;
+				type_class = binop_c;
 			} else if (state == 104) {
-				type = decrement_operator_token;
+				ntype = decrement_operator_token;
+				type_class = unop_c;
 			} else if (state == 105) {
-				type = int_type_token;
+				ntype = int_literal;
 				position--;
+				type_class = literal_c;
 			} else if (state == 101) {
 				position--;
-				type = float_type_token;
+				ntype = float_literal;
+				type_class = literal_c;
 			} else if (state == 106) {
-				type = imm_plus_operator_token;
+				ntype = imm_plus_operator_token;
+				type_class = assign_c;
 			} else if (state == 107) {
-				type = increment_operator_token;
+				ntype = increment_operator_token;
+				type_class = unop_c;
 			} else if (state == 108) {
-				type = plus_operator_token;
+				ntype = plus_operator_token;
+				type_class = binop_c;
 			} else if (state == 109) {
-				type = gt_operator_token;
+				ntype = gt_operator_token;
+				type_class = binop_c;
 				position--;
 			} else if (state == 110) {
-				type = ge_operator_token;
+				ntype = ge_operator_token;
+				type_class = binop_c;
 			} else if (state == 111) {
-				type = lt_operator_token;
+				ntype = lt_operator_token;
+				type_class = binop_c;
 				position--;
 			} else if (state == 112) {
-				type = le_operator_token;
+				ntype = le_operator_token;
+				type_class = binop_c;
 			} else if (state == 113) {
-				type = multiplication_operator_token;
+				ntype = multiplication_operator_token;
+				type_class = binop_c;
 			} else if (state == 114) {
-				type = imm_mul_operator_token;
+				ntype = imm_mul_operator_token;
+				type_class = assign_c;
 			} else if (state == 115) {
-				type = pot_operator_token;
+				ntype = pot_operator_token;
+				type_class = binop_c;
 			} else if (state == 116) {
-				type = division_operator_token;
+				ntype = division_operator_token;
+				type_class = binop_c;
 			} else if (state == 117) {
-				type = imm_division_operator_token;
+				ntype = imm_division_operator_token;
+				type_class = assign_c;
 			} else if (state == 118) {
-				type = floor_div_operator_token;
+				ntype = floor_div_operator_token;
+				type_class = binop_c;
 			} else if (state == 119) {
-				type = string_type_token;
+				ntype = string_literal;
+				type_class = literal_c;
 			} else if (state == 120) {
-				type = char_type_token;
+				ntype = char_literal;
+				type_class = literal_c;
 			} else if (state == 121) {
-				type = opening_bracket_token;
+				ntype = opening_bracket_token;
+				type_class = bracket_c;
 			} else if (state == 122) {
-				type = closing_bracket_token;
+				ntype = closing_bracket_token;
+				type_class = bracket_c;
 			} else if (state == 123) {
-				type = opening_c_bracket_token;
+				ntype = opening_c_bracket_token;
+				type_class = bracket_c;
 			} else if (state == 124) {
-				type = closing_c_bracket_token;
+				ntype = closing_c_bracket_token;
+				type_class = bracket_c;
 			} else if (state == 125) {
-				type = closing_s_bracket_token;
+				ntype = closing_s_bracket_token;
+				type_class = bracket_c;
 			} else if (state == 126) {
-				type = opening_s_bracket_token;
+				ntype = opening_s_bracket_token;
+				type_class = bracket_c;
 			} else if (state == 127) {
-				type = assignment_token;
+				ntype = assignment_token;
+				type_class = assign_c;
 			} else if (state == 128) {
-				type = selector_token;
+				ntype = selector_token;
+				type_class = punctuation_c;
 			} else if (state == 129) {
-				type = mod_operator_token;
+				ntype = mod_operator_token;
+				type_class = binop_c;
 			} else if (state == 130) {
-				type = semicolon_token;
+				ntype = semicolon_token;
+				type_class = punctuation_c;
 			} else if (state == 131) {
-				type = colon_token;
+				ntype = colon_token;
+				type_class = punctuation_c;
 			} else if (state == 132) {
-				type = directive_token;
 				len = position - start_position + 1;
 				position--;
 				if (strncmp(start, "#PROGRAM", len)) {
-					type = program_directive_token;
+					ntype = program_directive_token;
+					type_class = prim_directive_c;
 				} else if (strncmp(start, "#MODULE", len)) {
-					type = module_directive_token;
+					ntype = module_directive_token;
+					type_class = prim_directive_c;
 				} else if (strncmp(start, "#using", len)) {
-                    type = include_directive_token;
+                    ntype = include_directive_token;
+					type_class = sec_directive_c;
 				} else if (strncmp(start, "#macro", len)) {
-                    type = macro_directive_token;
-                }
+                    ntype = macro_directive_token;
+					type_class = sec_directive_c;
+                } else {
+					lexing_error(position, line);
+				}
 			} else if (state == 133) {
-				type = comma_token;
+				ntype = comma_token;
+				type_class = punctuation_c;
 			} else {
 				printf("Not implemented, state %d", state);
 			}
@@ -284,7 +327,7 @@ scanner_result lex(char *code) {
 			cur = code + position;
 			len = cur - start;
 
-			node_array_add(arr, type, node_index);
+			node_array_add(arr, ntype, type_class, node_index);
 			symbol_table_add(table, node_index, (long) start_position, line, start, len);
 
 			node_index++;

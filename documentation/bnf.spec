@@ -2,14 +2,21 @@
 unop 			::= ! | ++ | --
 binop 			::= + | - | * | / | ** | % | += | -= | *= | /= | < | <= | > | >=
 type            ::= float | int | char | string
+string_literal  ::= "[[:any]]*"
+char_literal    ::= '[[:any:]]'
+int_literal     ::= [0-9]+
+float_literal   ::= [0-9]+.[0-9]+
+bool_literal    ::= true | false
+literal         ::= string_literal | char_literal | int_literal | float_literal
+
 
 
 // Types of source
 # nullable(program) = False, First = {<program_directive>}
-program			::= <program_directive> <secondary_directive_list>? <main_function> <functions>
+x program			::= <program_directive> <secondary_directive_list>? <functions>
 
 # nullable(program) = False, First = {<module_directive>}
-module			::= <module_directive> <secondary_directive_list> <functions>
+module			::= <module_directive> <secondary_directive_list>? <functions>
 
 
 // Functions and procedures
@@ -19,10 +26,12 @@ function		::= <function_token> <identifier_token> (<parameter_list>):<type> {sta
 # nullable(functions) = False, First = {<function_token>}
 functions		::= function functions | function
 
+declaration     ::= <type> <identifier> <semicolon_token>
 
+factor          ::= <unop> <factor> | (<exp>) | <float_literal> | <string_literal> | <char_literal> | <int_literal> | <bool_literal> | <identifier>
+term            ::= <factor> * <term> | <factor> / <term> | <factor>
+exp             ::= <term> + <exp> | <term> - <exp> | <term>
 
-compound_statement	::= <statement> <compound_statement> | <statement>
-exp			    ::= false | true | int_literal | string_literal | float_literal | char_literal | exp binop exp | unop exp | null | 
 parameter		::= <identifier> <identifier>
 parameter_list		::= <parameter> , <parameter_list> | <parameter>
 

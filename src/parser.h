@@ -18,8 +18,14 @@ void program_directive(ast *tree, node_array *arr, symbol_table *table, long *lo
 
 void secondary_directive_list(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
-void match(node_array *arr, symbol_table *table, node_type type, long *lookahead);
+void match(ast *tree, node_array *arr, symbol_table *table, node_type type, long *lookahead);
 
 void type(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void functions(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_class type, long *lookahead);
+
+void include_directive_select(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 #endif
