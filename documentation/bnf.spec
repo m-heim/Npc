@@ -1,19 +1,20 @@
 // Classes of t
-unop 			::= ! | ++ | --
-binop 			::= + | - | * | / | ** | % | += | -= | *= | /= | < | <= | > | >=
-type            ::= float | int | char | string
-string_literal  ::= "[[:any]]*"
+unop 		::= ! | ++ | --
+binop 		::= + | - | * | / | ** | %  | < | <= | > | >=
+assignment	::= += | -= | *= | /= | = 
+type            ::= "float" | "int" | "char" | "string"
+string_literal  ::= \"[[:any:]]*\"
 char_literal    ::= '[[:any:]]'
 int_literal     ::= [0-9]+
 float_literal   ::= [0-9]+.[0-9]+
-bool_literal    ::= true | false
-literal         ::= string_literal | char_literal | int_literal | float_literal
+bool_literal    ::= "true" | "false"
+literal         ::= <string_literal> | <char_literal> | <int_literal> | <float_literal> | <bool_literal>
 
 
 
 // Types of source
 # nullable(program) = False, First = {<program_directive>}
-x program			::= <program_directive> <secondary_directive_list>? <functions>
+program			::= <program_directive> <secondary_directive_list>? <functions>
 
 # nullable(program) = False, First = {<module_directive>}
 module			::= <module_directive> <secondary_directive_list>? <functions>
@@ -26,14 +27,25 @@ function		::= <function_token> <identifier_token> (<parameter_list>):<type> {sta
 # nullable(functions) = False, First = {<function_token>}
 functions		::= function functions | function
 
-declaration     ::= <type> <identifier> <semicolon_token>
+# nullable(declaration) = False, First = {<float_token>, <string_token>, <char_token>, <int_token>}
+declaration     	::= <type> <identifier> <semicolon_token>
 
-factor          ::= <unop> <factor> | (<exp>) | <float_literal> | <string_literal> | <char_literal> | <int_literal> | <bool_literal> | <identifier>
-term            ::= <factor> * <term> | <factor> / <term> | <factor>
-exp             ::= <term> + <exp> | <term> - <exp> | <term>
+# nullable(var) = False, First = {<identifier>}
+var			::= <identifier> | <identifier> "[" <exp> "]"
+# nullable(factor) = False, First = 1. {"++", "--", "!"} 2/3. {<identifier>} 4. {"("} 5/6/7/9/10. {<literal>} 11. {<identifier>} 12. {<identifier>}
+factor          	::= <unop> <factor> | <var> "++" | <var> "--" | "(" <exp> ")" | <float_literal> | <string_literal> | <char_literal> | <int_literal> | <bool_literal> | <var> | <function_call>
+# nullable(term) = False, First = First(factor)
+term            	::= <factor> "*" <term> | <factor> "/" <term> | <factor>
+# nullable(exp) = False, First = First(factor)
+exp             	::= <term> "+" <exp> | <term> "-" <exp> | <term>
+function_call		::= <identifier> "(" <argument_list> ")"
 
 parameter		::= <identifier> <identifier>
 parameter_list		::= <parameter> , <parameter_list> | <parameter>
+
+argument		::= <exp>
+
+argument_list		::= <argument> "," <argument_list> | <argument>
 
 continue_statement	::= continue ;
 break_statement		::= break;
