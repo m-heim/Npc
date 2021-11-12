@@ -19,6 +19,7 @@ ast *ast_make();
 
 void ast_add(ast *parent, ast *tree);
 
+ast *ast_get_child(ast *tree, long id);
 void ast_add(ast *parent, ast *tree);
 
 void ast_set_node(ast *tree, node *n);

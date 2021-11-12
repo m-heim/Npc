@@ -22,7 +22,7 @@ module			::= <module_directive> <secondary_directive_list>? <functions>
 
 // Functions and procedures
 # nullable(function) = False, First = {<function_token>}
-function		::= <function_token> <identifier_token> (<parameter_list>):<type> {statement}
+function		::= <identifier_token> (<parameter_list>):<type> {statement}
 
 # nullable(functions) = False, First = {<function_token>}
 functions		::= function functions | function

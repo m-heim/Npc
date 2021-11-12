@@ -30,6 +30,11 @@ void ast_set_node(ast *tree, node *n) {
 	return;
 }
 
+ast *ast_get_child(ast *tree, long id) {
+	return tree->children[tree->used];
+
+}
+
 // Get a pointer to the last ast, returns NULL if the tree doesn\'t have any children
 ast *ast_get_last(ast *tree) {
 	if (tree->used == 0) {

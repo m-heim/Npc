@@ -3,60 +3,59 @@
 #define NODE_ARRAY_INIT_SIZE 10
 #include <stdlib.h>
 typedef enum{
-	identifier_token = 100,
+	identifier_token,
 
 
-	assignment_token = 127,
-	imm_plus_operator_token = 106,
-	imm_minus_operator_token = 102,
-	imm_mul_operator_token = 114,
-	imm_division_operator_token = 117,
+	assignment_token,
+	imm_minus_operator_token,
+	imm_plus_operator_token,
+	imm_mul_operator_token,
+	imm_division_operator_token,
 
-	selector_token = 128,
-	semicolon_token = 130,
-	colon_token = 131,
-	comma_token = 133,
+	selector_token,
+	semicolon_token,
+	colon_token,
+	comma_token,
 
 	// DIRECTIVES
-	directive_token = 132,
 	program_directive_token,
 	module_directive_token,
 	include_directive_token,
 	macro_directive_token,
 
 	// BINARY OPERATORS
-	plus_operator_token = 108,
-	minus_operator_token = 103,
-	multiplication_operator_token = 113,
-	division_operator_token = 116,
-	mod_operator_token = 129,
-	pot_operator_token = 115,
-	gt_operator_token = 109,
-	lt_operator_token = 111,
-	le_operator_token = 112,
-	ge_operator_token = 110,
-	floor_div_operator_token = 118,
+	plus_operator_token,
+	minus_operator_token,
+	multiplication_operator_token,
+	division_operator_token,
+	mod_operator_token,
+	pot_operator_token,
+	gt_operator_token,
+	lt_operator_token,
+	le_operator_token,
+	ge_operator_token,
+	floor_div_operator_token,
 	
 	// UNARY OPERATORS
-	decrement_operator_token = 104,
+	increment_operator_token,
 	not_token,
-	increment_operator_token = 107,
+	decrement_operator_token,
 
 	// STRUCTURE //
-	opening_bracket_token = 121,
-	closing_bracket_token = 122,
+	opening_bracket_token,
+	closing_bracket_token,
 
-	opening_s_bracket_token = 126,
-	closing_s_bracket_token = 125,
+	opening_s_bracket_token,
+	closing_s_bracket_token,
 
-	opening_c_bracket_token = 123,
-	closing_c_bracket_token = 124,
+	opening_c_bracket_token,
+	closing_c_bracket_token,
 
 	// Literals
-	string_literal = 119,
-	char_literal = 120,
-	int_literal = 105,
-	float_literal = 101,
+	string_literal,
+	char_literal,
+	int_literal,
+	float_literal,
 
 	// types
 	string_type_token,
@@ -132,5 +131,9 @@ node *node_array_get_node(node_array *arr, long position);
 
 long *node_array_get_val(node_array *arr, long position);
 node *node_make(node_type type, node_type_class type_class, long value);
+
+char *node_type_get_canonial(node_type type);
+
+char *node_type_get_class(node_type_class type );
 
 #endif

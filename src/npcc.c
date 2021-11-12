@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "node.h"
 #include "npcc.h"
 #include "parser.h"
 #include "scanner.h"
@@ -18,10 +19,12 @@ int main(int argc, char **argv) {
 	scanner_result result = lex(read_program(fp));
 	int i;
 	for(i = 0; i < result.node_array->used; i++) {
-		printf("%d\n", result.node_array->node_array[i].type);
+		printf("%s\n", node_type_get_canonial(node_array_get_node_type(result.node_array, i)));
 	}
 	printf("Parsing\n");
-	parse_program(result);
+	ast *tree = parse_program(result);
+	print_tree(tree, 0);
+
 	return 0;
 	
 }
