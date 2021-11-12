@@ -29,6 +29,11 @@ void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_c
 void include_directive_select(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void  print_tree(ast *tree, int depth);
+void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void argument_list(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void secondary_directives(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 

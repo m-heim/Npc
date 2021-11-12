@@ -73,7 +73,16 @@ typedef enum{
 	function_token,
 
 	// Ntm
+	if_statement_n,
+	expression_n,
+	factor_n,
+	term_n,
 	program_n,
+	declaration_n,
+	functioncall_n,
+	argument_n,
+	argument_list_n,
+	var_n,
 	module_n,
 	secondarydirective_n,
 	secondarydirective_list_n,

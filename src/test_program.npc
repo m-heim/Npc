@@ -2,6 +2,8 @@
 #using std.system.println;
 
 int main(char argv) {
+	int i = 30;
+	int b = i * 30 * 8 + (20*3) + 1834 * 83;
 	if (sizeof(argv) < 2) {
 		println("ERROR: Program requires at least 1 argument");
 		return 2;
