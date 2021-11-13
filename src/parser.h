@@ -6,7 +6,7 @@
 
 ast *parse_program(scanner_result res);
 
-void parse_syntax_err(long line);
+void parse_syntax_err(long line, char *tkn);
 
 void program(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
@@ -29,11 +29,15 @@ void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_c
 void include_directive_select(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void  print_tree(ast *tree, int depth);
+
+void factor(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void argument_list(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void term(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void secondary_directives(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 

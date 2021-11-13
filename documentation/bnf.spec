@@ -28,7 +28,7 @@ function		::= <identifier_token> (<parameter_list>):<type> {statement}
 functions		::= function functions | function
 
 # nullable(declaration) = False, First = {<float_token>, <string_token>, <char_token>, <int_token>}
-declaration     	::= <type> <identifier> <semicolon_token>
+declaration     	::= <type> <identifier> <semicolon_token> | <type> <identifier> <assignment_token> <exp> <semicolon_token>
 
 # nullable(var) = False, First = {<identifier>}
 var			::= <identifier> | <identifier> "[" <exp> "]"

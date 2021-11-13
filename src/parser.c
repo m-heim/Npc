@@ -16,8 +16,8 @@ ast *parse_program(scanner_result res) {
 	return tree;
 }
 
-void parse_syntax_err(long line) {
-	printf("ERROR: line %ld\n", line);
+void parse_syntax_err(long line, char *tkn) {
+	printf("ERROR: line %ld on token %s\n", line, tkn);
 	_Exit(1);
 }
 
@@ -56,7 +56,7 @@ void function(ast *tree, node_array *arr, symbol_table *table, long *lookahead) 
 		parameter_list(tree, arr, table, lookahead);
 		match(tree, arr, table, closing_bracket_token, lookahead);
 	}
-	match(tree, arr, table, opening_c_bracket_token, lookahead);
+	block(tree, arr, table, lookahead);
 
 	//cont;
 }
@@ -96,7 +96,7 @@ void functions(ast *tree, node_array *arr, symbol_table *table, long *lookahead)
 			function(tree, arr, table, lookahead);
 		}
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead));
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 	}
 	return;
 }
@@ -132,7 +132,7 @@ void parameter_list(ast *tree, node_array *arr, symbol_table *table, long *looka
 		}
 		return;
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead));
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 	}
 }
 
@@ -225,10 +225,45 @@ void if_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahe
 }
 
 void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing EXP\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(expression_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
 
+
+	term(tree, arr, table, lookahead);
+
+	if (node_array_get_node_type(arr, *lookahead) == plus_operator_token) {
+		match(tree, arr, table, plus_operator_token, lookahead);
+		expression(tree, arr, table, lookahead);
+	} else if (node_array_get_node_type(arr, *lookahead) == minus_operator_token) {
+		match(tree, arr, table, minus_operator_token, lookahead);
+		expression(tree, arr, table, lookahead);
+	}
 }
 
 void term(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing terms\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(term_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
+
+
+	factor(tree, arr, table, lookahead);
+
+	if (node_array_get_node_type(arr, *lookahead) == multiplication_operator_token) {
+		match(tree, arr, table, multiplication_operator_token, lookahead);
+		term(tree, arr, table, lookahead);
+	} else if (node_array_get_node_type(arr, *lookahead) == division_operator_token) {
+		match(tree, arr, table, division_operator_token, lookahead);
+		term(tree, arr, table, lookahead);
+	}
 
 }
 
@@ -261,9 +296,15 @@ void declaration(ast *tree, node_array *arr, symbol_table *table, long *lookahea
 	type(tree, arr, table, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
 
-	match(tree, arr, table, assignment_token, lookahead);
-
-	expression(tree, arr, table, lookahead);
+	if(node_array_get_node_type(arr, *lookahead) == assignment_token) {
+		match(tree, arr, table, assignment_token, lookahead);
+		expression(tree, arr, table, lookahead);
+		match(tree, arr, table, semicolon_token, lookahead);
+	} else if (node_array_get_node_type(arr, *lookahead) == semicolon_token) {
+		match(tree, arr, table, semicolon_token, lookahead);
+	} else {
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
+	}
 }
 
 void fun_call(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
@@ -328,45 +369,59 @@ void factor(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 
 	switch(node_array_get_node_type(arr, *lookahead)) {
 		case not_token:
-		
+			break;
 		case increment_operator_token:
-
+			break;
 		case decrement_operator_token:
-
+			break;
 		case opening_bracket_token:
-
+			match(tree, arr, table, opening_bracket_token, lookahead);
+			expression(tree, arr, table, lookahead);
+			match(tree, arr, table, closing_bracket_token, lookahead);
+			break;
 		case identifier_token:
 			if (node_array_get_node_type(arr, *lookahead + 1) == opening_bracket_token) {
 
 			} else {
 				var(tree, arr, table, lookahead);
 			}
+			break;
 		case float_literal:
-
+			match(tree, arr, table, float_literal, lookahead);
+			break;
 		case string_literal:
-
+			match(tree, arr, table, string_literal, lookahead);
+			break;
 		case int_literal:
-
+			match(tree, arr, table, int_literal, lookahead);
+			break;
 		case char_literal:
+			match(tree, arr, table, char_literal, lookahead);
+			break;
 
 		default:
+			break;
 	}
-	
-	if (node_array_get_node_type(arr, *lookahead) == not_token) {
 
-	} else if (node_array_get_node_type(arr, *lookahead) == increment_operator_token) {
-
-	} else if (node_array_get_node_type(arr, *lookahead) == decrement_operator_token) {
-
-	} else if (node_array_get_node_type(arr, *lookahead) == opening_bracket_token) {
-
-	} else if (node_array_get_node_type(arr, *lookahead) == identifier_token) {
-
-	}
 }
 
 void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing block\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(block_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
 
+	match(tree, arr, table, opening_c_bracket_token, lookahead);
+
+	while (node_array_get_node_type(arr, *lookahead) != closing_c_bracket_token) {
+		if (node_array_get_node_type_class(arr, *lookahead) == type_c) {
+			declaration(tree, arr, table, lookahead);
+		}
+	
+	}
 }
 
 
@@ -387,7 +442,7 @@ void include_directive_select(ast *tree, node_array *arr, symbol_table *table, l
 				} else if (node_array_get_node_type(arr, *lookahead) == selector_token){
 					match(tree, arr, table, selector_token, lookahead);
 				} else {
-					parse_syntax_err(symbol_table_get_line(table, *lookahead));
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 				}
 		}
 	}
@@ -411,10 +466,10 @@ void secondary_directives(ast *tree, node_array *arr, symbol_table *table, long 
 		} else if (node_array_get_node_type(arr, *lookahead) == macro_directive_token) {
 			//implement
 		} else {
-			parse_syntax_err(symbol_table_get_line(table, *lookahead));
+			parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 		}
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead));
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 	}
 }
 
@@ -453,7 +508,7 @@ void match(ast *tree, node_array *arr, symbol_table *table, node_type type, long
 		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 		(*lookahead)++;
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead));
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 	}
 	return;
 }
@@ -465,7 +520,7 @@ void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_c
 		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 		(*lookahead)++;
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead));
+		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 	}
 	return;
 }

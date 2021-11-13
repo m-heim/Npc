@@ -106,23 +106,23 @@ scanner_result lex(char *code) {
 		// plus
 		} else if (state == 4) {
 			if (*cur == '=') {
-				state = 106;
-			} else if (*cur == '+') {
-				state = 107;
-			} else if (is_number(cur)) {
-				state = 5;
-			} else {
-				state = 108;
-			}
-		} else if (state == 3) {
-			if (*cur == '-') {
-				state = 104;
-			} else if (*cur == '=') {
 				state = 102;
+			} else if (*cur == '+') {
+				state = 104;
 			} else if (is_number(cur)) {
 				state = 5;
 			} else {
 				state = 103;
+			}
+		} else if (state == 3) {
+			if (*cur == '-') {
+				state = 107;
+			} else if (*cur == '=') {
+				state = 106;
+			} else if (is_number(cur)) {
+				state = 5;
+			} else {
+				state = 108;
 			}
 		} else if(state == 41) {
 			if (*cur == '"') {
@@ -199,16 +199,17 @@ scanner_result lex(char *code) {
 				type_class = nac_c;
 				position--;
 				len = position - start_position + 1;
-				if (strncmp(start, "int", len) == 0) {
+				printf("Len is %lu\n", len);
+				if (len == 3 && strncmp(start, "int", len) == 0) {
 					ntype = int_type_token;
 					type_class = type_c;
-				} else if (strncmp(start, "string", len) == 0) {
+				} else if (len == 6 && strncmp(start, "string", len) == 0) {
 					ntype = string_type_token;
 					type_class = type_c;
-				} else if (strncmp(start, "char", len) == 0) {
+				} else if (len == 4 && strncmp(start, "char", len) == 0) {
                     ntype = char_type_token;
 					type_class = type_c;
-				} else if (strncmp(start, "float", len) == 0) {
+				} else if (len == 5 && strncmp(start, "float", len) == 0) {
                     ntype = float_type_token;
 					type_class = type_c;
                 }
@@ -313,16 +314,16 @@ scanner_result lex(char *code) {
 				position--;
 				len = position - start_position + 1;
 				printf("%ld\n", len);
-				if (strncmp(start, "#PROGRAM", len) == 0) {
+				if (len == 8 && strncmp(start, "#PROGRAM", len) == 0) {
 					ntype = program_directive_token;
 					type_class = prim_directive_c;
-				} else if (strncmp(start, "#MODULE", len) == 0) {
+				} else if (len == 7 && strncmp(start, "#MODULE", len) == 0) {
 					ntype = module_directive_token;
 					type_class = prim_directive_c;
-				} else if (strncmp(start, "#using", len) == 0) {
+				} else if (len == 6 && strncmp(start, "#using", len) == 0) {
                     ntype = include_directive_token;
 					type_class = sec_directive_c;
-				} else if (strncmp(start, "#macro", len) == 0) {
+				} else if (len == 6 && strncmp(start, "#macro", len) == 0) {
                     ntype = macro_directive_token;
 					type_class = sec_directive_c;
                 } else {
