@@ -212,7 +212,22 @@ scanner_result lex(char *code) {
 				} else if (len == 5 && strncmp(start, "float", len) == 0) {
                     ntype = float_type_token;
 					type_class = type_c;
-                }
+                } else if (len == 2 && strncmp(start, "if", len) == 0) {
+					ntype = if_keyword_token;
+					type_class = keyword_c;
+				} else if (len == 3 && strncmp(start, "for", len) == 0) {
+					ntype = for_keyword_token;
+					type_class = keyword_c;
+				} else if (len == 5 && strncmp(start, "while", len) == 0) {
+					ntype = while_keyword_token;
+					type_class = keyword_c;
+				} else if (len == 4 && strncmp(start, "else", len) == 0) {
+					ntype = else_keyword_token;
+					type_class = keyword_c;
+				} else if (len == 6 && strncmp(start, "return", len) == 0) {
+					ntype = return_keyword_token;
+					type_class = keyword_c;
+				}
 			} else if (state == 102) {
 				ntype = imm_plus_operator_token;
 				type_class = assign_c;
@@ -241,18 +256,18 @@ scanner_result lex(char *code) {
 				type_class = binop_c;
 			} else if (state == 109) {
 				ntype = gt_operator_token;
-				type_class = binop_c;
+				type_class = relop_c;
 				position--;
 			} else if (state == 110) {
 				ntype = ge_operator_token;
-				type_class = binop_c;
+				type_class = relop_c;
 			} else if (state == 111) {
 				ntype = lt_operator_token;
-				type_class = binop_c;
+				type_class = relop_c;
 				position--;
 			} else if (state == 112) {
 				ntype = le_operator_token;
-				type_class = binop_c;
+				type_class = relop_c;
 			} else if (state == 113) {
 				ntype = multiplication_operator_token;
 				type_class = binop_c;

@@ -16,8 +16,8 @@ ast *parse_program(scanner_result res) {
 	return tree;
 }
 
-void parse_syntax_err(long line, char *tkn) {
-	printf("ERROR: line %ld on token %s\n", line, tkn);
+void parse_syntax_err(symbol_table *table, long *lookahead, char *err) {
+	printf("ERROR: line %ld on token %s, %s\n", symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead), err);
 	_Exit(1);
 }
 
@@ -91,13 +91,9 @@ void functions(ast *tree, node_array *arr, symbol_table *table, long *lookahead)
 	ast_set_node(ast_get_last(tree), node_make(functions_n, nont_c, -1));
 
 	tree = ast_get_last(tree);
-	if (node_array_get_node_type_class(arr, *lookahead) == type_c) {
-		while (node_array_get_node_type_class(arr, *lookahead) == type_c) {
-			function(tree, arr, table, lookahead);
-		}
-	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
-	}
+	do {
+		function(tree, arr, table, lookahead);
+	} while (node_array_get_node_type_class(arr, *lookahead) == type_c);
 	return;
 }
 
@@ -124,16 +120,10 @@ void parameter_list(ast *tree, node_array *arr, symbol_table *table, long *looka
 	ast_set_node(ast_get_last(tree), node_make(parameter_list_n, nont_c, -1));
 	
 	tree = ast_get_last(tree);
-
-	if(node_array_get_node_type_class(arr, *lookahead) == type_c) {
-		while (node_array_get_node_type_class(arr, *lookahead) == type_c) {
-			parameter(tree, arr, table, lookahead);
-			//?
-		}
-		return;
-	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
-	}
+	do {
+		parameter(tree, arr, table, lookahead);
+	} while (node_array_get_node_type_class(arr, *lookahead) == type_c);
+	return;
 }
 
 void unop(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
@@ -219,17 +209,112 @@ void if_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahe
 	expression(tree, arr, table, lookahead);
 	
 	match(tree, arr, table, closing_bracket_token, lookahead);
-	match(tree, arr, table, opening_c_bracket_token, lookahead);
 
 	block(tree, arr, table, lookahead);
+
+	if (parser_debug) {
+		printf("Parsing IF done\n");
+	}
 }
 
-void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+void return_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 	if (parser_debug) {
-		printf("Parsing EXP\n");
+		printf("Parsing return statement\n");
 	}
 	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(expression_n, nont_c, -1));
+	ast_set_node(ast_get_last(tree), node_make(return_statement_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
+
+	match(tree, arr, table, return_keyword_token, lookahead);
+	// should also be able to return statement?
+	expression(tree, arr, table, lookahead);
+
+	if (parser_debug) {
+		printf("Parsing return statement done\n");
+	}
+}
+
+void for_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing for statement\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(for_statement_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
+
+	match(tree, arr, table, for_keyword_token, lookahead);
+	// should also be able to return statement?
+
+	match(tree, arr, table, opening_bracket_token, lookahead);
+	declaration(tree, arr, table, lookahead);
+	match(tree, arr, table, semicolon_token, lookahead);
+	expression(tree, arr, table, lookahead);
+	match(tree, arr, table, semicolon_token, lookahead);
+	expression(tree, arr, table, lookahead);
+	match(tree, arr, table, closing_bracket_token, lookahead);
+
+	block(tree, arr, table, lookahead);
+
+
+
+	if (parser_debug) {
+		printf("Parsing for statement done\n");
+	}
+}
+
+void assignment(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+		if (parser_debug) {
+		printf("Parsing Assignment\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(if_statement_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
+
+	var(tree, arr, table, lookahead);
+
+	match_by_class(tree, arr, table, assign_c, lookahead);
+
+	expression(tree, arr, table, lookahead);
+}
+
+void statement(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing Statement\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(statement_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
+
+	if(node_array_get_node_type(arr, *lookahead) == if_keyword_token) {
+		if_statement(tree, arr, table, lookahead);
+	} else if(node_array_get_node_type_class(arr, *lookahead) == type_c) {
+		declaration(tree, arr, table, lookahead);
+	} else if(node_array_get_node_type(arr, *lookahead) == for_keyword_token) {
+		for_statement(tree, arr, table, lookahead);
+	} else if(node_array_get_node_type(arr, *lookahead) == identifier_token) {
+		if(node_array_get_node_type(arr, *lookahead + 1) == opening_bracket_token) {
+			fun_call(tree, arr, table, lookahead);
+		} else if(node_array_get_node_type_class(arr, *lookahead) == type_c) {
+			declaration(tree, arr, table, lookahead);
+		}
+	} else if(node_array_get_node_type(arr, *lookahead) == return_keyword_token) {
+		return_statement(tree, arr, table, lookahead);
+	}
+	if (parser_debug) {
+		printf("Parsing Statement done.\n");
+	}
+}
+
+void simple_expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing simple exp\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(simple_expression_n, nont_c, -1));
 	
 	tree = ast_get_last(tree);
 
@@ -238,10 +323,32 @@ void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead
 
 	if (node_array_get_node_type(arr, *lookahead) == plus_operator_token) {
 		match(tree, arr, table, plus_operator_token, lookahead);
-		expression(tree, arr, table, lookahead);
+		simple_expression(tree, arr, table, lookahead);
 	} else if (node_array_get_node_type(arr, *lookahead) == minus_operator_token) {
 		match(tree, arr, table, minus_operator_token, lookahead);
-		expression(tree, arr, table, lookahead);
+		simple_expression(tree, arr, table, lookahead);
+	}
+}
+
+void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
+	if (parser_debug) {
+		printf("Parsing Exp\n");
+	}
+	ast_add(tree, ast_make());
+	ast_set_node(ast_get_last(tree), node_make(expression_n, nont_c, -1));
+	
+	tree = ast_get_last(tree);
+
+
+	simple_expression(tree, arr, table, lookahead);
+
+	if (node_array_get_node_type_class(arr, *lookahead) == relop_c) {
+		match_by_class(tree, arr, table, relop_c, lookahead);
+		simple_expression(tree, arr, table, lookahead);
+	}
+
+	if (parser_debug) {
+		printf("Parsing Exp done.\n");
 	}
 }
 
@@ -295,15 +402,9 @@ void declaration(ast *tree, node_array *arr, symbol_table *table, long *lookahea
 
 	type(tree, arr, table, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
-
 	if(node_array_get_node_type(arr, *lookahead) == assignment_token) {
 		match(tree, arr, table, assignment_token, lookahead);
 		expression(tree, arr, table, lookahead);
-		match(tree, arr, table, semicolon_token, lookahead);
-	} else if (node_array_get_node_type(arr, *lookahead) == semicolon_token) {
-		match(tree, arr, table, semicolon_token, lookahead);
-	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
 	}
 }
 
@@ -312,7 +413,7 @@ void fun_call(ast *tree, node_array *arr, symbol_table *table, long *lookahead) 
 		printf("Parsing Functioncall\n");
 	}
 	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(declaration_n, nont_c, -1));
+	ast_set_node(ast_get_last(tree), node_make(function_call_n, nont_c, -1));
 	
 	tree = ast_get_last(tree);
 
@@ -346,15 +447,15 @@ void argument_list(ast *tree, node_array *arr, symbol_table *table, long *lookah
 	ast_set_node(ast_get_last(tree), node_make(argument_list_n, nont_c, -1));
 	
 	tree = ast_get_last(tree);
-	node_type t = node_array_get_node_type(arr, *lookahead);
-	if (t == increment_operator_token || t == decrement_operator_token || t == not_token || t == identifier_token || t == opening_bracket_token || t == float_literal || t == string_literal || t == char_literal || t == int_literal) {
-		t = node_array_get_node_type(arr, *lookahead);
+	node_type next = node_array_get_node_type(arr, *lookahead);
+
+	do {
 		argument(tree, arr, table, lookahead);
-		while (node_array_get_node_type(arr, *lookahead) == comma_token) {
+		next = node_array_get_node_type(arr, *lookahead);
+		if (next == comma_token) {
 			match(tree, arr, table, comma_token, lookahead);
-			argument(tree, arr, table, lookahead);
 		}
-	}
+	} while (next == comma_token);
 }
 
 
@@ -381,7 +482,13 @@ void factor(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 			break;
 		case identifier_token:
 			if (node_array_get_node_type(arr, *lookahead + 1) == opening_bracket_token) {
-
+				fun_call(tree, arr, table, lookahead);
+			} else if (node_array_get_node_type(arr, *lookahead + 1) == increment_operator_token) {
+				var(tree, arr, table, lookahead);
+				match(tree, arr, table, increment_operator_token, lookahead);
+			} else if (node_array_get_node_type(arr, *lookahead + 1) == decrement_operator_token) {
+				var(tree, arr, table, lookahead);
+				match(tree, arr, table, decrement_operator_token, lookahead);
 			} else {
 				var(tree, arr, table, lookahead);
 			}
@@ -403,6 +510,10 @@ void factor(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 			break;
 	}
 
+	if (parser_debug) {
+		printf("Parsing Factor done\n");
+	}
+
 }
 
 void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
@@ -417,10 +528,14 @@ void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 	match(tree, arr, table, opening_c_bracket_token, lookahead);
 
 	while (node_array_get_node_type(arr, *lookahead) != closing_c_bracket_token) {
-		if (node_array_get_node_type_class(arr, *lookahead) == type_c) {
-			declaration(tree, arr, table, lookahead);
-		}
+		statement(tree, arr, table, lookahead);
+		match(tree, arr, table, semicolon_token, lookahead);
 	
+	}
+
+	match(tree, arr, table, closing_c_bracket_token, lookahead);
+	if (parser_debug) {
+		printf("Parsing block done.\n");
 	}
 }
 
@@ -433,19 +548,18 @@ void include_directive_select(ast *tree, node_array *arr, symbol_table *table, l
 	ast_set_node(ast_get_last(tree), node_make(include_directive_subselect_n, nont_c, -1));
 	
 	tree = ast_get_last(tree);
-
-	if (node_array_get_node_type(arr, *lookahead) == identifier_token) {
-		while (node_array_get_node_type(arr, *lookahead) == identifier_token) {
-				match(tree, arr, table, identifier_token, lookahead);
-				if(node_array_get_node_type(arr, *lookahead) == semicolon_token) {
-					break;
-				} else if (node_array_get_node_type(arr, *lookahead) == selector_token){
-					match(tree, arr, table, selector_token, lookahead);
-				} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
-				}
+	do {
+		match(tree, arr, table, identifier_token, lookahead);
+		if (node_array_get_node_type(arr, *lookahead) == selector_token) {
+			match(tree, arr, table, selector_token, lookahead);
 		}
+		// maybe change this
+	} while (node_array_get_node_type(arr, *lookahead) == identifier_token);
+
+	if (parser_debug) {
+		printf("Parsing DIR SELECTT done.\n");
 	}
+
 }
 
 void secondary_directives(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
@@ -457,19 +571,15 @@ void secondary_directives(ast *tree, node_array *arr, symbol_table *table, long 
 	
 	tree = ast_get_last(tree);
 
-	printf("1\n");
-	if (node_array_get_node_type_class(arr, *lookahead) == sec_directive_c) {
-		printf("1\n");
-		printf("1\n");
-		if (node_array_get_node_type(arr, *lookahead) == include_directive_token) {
+	switch (node_array_get_node_type(arr, *lookahead)) {
+		case include_directive_token:
 			include_directive(tree, arr, table, &*lookahead);
-		} else if (node_array_get_node_type(arr, *lookahead) == macro_directive_token) {
-			//implement
-		} else {
-			parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
-		}
-	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
+			break;
+		case macro_directive_token:
+			// impleme
+			break;
+		default:
+			_Exit(1);
 	}
 }
 
@@ -482,11 +592,9 @@ void secondary_directive_list(ast *tree, node_array *arr, symbol_table *table, l
 	
 	tree = ast_get_last(tree);
 
-	if (node_array_get_node_type_class(arr, *lookahead) == sec_directive_c) {
-		while (node_array_get_node_type_class(arr, *lookahead) == sec_directive_c) {
-			secondary_directives(tree, arr, table, lookahead);
-		}
-	}
+	do {
+		secondary_directives(tree, arr, table, lookahead);
+	} while (node_array_get_node_type_class(arr, *lookahead) == sec_directive_c);
 }
 
 void print_tree(ast *tree, int depth) {
@@ -508,7 +616,7 @@ void match(ast *tree, node_array *arr, symbol_table *table, node_type type, long
 		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 		(*lookahead)++;
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
+		parse_syntax_err(table, lookahead, "expected differently");
 	}
 	return;
 }
@@ -520,7 +628,7 @@ void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_c
 		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
 		(*lookahead)++;
 	} else {
-		parse_syntax_err(symbol_table_get_line(table, *lookahead), symbol_table_get_value(table, *lookahead));
+		parse_syntax_err(table, lookahead, "expected differently");
 	}
 	return;
 }

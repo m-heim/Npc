@@ -37,7 +37,8 @@ factor          	::= <unop> <factor> | <var> "++" | <var> "--" | "(" <exp> ")" |
 # nullable(term) = False, First = First(factor)
 term            	::= <factor> "*" <term> | <factor> "/" <term> | <factor>
 # nullable(exp) = False, First = First(factor)
-exp             	::= <term> "+" <exp> | <term> "-" <exp> | <term>
+simple_exp             	::= <term> "+" <exp> | <term> "-" <exp> | <term>
+expression          ::= <simple_exp> | <simple_exp> <relop> <simple_exp>
 function_call		::= <identifier> "(" <argument_list> ")"
 
 parameter		::= <identifier> <identifier>

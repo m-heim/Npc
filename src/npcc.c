@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 	scanner_result result = lex(read_program(fp));
 	int i;
 	for(i = 0; i < result.node_array->used; i++) {
-		printf("%s\n", node_type_get_canonial(node_array_get_node_type(result.node_array, i)));
+		printf("%d, %s\n", i, node_type_get_canonial(node_array_get_node_type(result.node_array, i)));
 	}
 	printf("Parsing\n");
 	ast *tree = parse_program(result);

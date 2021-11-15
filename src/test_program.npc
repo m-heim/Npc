@@ -1,19 +1,19 @@
 #PROGRAM main;
 #using std.system.println;
 
-int main(char argv) {
+int main(char[10] argv) {
 	int i = 30;
 	int b = i * 30 * 8 + (20*3) + 1834 * 83;
 	if (sizeof(argv) < 2) {
 		println("ERROR: Program requires at least 1 argument");
 		return 2;
-	}
-	char[] str = "Hello World";
+	};
+	char[10] str = "Hello World";
 	for (int i = 0; i < sizeof(str); i++) {
 		if (str[i] <= 91) {
 			println("lower");
-		}
-	}
+		};
+	};
 	println("\n");
 	println("Program exit successful!");
 	return 0;

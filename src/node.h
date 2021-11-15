@@ -74,6 +74,8 @@ typedef enum{
 
 	// Ntm
 	if_statement_n,
+	return_statement_n,
+	for_statement_n,
 	expression_n,
 	factor_n,
 	term_n,
@@ -98,7 +100,10 @@ typedef enum{
 	binop_n,
 	parameter_n,
 	parameter_list_n,
-	type_n
+	type_n,
+	statement_n,
+	simple_expression_n,
+	function_call_n
 
 } node_type;
 
@@ -115,7 +120,8 @@ typedef enum {
 	nac_c,
 	bracket_c,
 	punctuation_c,
-	directive_c
+	directive_c,
+	relop_c
 	
 } node_type_class;
 

@@ -165,6 +165,38 @@ char *node_type_get_canonial(node_type type) {
 		return "parameter_list_n";
 	} else if (type == type_n) {
 		return "type_n";
+	} else if (type == 	block_n) {
+		return "block_n";	
+	} else if (type == declaration_n) {
+		return "declaration_n";	
+	} else if (type == simple_expression_n) {
+		return "simple_expression_n";	
+	} else if (type == expression_n) {
+		return "expression_n";	
+	} else if (type == factor_n) {
+		return "factor_n";	
+	} else if (type == term_n) {
+		return "term_n";	
+	} else if (type == if_statement_n) {
+		return "if_statement_n";
+	} else if (type == statement_n) {
+		return "statement_n";
+	} else if (type == return_statement_n) {
+		return "return_statement_n";
+	} else if (type == for_statement_n) {
+		return "for_statement_n";
+	} else if (type == function_call_n) {
+		return "fun_call_n";	
+	} else if (type == argument_list_n) {
+		return "argument_list_n";	
+	} else if (type == argument_n) {
+		return "argument_n";	
+	} else if (type == return_keyword_token) {
+		return "return_keyword_token";
+	} else if (type == for_keyword_token) {
+		return "for_keyword_token";
+	} else if (type == if_keyword_token) {
+		return "IF_keyword_token";
 	} else {
 		return "Tes";
 	}

@@ -6,7 +6,7 @@
 
 ast *parse_program(scanner_result res);
 
-void parse_syntax_err(long line, char *tkn);
+void parse_syntax_err(symbol_table *table, long *lookahead, char *err);
 
 void program(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
@@ -28,16 +28,26 @@ void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_c
 
 void include_directive_select(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
+void var(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
 void  print_tree(ast *tree, int depth);
+
+void declaration(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void factor(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 void expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+void simple_expression(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void argument_list(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void term(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+void fun_call(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void return_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
+
+void for_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void secondary_directives(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
