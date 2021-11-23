@@ -3,6 +3,12 @@
 
 #include "ast.h"
 #include "scanner.h"
+#include "symbol_table.h"
+
+typedef struct parser_result {
+    ast *tree;
+    symbol_table *table;
+} parser_result;
 
 ast *parse_program(scanner_result res);
 

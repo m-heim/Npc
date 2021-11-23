@@ -8,6 +8,13 @@
 
 int parser_debug = 1;
 
+parser_result parser_result_make(ast *tree, symbol_table *table) {
+	parser_result res;
+	res.table = table;
+	res.tree = tree;
+	return res;
+}
+
 ast *parse_program(scanner_result res) {
 	long l = 0;
 	long *lookahead = &l;

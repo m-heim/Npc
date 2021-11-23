@@ -35,10 +35,13 @@ void symbol_table_add(symbol_table *table, long id, long position, long line, ch
 	table->position[used] = position;
 	table->line[used] = line;
 	// make storage for the value
-	table->value[used] = malloc((strlen(value) + 1) * sizeof(char));
+	char *copy_of_string = malloc(val_len * sizeof(char));
 	// now copy value into that storage
-	strncpy(table->value[used], value, val_len);
+	// i dont think this is right
+	strncpy(copy_of_string, value, val_len);
+	copy_of_string[val_len] = '\0';
 	// now we increment used;
+	table->value[table->used] = copy_of_string;
 	table->used += 1;
 
 	return;
