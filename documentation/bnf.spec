@@ -1,59 +1,58 @@
 // Classes of t
 unop 		::= ! | ++ | --
 binop 		::= + | - | * | / | ** | %  | < | <= | > | >=
-assignment	::= += | -= | *= | /= | = 
+assignment	::= += | -= | *= | /= | =
 type            ::= "float" | "int" | "char" | "string"
+// Literals
 string_literal  ::= \"[[:any:]]*\"
 char_literal    ::= '[[:any:]]'
 int_literal     ::= [0-9]+
 float_literal   ::= [0-9]+.[0-9]+
 bool_literal    ::= "true" | "false"
+
 literal         ::= <string_literal> | <char_literal> | <int_literal> | <float_literal> | <bool_literal>
 
 
 
 // Types of source
-# nullable(program) = False, First = {<program_directive>}
-program			::= <program_directive> <secondary_directive_list>? <functions>
+program			    ::= <program_directive> <secondary_directive_list>? <functions>
 
-# nullable(program) = False, First = {<module_directive>}
-module			::= <module_directive> <secondary_directive_list>? <functions>
+module			    ::= <module_directive> <secondary_directive_list>? <functions>
 
 
 // Functions and procedures
-# nullable(function) = False, First = {<function_token>}
-function		::= <identifier_token> (<parameter_list>):<type> {statement}
+function		    ::= <identifier_token> (<parameter_list>):<type> {statement}
+functions		    ::= function functions | function
 
-# nullable(functions) = False, First = {<function_token>}
-functions		::= function functions | function
+declaration     	::= <type> <identifier> <semicolon_token> | <type> <identifier> "=" <exp> ";"
+assignment_expressio::= <identifier> <assignment_operator> <expression> ";"
 
-# nullable(declaration) = False, First = {<float_token>, <string_token>, <char_token>, <int_token>}
-declaration     	::= <type> <identifier> <semicolon_token> | <type> <identifier> <assignment_token> <exp> <semicolon_token>
-
-# nullable(var) = False, First = {<identifier>}
-var			::= <identifier> | <identifier> "[" <exp> "]"
-# nullable(factor) = False, First = 1. {"++", "--", "!"} 2/3. {<identifier>} 4. {"("} 5/6/7/9/10. {<literal>} 11. {<identifier>} 12. {<identifier>}
 factor          	::= <unop> <factor> | <var> "++" | <var> "--" | "(" <exp> ")" | <float_literal> | <string_literal> | <char_literal> | <int_literal> | <bool_literal> | <var> | <function_call>
-# nullable(term) = False, First = First(factor)
 term            	::= <factor> "*" <term> | <factor> "/" <term> | <factor>
-# nullable(exp) = False, First = First(factor)
 simple_exp             	::= <term> "+" <exp> | <term> "-" <exp> | <term>
 expression          ::= <simple_exp> | <simple_exp> <relop> <simple_exp>
+
+var			        ::= <identifier> | <identifier> "[" <exp> "]"
 function_call		::= <identifier> "(" <argument_list> ")"
 
-parameter		::= <identifier> <identifier>
+parameter		    ::= <identifier> <identifier>
 parameter_list		::= <parameter> , <parameter_list> | <parameter>
 
-argument		::= <exp>
-
+argument		    ::= <exp>
 argument_list		::= <argument> "," <argument_list> | <argument>
 
-continue_statement	::= continue ;
-break_statement		::= break;
+continue_statement	::= "continue" ";"
+break_statement		::= "break" ";"
 return_statement	::= "return" ; | "return" <expression> ;
-while_statement		::= while ( <expression> ) { <statement> } ;
+while_statement		::= "while" "(" <expression> ")" <block> ;
 for_statement		::= for ( <expression> ; <expression> ; <expression> ) { <statement> } ;
 if_statement		::= if ( <expression> ) { <statement> } ;
+
+statement           ::= <continue_statement> | <break_statement> | <return_statement> |
+                    ::= | <while_statement> | <for_statement> | <if_statement> |
+                    ::= <declaration>
+
+block               ::= "{" <statement> "}"
 
 
 // DIRECTIVES
