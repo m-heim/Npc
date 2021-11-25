@@ -1,0 +1,6 @@
+make -f "/home/max/workspace/NPCc/src/Makefile" -C "/home/max/workspace/NPCc/src/Makefile" --dry-run --keep-going --print-directory
+make: Entering directory '/home/max/workspace/NPCc'
+make: Leaving directory '/home/max/workspace/NPCc'
+ 
+make: *** /home/max/workspace/NPCc/src/Makefile: Not a directory.  Stop.
+ 
