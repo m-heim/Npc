@@ -3,12 +3,6 @@
 #define THREE_ADDRESS_CODE_INIT_SIZE 10
 #include <stdlib.h>
 
-typedef struct three_address_code {
-    size_t used;
-    size_t size;
-    three_address_code_entry *arr;
-} three_address_code;
-
 typedef enum three_address_code_op {
     // Jumps
     unconditional_jump,
@@ -46,10 +40,16 @@ typedef enum three_address_code_op {
 typedef struct three_address_code_entry {
     long label;
     three_address_code_op operation;
+    long result;
     long x;
     long y;
-    long z;
 } three_address_code_entry;
+
+typedef struct three_address_code {
+    size_t used;
+    size_t size;
+    three_address_code_entry *arr;
+} three_address_code;
 
 three_address_code *three_address_code_make();
 
