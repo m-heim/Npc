@@ -20,7 +20,6 @@ typedef struct ir_gen_result {
 v_table *v_table_make();
 size_t v_table_add(v_table *table, const char *str);
 const char * v_table_get(v_table *table, size_t id);
-
 ir_gen_result generate(parser_result parser_out);
 
 
