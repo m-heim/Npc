@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 typedef struct {
-	long *id;
 	long *position;
 	long *line;
 	char **value;
@@ -14,7 +13,7 @@ typedef struct {
 
 symbol_table *symbol_table_make();
 
-void symbol_table_add(symbol_table *table, long id, long position, long line, char *value, size_t val_len);
+void symbol_table_add(symbol_table *table, long position, long line, char *value, size_t val_len);
 
 long symbol_table_get_position(symbol_table *table, long id);
 

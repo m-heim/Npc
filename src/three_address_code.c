@@ -7,7 +7,7 @@ three_address_code *three_address_code_make() {
     code->arr = malloc(code->size * sizeof(three_address_code_entry));
 }
 
-void three_address_code_add(three_address_code *code, long label, three_address_code_op op, long x, long y, long z) {
+void three_address_code_add(three_address_code *code, long label, three_address_code_op op, long x, long y, long res) {
     if(code->size == code->used) {
         code->arr = realloc(code->arr, code->size * sizeof(three_address_code_entry) * 2);
         code->size = code->size * 2;
@@ -16,6 +16,6 @@ void three_address_code_add(three_address_code *code, long label, three_address_
     (code->arr[code->used]).operation = op;
     (code->arr[code->used]).x = x;
     (code->arr[code->used]).y = y;
-    (code->arr[code->used]).z = z;
+    (code->arr[code->used]).result = res;
     code->used += 1;
 }

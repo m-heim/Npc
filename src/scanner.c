@@ -23,11 +23,16 @@ scanner_result lex(char *code) {
 	result.table = table;
 	result.node_array = arr;
 
+	// current position in stream
 	size_t position = 0;
+	// start of current token
 	size_t start_position = 0;
+	// length of token
 	size_t len = 0;
 
+	// curr char
 	char *cur = code;
+	// start char
 	char *start = code;
 
 	int state = 0;
@@ -38,7 +43,7 @@ scanner_result lex(char *code) {
 	while (*(code + position) != '\0') {
 		cur = code + position;
 		if (debug == 0) {
-			printf("c %c, s %d\n", *cur, state);
+			printf("char= %c, state %d\n", *cur, state);
 		}
 		if (state == 0) {
 			if (is_latin(cur) || is_underscore(cur)) {
@@ -102,7 +107,7 @@ scanner_result lex(char *code) {
 				state = 1;
 			} else {
 				state = 100;
-			} // are {} valid?
+			}
 		// plus
 		} else if (state == 4) {
 			if (*cur == '=') {
@@ -114,6 +119,7 @@ scanner_result lex(char *code) {
 			} else {
 				state = 103;
 			}
+		// minus
 		} else if (state == 3) {
 			if (*cur == '-') {
 				state = 107;
@@ -124,6 +130,7 @@ scanner_result lex(char *code) {
 			} else {
 				state = 108;
 			}
+		// str
 		} else if(state == 41) {
 			if (*cur == '"') {
 				state = 119;
@@ -132,8 +139,10 @@ scanner_result lex(char *code) {
 			} else {
 				state = 41;
 			}
+		// str
 		} else if (state == 42) {
 			state = 41;
+		// ?/
 		} else if (state == 43) {
 			if (is_latin(cur)) {
 				state = 43;
@@ -141,7 +150,19 @@ scanner_result lex(char *code) {
 				state = 132;
 			}
 		} else if (state == 38) {
-			state = 39;
+			if(*cur == '\'') {
+				lexing_error(position, line, cur);
+			} else if (*cur == '\\'){
+				state = 44;
+			} else {
+				state= 39;
+			}
+		} else if (state == 44) {
+			if(*cur == 'n' || *cur == 'b' || *cur == 't' || *cur == 'r' || *cur == 'f' || *cur == '\'' || *cur == '\\') {
+				state = 39;
+			} else {
+				lexing_error(start_position, line, cur);
+			}
 		} else if (state == 39) {
 			if (*cur == '\'') {
 				state = 120;
@@ -360,7 +381,7 @@ scanner_result lex(char *code) {
 			if (debug == 0) {
 				printf("Added %s\n", node_type_get_canonial(ntype));
 			}
-			symbol_table_add(table, node_index, start_position, line, start, len);
+			symbol_table_add(table, start_position, line, start, len);
 			node_index++;
 			start = cur + 1;
 			start_position = position + 1;

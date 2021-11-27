@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include "ast.h"
+#include "node.h"
 #include "scanner.h"
 #include "symbol_table.h"
 
@@ -26,11 +27,16 @@ void secondary_directive_list(ast *tree, node_array *arr, symbol_table *table, l
 
 void match(ast *tree, node_array *arr, symbol_table *table, node_type type, long *lookahead);
 
+
+void match_no_append(ast *tree, node_array *arr, symbol_table *table, node_type type, long *lookahead);
+
 void type(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void functions(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 
 void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_class type, long *lookahead);
+
+void match_by_class_no_append(ast *tree, node_array *arr, symbol_table *table, node_type_class type, long *lookahead);
 
 void include_directive_select(ast *tree, node_array *arr, symbol_table *table, long *lookahead);
 

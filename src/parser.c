@@ -55,13 +55,13 @@ void function(ast *tree, node_array *arr, symbol_table *table, long *lookahead) 
 
 	type(tree, arr, table, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
-	match(tree, arr, table, opening_bracket_token, lookahead);
+	match_no_append(tree, arr, table, opening_bracket_token, lookahead);
 
 	if (node_array_get_node_type(arr, *lookahead) == closing_bracket_token) {
-		match(tree, arr, table, closing_bracket_token, lookahead);
+		match_no_append(tree, arr, table, closing_bracket_token, lookahead);
 	} else {
 		parameter_list(tree, arr, table, lookahead);
-		match(tree, arr, table, closing_bracket_token, lookahead);
+		match_no_append(tree, arr, table, closing_bracket_token, lookahead);
 	}
 	block(tree, arr, table, lookahead);
 
@@ -80,9 +80,9 @@ void type(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 	match_by_class(tree, arr, table, type_c, lookahead);
 	if(node_array_get_node_type(arr, *lookahead) == opening_s_bracket_token) {
 		while(node_array_get_node_type(arr, *lookahead) == opening_s_bracket_token) {
-			match(tree, arr, table, opening_s_bracket_token, lookahead);
+			match_no_append(tree, arr, table, opening_s_bracket_token, lookahead);
 			match(tree, arr, table, int_literal, lookahead);
-			match(tree, arr, table, closing_s_bracket_token, lookahead);
+			match_no_append(tree, arr, table, closing_s_bracket_token, lookahead);
 		}
 	}
 
@@ -166,9 +166,12 @@ void program_directive(ast *tree, node_array *arr, symbol_table *table, long *lo
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, program_directive_token, lookahead);
+	match_no_append(tree, arr, table, program_directive_token, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
-	match(tree, arr, table, semicolon_token, lookahead);
+	match_no_append(tree, arr, table, semicolon_token, lookahead);
+	if (parser_debug) {
+		printf("done Parsing PROGRAM DIRECTIVE\n");
+	}
 	return;
 }
 
@@ -181,9 +184,9 @@ void module_directive(ast *tree, node_array *arr, symbol_table *table, long *loo
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, module_directive_token, lookahead);
+	match_no_append(tree, arr, table, module_directive_token, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
-	match(tree, arr, table, semicolon_token, lookahead);
+	match_no_append(tree, arr, table, semicolon_token, lookahead);
 }
 
 void include_directive(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
@@ -195,9 +198,9 @@ void include_directive(ast *tree, node_array *arr, symbol_table *table, long *lo
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, include_directive_token, lookahead);
+	match_no_append(tree, arr, table, include_directive_token, lookahead);
 	include_directive_select(tree, arr, table, lookahead);
-	match(tree, arr, table, semicolon_token, lookahead);
+	match_no_append(tree, arr, table, semicolon_token, lookahead);
 }
 
 
@@ -210,12 +213,12 @@ void if_statement(ast *tree, node_array *arr, symbol_table *table, long *lookahe
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, if_keyword_token, lookahead);
-	match(tree, arr, table, opening_bracket_token, lookahead);
+	match_no_append(tree, arr, table, if_keyword_token, lookahead);
+	match_no_append(tree, arr, table, opening_bracket_token, lookahead);
 
 	expression(tree, arr, table, lookahead);
 	
-	match(tree, arr, table, closing_bracket_token, lookahead);
+	match_no_append(tree, arr, table, closing_bracket_token, lookahead);
 
 	block(tree, arr, table, lookahead);
 
@@ -233,7 +236,7 @@ void return_statement(ast *tree, node_array *arr, symbol_table *table, long *loo
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, return_keyword_token, lookahead);
+	match_no_append(tree, arr, table, return_keyword_token, lookahead);
 	// should also be able to return statement?
 	expression(tree, arr, table, lookahead);
 
@@ -251,16 +254,16 @@ void for_statement(ast *tree, node_array *arr, symbol_table *table, long *lookah
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, for_keyword_token, lookahead);
+	match_no_append(tree, arr, table, for_keyword_token, lookahead);
 	// should also be able to return statement?
 
-	match(tree, arr, table, opening_bracket_token, lookahead);
+	match_no_append(tree, arr, table, opening_bracket_token, lookahead);
 	declaration(tree, arr, table, lookahead);
-	match(tree, arr, table, semicolon_token, lookahead);
+	match_no_append(tree, arr, table, semicolon_token, lookahead);
 	expression(tree, arr, table, lookahead);
-	match(tree, arr, table, semicolon_token, lookahead);
+	match_no_append(tree, arr, table, semicolon_token, lookahead);
 	expression(tree, arr, table, lookahead);
-	match(tree, arr, table, closing_bracket_token, lookahead);
+	match_no_append(tree, arr, table, closing_bracket_token, lookahead);
 
 	block(tree, arr, table, lookahead);
 
@@ -392,9 +395,9 @@ void var(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 
 	match(tree, arr, table, identifier_token, lookahead);
 	if(node_array_get_node_type(arr, *lookahead) == opening_s_bracket_token) {
-		match(tree, arr, table, opening_s_bracket_token, lookahead);
+		match_no_append(tree, arr, table, opening_s_bracket_token, lookahead);
 		expression(tree, arr, table, lookahead);
-		match(tree, arr, table, closing_s_bracket_token, lookahead);
+		match_no_append(tree, arr, table, closing_s_bracket_token, lookahead);
 	}
 }
 
@@ -426,12 +429,12 @@ void fun_call(ast *tree, node_array *arr, symbol_table *table, long *lookahead) 
 
 	match(tree, arr, table, identifier_token, lookahead);
 
-	match(tree, arr, table, opening_bracket_token, lookahead);
+	match_no_append(tree, arr, table, opening_bracket_token, lookahead);
 
 	if (node_array_get_node_type(arr, *lookahead) != opening_bracket_token) {
 		argument_list(tree, arr, table, lookahead);
 	}
-	match(tree, arr, table, closing_bracket_token, lookahead);
+	match_no_append(tree, arr, table, closing_bracket_token, lookahead);
 }
 
 void argument(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
@@ -460,7 +463,7 @@ void argument_list(ast *tree, node_array *arr, symbol_table *table, long *lookah
 		argument(tree, arr, table, lookahead);
 		next = node_array_get_node_type(arr, *lookahead);
 		if (next == comma_token) {
-			match(tree, arr, table, comma_token, lookahead);
+			match_no_append(tree, arr, table, comma_token, lookahead);
 		}
 	} while (next == comma_token);
 }
@@ -483,9 +486,9 @@ void factor(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 		case decrement_operator_token:
 			break;
 		case opening_bracket_token:
-			match(tree, arr, table, opening_bracket_token, lookahead);
+			match_no_append(tree, arr, table, opening_bracket_token, lookahead);
 			expression(tree, arr, table, lookahead);
-			match(tree, arr, table, closing_bracket_token, lookahead);
+			match_no_append(tree, arr, table, closing_bracket_token, lookahead);
 			break;
 		case identifier_token:
 			if (node_array_get_node_type(arr, *lookahead + 1) == opening_bracket_token) {
@@ -532,15 +535,15 @@ void block(ast *tree, node_array *arr, symbol_table *table, long *lookahead) {
 	
 	tree = ast_get_last(tree);
 
-	match(tree, arr, table, opening_c_bracket_token, lookahead);
+	match_no_append(tree, arr, table, opening_c_bracket_token, lookahead);
 
 	while (node_array_get_node_type(arr, *lookahead) != closing_c_bracket_token) {
 		statement(tree, arr, table, lookahead);
-		match(tree, arr, table, semicolon_token, lookahead);
+		match_no_append(tree, arr, table, semicolon_token, lookahead);
 	
 	}
 
-	match(tree, arr, table, closing_c_bracket_token, lookahead);
+	match_no_append(tree, arr, table, closing_c_bracket_token, lookahead);
 	if (parser_debug) {
 		printf("Parsing block done.\n");
 	}
@@ -558,7 +561,7 @@ void include_directive_select(ast *tree, node_array *arr, symbol_table *table, l
 	do {
 		match(tree, arr, table, identifier_token, lookahead);
 		if (node_array_get_node_type(arr, *lookahead) == selector_token) {
-			match(tree, arr, table, selector_token, lookahead);
+			match_no_append(tree, arr, table, selector_token, lookahead);
 		}
 		// maybe change this
 	} while (node_array_get_node_type(arr, *lookahead) == identifier_token);
@@ -628,11 +631,31 @@ void match(ast *tree, node_array *arr, symbol_table *table, node_type type, long
 	return;
 }
 
+void match_no_append(ast *tree, node_array *arr, symbol_table *table, node_type type, long *lookahead) {
+	printf("Matching %s at %ld\n", node_type_get_canonial(type), *lookahead);
+	if (node_array_get_node_type(arr, *lookahead) == type) {
+		(*lookahead)++;
+	} else {
+		parse_syntax_err(table, lookahead, "expected differently");
+	}
+	return;
+}
+
 void match_by_class(ast *tree, node_array *arr, symbol_table *table, node_type_class type, long *lookahead) {
 	printf("Matching %d at position nr %ld\n", type, *lookahead);
 	if (node_array_get_node_type_class(arr, *lookahead) == type) {
 		ast_add(tree, ast_make());
 		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *lookahead));
+		(*lookahead)++;
+	} else {
+		parse_syntax_err(table, lookahead, "expected differently");
+	}
+	return;
+}
+
+void match_by_class_no_append(ast *tree, node_array *arr, symbol_table *table, node_type_class type, long *lookahead) {
+	printf("Matching %d at position nr %ld\n", type, *lookahead);
+	if (node_array_get_node_type_class(arr, *lookahead) == type) {
 		(*lookahead)++;
 	} else {
 		parse_syntax_err(table, lookahead, "expected differently");

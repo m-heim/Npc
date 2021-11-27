@@ -6,7 +6,6 @@ symbol_table * symbol_table_make() {
 	// allocate memory for a table
 	symbol_table *table = malloc(sizeof(symbol_table));
 	// allocate memory for the id array ....
-	table->id = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(long));
 	table->position = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(long));
 	table->line = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(long));
 	table->value = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(void *));
@@ -18,20 +17,18 @@ symbol_table * symbol_table_make() {
 }
 
 // add an entry to the symbol table
-void symbol_table_add(symbol_table *table, long id, long position, long line, char *value, size_t val_len) {
+void symbol_table_add(symbol_table *table, long position, long line, char *value, size_t val_len) {
 	// store the length
 	long used = table->used;
 	// if our array is full
 	if (table->size == table->used) {
 		// double the size of it
-		table->id = realloc(table->id, table->size * 2 * sizeof(long));
 		table->position = realloc(table->position, table->size * 2 * sizeof(long));
 		table->line = realloc(table->position, table->size * 2 * sizeof(long));
-		table->value = realloc(table->position, table->size * 2 * sizeof(long));
+		table->value = realloc(table->position, table->size * 2 * sizeof(void *));
 		table->size *= 2;
 	}
 	// assign each value to the next position in the arrays
-	table->id[used] = id;
 	table->position[used] = position;
 	table->line[used] = line;
 	// make storage for the value
