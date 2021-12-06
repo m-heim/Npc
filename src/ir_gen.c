@@ -48,7 +48,14 @@ ir_gen_result generate(parser_result parser_out) {
 
 ir_gen_result *translate(ir_gen_result *i_result, ast *tree, symbol_table *table, long place) {
     switch (tree->n.type) {
-        case expression_n:
+        case function_n:
+			if (tree->children[2]->n.type == parameter_list_n) {
+				for(int i = 0; i < tree->children[2]->used; i ++) {
+					
+				}
+			}
+		
+		case expression_n:
             if (tree->used == 3) {
                 long place1 = new_var();
                 long place2 = new_var();
