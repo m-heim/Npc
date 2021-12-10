@@ -1,6 +1,8 @@
 #include "ir_gen.h"
 #include "ast.h"
 #include "node.h"
+#include "three_address_code.h"
+#include "typetable.h"
 #include <string.h>
 #include <stdio.h>
 v_table *v_table_make() {
@@ -49,9 +51,12 @@ ir_gen_result generate(parser_result parser_out) {
 ir_gen_result *translate(ir_gen_result *i_result, ast *tree, symbol_table *table, long place) {
     switch (tree->n.type) {
         case function_n:
+			three_address_code_add(i_result->code, MAXIMUM_LABEL, funheader, UNDEFINED, UNDEFINED, UNDEFINED);
 			if (tree->children[2]->n.type == parameter_list_n) {
+				long offset = 0;
 				for(int i = 0; i < tree->children[2]->used; i ++) {
-					
+					three_address_code_add(i_result->code, MAXIMUM_LABEL, mem_copy_op, offset, typetable_get_size(typetable *table, int id), -offset)
+					offset
 				}
 			}
 		
