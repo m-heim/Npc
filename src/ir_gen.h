@@ -2,6 +2,7 @@
 #define IR_GEN_H
 #define V_TABLE_INIT_SIZE 10
 #define MAXIMUM_LABEL 9223372036854775807
+#define UNDEFINED -1
 #include "three_address_code.h"
 #include "parser.h"
 typedef struct v_table {

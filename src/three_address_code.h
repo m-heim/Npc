@@ -11,6 +11,7 @@ typedef enum three_address_code_op {
 
     // copying
     copy_op,
+    mem_copy_op,
     indexed_copy_op,
 
     // unary
@@ -34,7 +35,9 @@ typedef enum three_address_code_op {
     lt_op,
     ge_op,
     eq_op,
-    ne_op
+    ne_op,
+
+    funheader
 } three_address_code_op;
 
 typedef struct three_address_code_entry {

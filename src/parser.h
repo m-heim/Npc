@@ -5,10 +5,12 @@
 #include "node.h"
 #include "scanner.h"
 #include "symbol_table.h"
+#include "typetable.h"
 
 typedef struct parser_result {
     ast *tree;
     symbol_table *table;
+    typetable *type_table;
 } parser_result;
 
 ast *parse_program(scanner_result res);
