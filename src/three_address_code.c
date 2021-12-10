@@ -5,6 +5,7 @@ three_address_code *three_address_code_make() {
     code->size = THREE_ADDRESS_CODE_INIT_SIZE;
     code->used = 0;
     code->arr = malloc(code->size * sizeof(three_address_code_entry));
+    return code;
 }
 
 void three_address_code_add(three_address_code *code, long label, three_address_code_op op, long x, long y, long res) {

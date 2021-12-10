@@ -45,4 +45,5 @@ size_t typetable_get_by_name(typetable *table, char *name) {
             return table->type_size[i];
         }
     }
+    return 0;
 }
