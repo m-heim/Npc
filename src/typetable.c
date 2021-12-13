@@ -1,16 +1,21 @@
 #include "typetable.h"
+#include <stdlib.h>
 #include <string.h>
 
 size_t typetable_get_size(typetable *table, int id) {
     return table->type_size[id];
 }
 
+char * typetable_get_name(typetable *table, int id) {
+    return table->name[id];
+}
+
 typetable *typetable_make() {
     typetable *table = malloc(sizeof(typetable));
+    table->name = malloc(TYPETABLE_INIT_SIZE * sizeof(char *));
+    table->type_size = malloc(TYPETABLE_INIT_SIZE * sizeof(size_t));
     table->size = TYPETABLE_INIT_SIZE;
     table->used = 0;
-    table->type_size = malloc(sizeof(size_t) * TYPETABLE_INIT_SIZE);
-    table->name = malloc(sizeof(char *) * TYPETABLE_INIT_SIZE);
     return table;
 }
 

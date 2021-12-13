@@ -1,6 +1,7 @@
 #ifndef TYPETABLE_H
 #define TYPETABLE_H
 #define TYPETABLE_INIT_SIZE 10
+
 #include <stdlib.h>
 
 typedef struct typetable {
