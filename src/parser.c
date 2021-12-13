@@ -5,22 +5,26 @@
 #include "parser.h"
 #include "scanner.h"
 #include "symbol_table.h"
+#include "typetable.h"
 
 int parser_debug = 1;
 
-parser_result parser_result_make(ast *tree, symbol_table *table) {
+parser_result parser_result_make(ast *tree, symbol_table *table, typetable *type_table) {
 	parser_result res;
+	res.type_table = type_table;
 	res.table = table;
 	res.tree = tree;
 	return res;
 }
 
-ast *parse_program(scanner_result res) {
+parser_result parse_program(scanner_result res) {
+	typetable *type_table = typetable_make();
+	symbol_table *symbol_table = res.table;
 	long l = 0;
 	long *lookahead = &l;
 	ast *tree = ast_make();
 	program(tree, res.node_array, res.table, lookahead);
-	return tree;
+	return parser_result_make(tree, symbol_table, type_table);
 }
 
 void parse_syntax_err(symbol_table *table, long *lookahead, char *err) {

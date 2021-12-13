@@ -13,7 +13,7 @@ typedef struct parser_result {
     typetable *type_table;
 } parser_result;
 
-ast *parse_program(scanner_result res);
+parser_result parse_program(scanner_result res);
 
 void parse_syntax_err(symbol_table *table, long *lookahead, char *err);
 

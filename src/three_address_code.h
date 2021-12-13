@@ -40,12 +40,30 @@ typedef enum three_address_code_op {
     funheader
 } three_address_code_op;
 
+typedef enum {
+    address_int_literal,
+    address_float_literal,
+    address_char_literal,
+    address_string_literal,
+    address_variable,
+    address_function,
+    address_temporary,
+    address_undefined,
+    address_memory,
+    address_size
+} address_type;
+
+typedef struct three_address_code_entry_address {
+    address_type type;
+    long value;
+} three_address_code_entry_address;
+
 typedef struct three_address_code_entry {
     long label;
     three_address_code_op operation;
-    long result;
-    long x;
-    long y;
+    three_address_code_entry_address result;
+    three_address_code_entry_address x;
+    three_address_code_entry_address y;
 } three_address_code_entry;
 
 typedef struct three_address_code {
@@ -56,6 +74,6 @@ typedef struct three_address_code {
 
 three_address_code *three_address_code_make();
 
-void three_address_code_add(three_address_code *code, long label, three_address_code_op op, long x, long y, long z);
+void three_address_code_add(three_address_code *code, long label, three_address_code_op op, address_type x_type, long x, address_type y_type, long y, address_type res_type, long res);
 
 #endif

@@ -22,8 +22,8 @@ int main(int argc, char **argv) {
 		printf("%d, %s\n", i, node_type_get_canonial(node_array_get_node_type(result.node_array, i)));
 	}
 	printf("Parsing\n");
-	ast *tree = parse_program(result);
-	print_tree(tree, 0);
+	parser_result parser_res = parse_program(result);
+	print_tree(parser_res.tree, 0);
 
 	return 0;
 	
