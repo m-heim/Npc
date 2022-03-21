@@ -1,4 +1,4 @@
-#NPC
+*NPC*
 
 A compiler project written in c, the language is called np (not pascal), its a weird mix between C and scripting languages.
 You can find an example of code based upon the grammar under ./src/test_program.npc.
@@ -6,13 +6,13 @@ You can find an example of code based upon the grammar under ./src/test_program.
 The progress has stalled since 2022 but i will maybe resume at some point.
 The compiler is able to produce a tree of lexemes and a symbol table based upon a specific grammar (code).
 
-###Done:
+*Done:*
 
 - Documentation
 - Scanner
 - Parser
   
-###Todo:
+*Todo:*
 - Ir generation
 - Code optimization
 - Code generation
