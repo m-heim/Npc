@@ -3,24 +3,25 @@ A compiler project written in c, the language is called np (not pascal), its a w
 The progress has stalled since 2022 but i will maybe resume at some point.
 
 Done:
+
 - Documentation
 - Scanner
 - Parser
-so roughly:
-| Code | -> |Token Array| -> |Token Tree| -> |Intermediate Language (3ac)| -> |Machine Code|
-[^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^]
-this part is done by now.
+  so roughly:
+  | Code | -> |Token Array| -> |Token Tree| -> |Intermediate Language (3ac)| -> |Machine Code|
+  [^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^]
+  this part is done by now.
 
-Any contributions in any way appreciated. Just clone and make a pull request. 
+Any contributions in any way appreciated. Just clone and make a pull request.
 
 The following is a code snippet based on the grammar i created for this language.
 
-#PROGRAM main;
+`#PROGRAM main;
 #using std.system.println;
 
 int main(char[10] argv) {
 	int i = 30;
-	int b = i * 30 * 8 + (20*3) + 1834 * 83;
+	int b = i _ 30 _ 8 + (20*3) + 1834 * 83;
 	if (sizeof(argv) < 2) {
 		println("ERROR: Program requires at least 1 argument");
 		return 2;
@@ -34,4 +35,4 @@ int main(char[10] argv) {
 	println("\n");
 	println("Program exit successful!");
 	return 0;
-}
+}`
