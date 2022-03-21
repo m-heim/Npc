@@ -14,9 +14,7 @@ this part is done by now.
 Any contributions in any way appreciated. Just clone and make a pull request. 
 
 The following is a code snippet based on the grammar i created for this language.
-######################################
-##########test_program.npc############
-######################################
+
 #PROGRAM main;
 #using std.system.println;
 
@@ -37,6 +35,3 @@ int main(char[10] argv) {
 	println("Program exit successful!");
 	return 0;
 }
-######################################
-######################################
-######################################
