@@ -8,6 +8,7 @@ Done:
 - Documentation
 - Scanner
 - Parser
+  
 Todo:
 - Ir generation
 - Code optimization
