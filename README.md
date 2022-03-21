@@ -16,7 +16,8 @@ Any contributions in any way appreciated. Just clone and make a pull request.
 
 The following is a code snippet based on the grammar i created for this language.
 
-`#PROGRAM main;
+`
+#PROGRAM main;
 #using std.system.println;
 
 int main(char[10] argv) {
@@ -35,4 +36,5 @@ int main(char[10] argv) {
 	println("\n");
 	println("Program exit successful!");
 	return 0;
-}`
+}
+`
