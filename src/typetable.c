@@ -6,10 +6,6 @@ size_t typetable_get_size(typetable *table, int id) {
     return table->type_size[id];
 }
 
-char * typetable_get_name(typetable *table, int id) {
-    return table->name[id];
-}
-
 typetable *typetable_make() {
     typetable *table = malloc(sizeof(typetable));
     table->name = malloc(TYPETABLE_INIT_SIZE * sizeof(char *));
@@ -31,6 +27,7 @@ void typetable_add(typetable *table, char *name, size_t size) {
     strcpy(copy, name);
     copy[len - 1] = '\0';
     table->name[table->used] = copy;
+    table->used += 1;
     return;
 }
 
@@ -39,15 +36,6 @@ int typetable_exists(typetable *table, char *name) {
     for(int i = 0; i < table->used; i++) {
         if (strcmp(table->name[i], name) == 0) {
             return 1;
-        }
-    }
-    return 0;
-}
-
-size_t typetable_get_by_name(typetable *table, char *name) {
-    for(int i = 0; i < table->used; i++) {
-        if (strcmp(table->name[i], name) == 0) {
-            return table->type_size[i];
         }
     }
     return 0;

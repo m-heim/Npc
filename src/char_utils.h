@@ -1,6 +1,7 @@
 #ifndef CHAR_UTILS_H
 #define CHAR_UTILS_H
 
+// general purpose library useful for working with strings
 int is_space(char *ptr);
 int is_tab(char *ptr);
 int is_whitespace(char *ptr);

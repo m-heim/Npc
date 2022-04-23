@@ -3,13 +3,17 @@
 #define NODE_ARRAY_INIT_SIZE 10
 #include <stdlib.h>
 typedef enum{
+	// A token that is an identifier to some variable or function
 	identifier_token,
-
-
+	// A simple assignment
 	assignment_token,
+	// Immediate minus assignment
 	imm_minus_operator_token,
+		// Immediate minus assignment
 	imm_plus_operator_token,
+	// Immediate minus assignment
 	imm_mul_operator_token,
+	// Immediate minus assignment
 	imm_division_operator_token,
 
 	selector_token,
