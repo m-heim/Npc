@@ -1,5 +1,7 @@
 #include "parser.h"
 #define CODE_INIT_SIZE 1000
+
+// Generate machine code based on the output of the parser
 char * generate(parser_result parser_out) {
     char *code = malloc(CODE_INIT_SIZE * sizeof(char));
 

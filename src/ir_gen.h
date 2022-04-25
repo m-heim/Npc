@@ -12,6 +12,7 @@ typedef struct v_table {
 } v_table;
 
 
+// The result of the IR generation, it holds the three address code and the variable table
 typedef struct ir_gen_result {
     three_address_code *code;
     v_table *table;
