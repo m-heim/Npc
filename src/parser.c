@@ -5,7 +5,6 @@
 #include "parser.h"
 #include "scanner.h"
 #include "symbol_table.h"
-#include "typetable.h"
 
 int parser_debug = 1;
 

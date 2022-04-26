@@ -1,7 +1,8 @@
-npcc: npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o
-	gcc -o ../build/npcc npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o
+npcc: npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o
+	gcc -o ../build/npcc npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o
 	rm *.o
 	@echo "linking"
+
 npcc.o: npcc.c
 	gcc -c npcc.c
 	@echo "compiling main"
@@ -23,5 +24,9 @@ ast.o: ast.c
 char_utils.o: char_utils.c
 	gcc -c char_utils.c
 	@echo "compiling char_utils"
+
+typetable.o: typetable.c
+	gcc -c typetable.c
+	@echo "compiling typetable.c"
 clean:
 	rm *.o npcc
