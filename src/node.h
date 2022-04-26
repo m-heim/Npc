@@ -2,14 +2,14 @@
 #define NODE_H
 #define NODE_ARRAY_INIT_SIZE 10
 #include <stdlib.h>
-typedef enum{
+typedef enum {
 	// A token that is an identifier to some variable or function
 	identifier_token,
 	// A simple assignment
 	assignment_token,
 	// Immediate minus assignment
 	imm_minus_operator_token,
-		// Immediate minus assignment
+	// Immediate minus assignment
 	imm_plus_operator_token,
 	// Immediate minus assignment
 	imm_mul_operator_token,
@@ -39,7 +39,7 @@ typedef enum{
 	le_operator_token,
 	ge_operator_token,
 	floor_div_operator_token,
-	
+
 	// UNARY OPERATORS
 	increment_operator_token,
 	not_token,
@@ -126,7 +126,7 @@ typedef enum {
 	punctuation_c,
 	directive_c,
 	relop_c
-	
+
 } node_type_class;
 
 typedef struct {
@@ -136,24 +136,24 @@ typedef struct {
 } node;
 
 typedef struct {
-	node *node_array;
+	node* node_array;
 	long used;
 	long size;
 } node_array;
 
-node_array *node_array_make();
-void node_array_add(node_array *arr, node_type type, node_type_class type_class, long value);
+node_array* node_array_make();
+void node_array_add(node_array* arr, node_type type, node_type_class type_class, long value);
 
-node_type node_array_get_node_type(node_array *arr, long position);
-node_type_class node_array_get_node_type_class(node_array *arr, long position);
+node_type node_array_get_node_type(node_array* arr, long position);
+node_type_class node_array_get_node_type_class(node_array* arr, long position);
 
-node *node_array_get_node(node_array *arr, long position);
+node* node_array_get_node(node_array* arr, long position);
 
-long *node_array_get_val(node_array *arr, long position);
-node *node_make(node_type type, node_type_class type_class, long value);
+long* node_array_get_val(node_array* arr, long position);
+node* node_make(node_type type, node_type_class type_class, long value);
 
-char *node_type_get_canonial(node_type type);
+char* node_type_get_canonial(node_type type);
 
-char *node_type_get_class(node_type_class type );
+char* node_type_get_class(node_type_class type);
 
 #endif

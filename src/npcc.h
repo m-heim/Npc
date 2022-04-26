@@ -2,6 +2,6 @@
 #define NPCC_H
 #include <stdio.h>
 
-char *read_program(FILE *fp);
+char* read_program(FILE* fp);
 
 #endif

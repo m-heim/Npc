@@ -1,23 +1,25 @@
-#include "node.h"
 #include "scanner.h"
-#include "symbol_table.h"
-#include <stdlib.h>
 #include "char_utils.h"
+#include "node.h"
+#include "symbol_table.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 int debug = 0;
 
-void lexing_error(size_t position, long line, char *code) {
+void lexing_error(size_t position, long line, char* code)
+{
 	printf("Error on char %lu in line %ld\n", position, line);
 	printf("%.20s\n", code);
 	printf("^\n");
 	exit(1);
 }
 
-scanner_result lex(char *code) {
-	symbol_table *table = symbol_table_make();
-	node_array *arr = node_array_make();
+scanner_result lex(char* code)
+{
+	symbol_table* table = symbol_table_make();
+	node_array* arr = node_array_make();
 
 	scanner_result result;
 	result.table = table;
@@ -31,14 +33,13 @@ scanner_result lex(char *code) {
 	size_t len = 0;
 
 	// curr char
-	char *cur = code;
+	char* cur = code;
 	// start char
-	char *start = code;
+	char* start = code;
 
 	int state = 0;
 	long line = 0;
 	size_t node_index = 0;
-
 
 	while (*(code + position) != '\0') {
 		cur = code + position;
@@ -96,19 +97,19 @@ scanner_result lex(char *code) {
 				state = 131;
 			} else if (*cur == '#') {
 				state = 43;
-			} else if (*cur == ','){
+			} else if (*cur == ',') {
 				state = 133;
 			} else {
 				lexing_error(start_position, line, cur);
 			}
-		// id
+			// id
 		} else if (state == 1) {
 			if (is_latin(cur) || is_underscore(cur) || is_number(cur)) {
 				state = 1;
 			} else {
 				state = 100;
 			}
-		// plus
+			// plus
 		} else if (state == 4) {
 			if (*cur == '=') {
 				state = 102;
@@ -119,7 +120,7 @@ scanner_result lex(char *code) {
 			} else {
 				state = 103;
 			}
-		// minus
+			// minus
 		} else if (state == 3) {
 			if (*cur == '-') {
 				state = 107;
@@ -130,8 +131,8 @@ scanner_result lex(char *code) {
 			} else {
 				state = 108;
 			}
-		// str
-		} else if(state == 41) {
+			// str
+		} else if (state == 41) {
 			if (*cur == '"') {
 				state = 119;
 			} else if (*cur == '\\') {
@@ -139,10 +140,10 @@ scanner_result lex(char *code) {
 			} else {
 				state = 41;
 			}
-		// str
+			// str
 		} else if (state == 42) {
 			state = 41;
-		// ?/
+			// ?/
 		} else if (state == 43) {
 			if (is_latin(cur)) {
 				state = 43;
@@ -150,15 +151,15 @@ scanner_result lex(char *code) {
 				state = 132;
 			}
 		} else if (state == 38) {
-			if(*cur == '\'') {
+			if (*cur == '\'') {
 				lexing_error(position, line, cur);
-			} else if (*cur == '\\'){
+			} else if (*cur == '\\') {
 				state = 44;
 			} else {
-				state= 39;
+				state = 39;
 			}
 		} else if (state == 44) {
-			if(*cur == 'n' || *cur == 'b' || *cur == 't' || *cur == 'r' || *cur == 'f' || *cur == '\'' || *cur == '\\') {
+			if (*cur == 'n' || *cur == 'b' || *cur == 't' || *cur == 'r' || *cur == 'f' || *cur == '\'' || *cur == '\\') {
 				state = 39;
 			} else {
 				lexing_error(start_position, line, cur);
@@ -228,12 +229,12 @@ scanner_result lex(char *code) {
 					ntype = string_type_token;
 					type_class = type_c;
 				} else if (len == 4 && strncmp(start, "char", len) == 0) {
-                    ntype = char_type_token;
+					ntype = char_type_token;
 					type_class = type_c;
 				} else if (len == 5 && strncmp(start, "float", len) == 0) {
-                    ntype = float_type_token;
+					ntype = float_type_token;
 					type_class = type_c;
-                } else if (len == 2 && strncmp(start, "if", len) == 0) {
+				} else if (len == 2 && strncmp(start, "if", len) == 0) {
 					ntype = if_keyword_token;
 					type_class = keyword_c;
 				} else if (len == 3 && strncmp(start, "for", len) == 0) {
@@ -357,12 +358,12 @@ scanner_result lex(char *code) {
 					ntype = module_directive_token;
 					type_class = prim_directive_c;
 				} else if (len == 6 && strncmp(start, "#using", len) == 0) {
-                    ntype = include_directive_token;
+					ntype = include_directive_token;
 					type_class = sec_directive_c;
 				} else if (len == 6 && strncmp(start, "#macro", len) == 0) {
-                    ntype = macro_directive_token;
+					ntype = macro_directive_token;
 					type_class = sec_directive_c;
-                } else {
+				} else {
 					lexing_error(start_position, line, cur);
 				}
 			} else if (state == 133) {
@@ -403,6 +404,4 @@ scanner_result lex(char *code) {
 		position++;
 	}
 	return result;
-
-
 }

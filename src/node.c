@@ -1,8 +1,9 @@
 #include "node.h"
 
 // make a new node with the given type and the value which is an entry in the symbol table
-node *node_make(node_type type, node_type_class type_class, long value) {
-	node *n = malloc(sizeof(node));
+node* node_make(node_type type, node_type_class type_class, long value)
+{
+	node* n = malloc(sizeof(node));
 	n->type = type;
 	n->type_class = type_class;
 	n->value = value;
@@ -10,20 +11,23 @@ node *node_make(node_type type, node_type_class type_class, long value) {
 }
 
 // make a new node array
-node_array *node_array_make() {
-	node_array *arr = malloc(sizeof(node_array));
+node_array* node_array_make()
+{
+	node_array* arr = malloc(sizeof(node_array));
 	arr->node_array = malloc(sizeof(node) * NODE_ARRAY_INIT_SIZE);
 	arr->used = 0;
 	arr->size = NODE_ARRAY_INIT_SIZE;
 	return arr;
 }
 
-node_type_class node_array_get_node_type_class(node_array *arr, long position) {
+node_type_class node_array_get_node_type_class(node_array* arr, long position)
+{
 	return arr->node_array[position].type_class;
 }
 
 // add a new entry to the node array
-void node_array_add(node_array *arr, node_type type, node_type_class type_class, long value) {
+void node_array_add(node_array* arr, node_type type, node_type_class type_class, long value)
+{
 	if (arr->used == arr->size) {
 		arr->node_array = realloc(arr->node_array, arr->size * 2 * sizeof(node));
 		arr->size = arr->size * 2;
@@ -35,20 +39,24 @@ void node_array_add(node_array *arr, node_type type, node_type_class type_class,
 }
 
 // get the node type of a node
-node_type node_array_get_node_type(node_array *arr, long position) {
+node_type node_array_get_node_type(node_array* arr, long position)
+{
 	return (arr->node_array[position]).type;
 }
 
 // get a pointer to the node of an array
-node *node_array_get_node(node_array *arr, long position) {
+node* node_array_get_node(node_array* arr, long position)
+{
 	return &(arr->node_array[position]);
 }
 
-long *node_array_get_val(node_array *arr, long position) {
+long* node_array_get_val(node_array* arr, long position)
+{
 	return &(arr->node_array[position].value);
 }
 
-char *node_type_get_canonial(node_type type) {
+char* node_type_get_canonial(node_type type)
+{
 	if (type == identifier_token) {
 		return "identifier_token";
 	} else if (type == assignment_token) {
@@ -73,7 +81,7 @@ char *node_type_get_canonial(node_type type) {
 		return "program_directive_token";
 	} else if (type == module_directive_token) {
 		return "module_directive_token";
-	} else if (type ==include_directive_token) {
+	} else if (type == include_directive_token) {
 		return "include_directive_token";
 	} else if (type == macro_directive_token) {
 		return "macro_directive_token";
@@ -146,7 +154,7 @@ char *node_type_get_canonial(node_type type) {
 	} else if (type == include_directive_subselect_n) {
 		return "include_directive_subselect_n";
 	} else if (type == functions_n) {
-		return "functions_n"; 
+		return "functions_n";
 	} else if (type == program_directive_n) {
 		return "program_directive_n";
 	} else if (type == module_directive_n) {
@@ -165,18 +173,18 @@ char *node_type_get_canonial(node_type type) {
 		return "parameter_list_n";
 	} else if (type == type_n) {
 		return "type_n";
-	} else if (type == 	block_n) {
-		return "block_n";	
+	} else if (type == block_n) {
+		return "block_n";
 	} else if (type == declaration_n) {
-		return "declaration_n";	
+		return "declaration_n";
 	} else if (type == simple_expression_n) {
-		return "simple_expression_n";	
+		return "simple_expression_n";
 	} else if (type == expression_n) {
-		return "expression_n";	
+		return "expression_n";
 	} else if (type == factor_n) {
-		return "factor_n";	
+		return "factor_n";
 	} else if (type == term_n) {
-		return "term_n";	
+		return "term_n";
 	} else if (type == if_statement_n) {
 		return "if_statement_n";
 	} else if (type == statement_n) {
@@ -186,11 +194,11 @@ char *node_type_get_canonial(node_type type) {
 	} else if (type == for_statement_n) {
 		return "for_statement_n";
 	} else if (type == function_call_n) {
-		return "fun_call_n";	
+		return "fun_call_n";
 	} else if (type == argument_list_n) {
-		return "argument_list_n";	
+		return "argument_list_n";
 	} else if (type == argument_n) {
-		return "argument_n";	
+		return "argument_n";
 	} else if (type == return_keyword_token) {
 		return "return_keyword_token";
 	} else if (type == for_keyword_token) {
@@ -202,7 +210,8 @@ char *node_type_get_canonial(node_type type) {
 	}
 }
 
-char *node_type_get_class(node_type_class type ) {
+char* node_type_get_class(node_type_class type)
+{
 	if (type == unop_c) {
 		return "unop_c";
 	} else if (type == binop_c) {

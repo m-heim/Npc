@@ -1,3 +1,3 @@
 {
-    "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: WebKit, IndentWidth: 4}"
+    "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: WebKit, UseTab: ForIndentation, TabWidth: 4}"
 }
