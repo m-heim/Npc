@@ -1,4 +1,5 @@
 npcc: npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
+	mkdir build
 	gcc -o ../build/npcc npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
 	@echo "linking"
 npcc.o: npcc.c
