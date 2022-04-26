@@ -23,4 +23,3 @@ Any contributions in any way appreciated.
 How to:
 - preferred way to contribute is via vscode in windows with wsl or simply in linux. If you want to use another IDE do so as you wish though.
 - the settings and extensions are provided in .vscode
-- 
