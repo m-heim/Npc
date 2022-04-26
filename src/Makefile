@@ -1,9 +1,9 @@
-npcc: npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
+npc: npc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
 	mkdir ../build
-	gcc -o ../build/npcc npcc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
+	gcc -o ../build/npc npc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
 	@echo "linking"
-npcc.o: npcc.c
-	gcc -c npcc.c
+npc.o: npc.c
+	gcc -c npc.c
 	@echo "compiling main"
 parser.o: parser.c
 	gcc -c parser.c
@@ -30,4 +30,4 @@ log.o: log.c log.h
 	gcc -c log.c
 	@echo "compiling log.c"
 clean:
-	rm *.o npcc
+	rm *.o npc
