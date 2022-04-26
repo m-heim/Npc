@@ -1,5 +1,5 @@
 npc: npc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
-	mkdir ../build
+	mkdir -p ../build
 	gcc -o ../build/npc npc.o parser.o scanner.o node.o ast.o symbol_table.o char_utils.o typetable.o log.o
 	@echo "linking"
 npc.o: npc.c
