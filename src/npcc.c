@@ -3,10 +3,17 @@
 #include "node.h"
 #include "npcc.h"
 #include "parser.h"
+#include <string.h>
 #include "scanner.h"
-
+#include "log.h"
+int main_debug = 0;
 int main(int argc, char **argv) {
-	char *file = argv[1];
+	char *file = argv[argc - 1];
+	for(int i = 1; i <= argc - 1; i++) {
+		if(strcmp(argv[i], "-d") == 0) {
+			main_debug = 1;
+		}
+	}
 	if (argc <= 1) {
 		printf("Please provide a program to compilate\n");
 		return 2;
@@ -16,15 +23,17 @@ int main(int argc, char **argv) {
 		printf("Failed to open file %s, exit\n", file);
 		return 2;
 	}
-	scanner_result result = lex(read_program(fp));
-	int i;
-	for(i = 0; i < result.node_array->used; i++) {
-		printf("%d, %s\n", i, node_type_get_canonial(node_array_get_node_type(result.node_array, i)));
+	npc_debug_log(main_debug, "Scanning now...");
+	scanner_result lexer_result = lex(read_program(fp));
+	if(main_debug) {
+		for(int i = 0; i < lexer_result.node_array->used; i++) {
+			printf("%d, %s\n", i, node_type_get_canonial(node_array_get_node_type(lexer_result.node_array, i)));
+		}
 	}
 	printf("Parsing\n");
-	parser_result parser_res = parse_program(result);
+	parser_result parser_res = parse_program(lexer_result);
 	print_tree(parser_res.tree, 0);
-
+	npc_debug_log(main_debug, "wors");
 	return 0;
 	
 }
