@@ -1,3 +1,13 @@
+/**
+ * @file ast.h
+ * @author MaximilianHeim@protonmail.com
+ * @brief Ast contains the type and prototypes for working with abstract syntax trees
+ * @version 0.1
+ * @date 2022-04-26
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #ifndef AST_H
 #define AST_H
 
@@ -5,7 +15,10 @@
 #include <stdlib.h>
 #define AST_INIT_SIZE 10
 typedef struct ast ast;
-// an ast contains a value (n), a pointer to the array of children, a parent for navigating easily and used+size
+/**
+ * @brief The abstract syntax tree is a core component
+ * 
+ */
 struct ast {
 	node n;
 	// Pointer to the array of children
@@ -15,10 +28,14 @@ struct ast {
 	long size;
 };
 
-// make a new abstract syntax tree
-ast* ast_make();
+ast *ast_make();
 
-// add a new ast to the parent
+/**
+ * @brief 
+ * 
+ * @param parent 
+ * @param tree 
+ */
 void ast_add(ast* parent, ast* tree);
 
 // get the child at position x
