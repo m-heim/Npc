@@ -1,7 +1,7 @@
 #include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+1224cdws]²]€²xq2wde2
 ast* ast_make()
 {
 	ast* tree = malloc(sizeof(ast));
