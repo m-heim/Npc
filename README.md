@@ -1,3 +1,5 @@
+![example workflow](https://github.com/m-heim/Npc/actions/workflows/c.yml/badge.svg)
+
 *NPC*
 
 A compiler project written in c, the language is called np (not pascal), its a weird mix between C and scripting languages.
