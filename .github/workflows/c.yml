@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: pwd
-      run: echo pwd
+    - name: echo
+      run: echo `pwd`
     - name: make
       run: make -f src/Makefile
