@@ -1,3 +1,14 @@
+/**
+ * @file char_utils.h
+ * @author MaximilianHeim@protonmail.com
+ * @brief An utility class for scanning, should be selfexplanatory.
+ * @version 0.1
+ * @date 2022-04-27
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef CHAR_UTILS_H
 #define CHAR_UTILS_H
 
