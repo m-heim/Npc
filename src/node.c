@@ -21,6 +21,18 @@ node_array *node_array_make() {
 node_type_class node_array_get_node_type_class(node_array *arr, long position) {
 	return arr->node_array[position].type_class;
 }
+// get the node type of a node
+node_type node_array_get_node_type(node_array *arr, long position) {
+	return (arr->node_array[position]).type;
+}
+// get a pointer to the node of an array
+node *node_array_get_node(node_array *arr, long position) {
+	return &(arr->node_array[position]);
+}
+
+long *node_array_get_val(node_array *arr, long position) {
+	return &(arr->node_array[position].value);
+}
 
 // add a new entry to the node array
 void node_array_add(node_array *arr, node_type type, node_type_class type_class, long value) {
@@ -34,20 +46,7 @@ void node_array_add(node_array *arr, node_type type, node_type_class type_class,
 	arr->used += 1;
 }
 
-// get the node type of a node
-node_type node_array_get_node_type(node_array *arr, long position) {
-	return (arr->node_array[position]).type;
-}
-
-// get a pointer to the node of an array
-node *node_array_get_node(node_array *arr, long position) {
-	return &(arr->node_array[position]);
-}
-
-long *node_array_get_val(node_array *arr, long position) {
-	return &(arr->node_array[position].value);
-}
-
+// get the human readable name of a node_type
 char *node_type_get_canonial(node_type type) {
 	if (type == identifier_token) {
 		return "identifier_token";
@@ -230,6 +229,6 @@ char *node_type_get_class(node_type_class type ) {
 	} else if (type == directive_c) {
 		return "directive_c";
 	} else {
-		return "hi";
+		return "undefined_class";
 	}
 }

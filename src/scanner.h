@@ -7,7 +7,7 @@ typedef struct {
 	symbol_table *table;
 } scanner_result;
 
-void lexing_error(size_t position, long line, char *code);
+void lexing_error(size_t position, size_t line, char *code);
 
 scanner_result lex(char *code);
 

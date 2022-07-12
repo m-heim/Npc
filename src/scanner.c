@@ -8,7 +8,7 @@
 
 int debug = 0;
 
-void lexing_error(size_t position, long line, char *code) {
+void lexing_error(size_t position, size_t line, char *code) {
 	printf("Error on char %lu in line %ld\n", position, line);
 	printf("%.20s\n", code);
 	printf("^\n");

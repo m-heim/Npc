@@ -1,0 +1,220 @@
+make all -f /home/max/workspace/NPCc/src/Makefile -C /home/max/workspace/NPCc/src/Makefile --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** /home/max/workspace/NPCc/src/Makefile: Not a directory.  Stop.
+
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Tue Jul 12 09:40:09 2022
+
+# Variables
+
+# environment
+GDK_BACKEND = x11
+# environment
+LC_ALL = C
+# environment
+NO_AT_BRIDGE = 1
+# environment
+GJS_DEBUG_OUTPUT = stderr
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-bd4f984c-7ed5-4e39-900a-8fd884d52303.sock
+# environment
+LC_NAME = de_DE.UTF-8
+# environment
+LC_NUMERIC = de_DE.UTF-8
+# environment
+VSCODE_CWD = /home/max
+# environment
+WINDOWPATH = 2
+# environment
+LC_ADDRESS = de_DE.UTF-8
+# environment
+GDM_LANG = en_GB.UTF-8
+# default
+MAKE_COMMAND := make
+# environment
+GTK3_MODULES = xapp-gtk3-module
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/max/workspace/NPCc
+# environment
+MAIL = /var/spool/mail/max
+# environment
+XDG_DATA_DIRS = /home/max/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+# environment
+VSCODE_LOG_STACK = false
+# environment
+VSCODE_CODE_CACHE_PATH = /home/max/.config/Code - OSS/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+# environment
+LANG = C
+# environment
+XAUTHORITY = /run/user/1000/gdm/Xauthority
+# default
+.LOADED := 
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+# default
+.SHELLFLAGS := -c
+# environment
+XDG_SESSION_DESKTOP = gnome-xorg
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+VSCODE_PID = 2244
+# environment
+MOZ_ENABLE_WAYLAND = 1
+# environment
+XDG_SESSION_TYPE = x11
+# environment
+SESSION_MANAGER = local/max-desktop:@/tmp/.ICE-unix/1313,unix/max-desktop:/tmp/.ICE-unix/1313
+# environment
+QT_QPA_PLATFORMTHEME = qt5ct
+# environment
+CHROME_DESKTOP = code-oss.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
+# environment
+SHELL = /bin/zsh
+# default
+MAKECMDGOALS := all
+# environment
+XMODIFIERS = @im=ibus
+# environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+# environment
+SHLVL = 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = /home/max/.local/bin:/usr/local/bin:/usr/bin:/var/lib/snapd/snap/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+# environment
+LC_MONETARY = de_DE.UTF-8
+# environment
+MOTD_SHOWN = pam
+# environment
+LC_TIME = de_DE.UTF-8
+# environment
+INVOCATION_ID = 2810a63e4c1f4b629f19cef541f13e6d
+# environment
+VSCODE_LOG_NATIVE = false
+# environment
+USERNAME = max
+# environment
+LC_TELEPHONE = de_DE.UTF-8
+# environment
+XDG_CURRENT_DESKTOP = GNOME
+# environment
+DESKTOP_SESSION = gnome-xorg
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = GNOME
+# environment
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = max
+# environment
+GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code-oss.desktop
+# environment
+SYSTEMD_EXEC_PID = 1328
+# environment
+EDITOR = /usr/bin/nano
+# environment
+DISPLAY = :1
+# environment
+USER = max
+# environment
+MANAGERPID = 1245
+# environment
+LC_MEASUREMENT = de_DE.UTF-8
+# environment
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2220
+# environment
+_ = /usr/bin/make
+# environment
+LC_PAPER = de_DE.UTF-8
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# environment
+JOURNAL_STREAM = 8:20917
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/max
+# environment
+QT_IM_MODULE = ibus
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-d7b60617-1.68.1-main.sock
+# default
+.RECIPEPREFIX := 
+# environment
+QT_AUTO_SCREEN_SCALE_FACTOR = 1
+# environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink guile load
+# environment
+XDG_MENU_PREFIX = gnome-
+# environment
+GDMSESSION = gnome-xorg
+# environment
+LC_IDENTIFICATION = de_DE.UTF-8
+# variable set hash-table stats:
+# Load=82/1024=8%, Rehash=0, Collisions=2/86=2%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+
+# No files, no impossibilities in 0 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+# Load=1/1024=0%, Rehash=0, Collisions=0/1=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 2 / storage = 42 B / avg = 21 B
+# current buf: size = 8162 B / used = 42 B / count = 2 / avg = 21 B
+
+# strcache performance: lookups = 4 / hit rate = 50%
+# hash-table stats:
+# Load=2/8192=0%, Rehash=0, Collisions=0/4=0%
+# Finished Make data base on Tue Jul 12 09:40:09 2022
+
+ 
