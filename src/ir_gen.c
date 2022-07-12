@@ -1,125 +1,131 @@
 #include "ir_gen.h"
 #include "ast.h"
 #include "node.h"
+#include "parser.h"
 #include "three_address_code.h"
 #include "typetable.h"
-#include <string.h>
 #include <stdio.h>
-v_table *v_table_make() {
-    v_table *table = malloc(sizeof(v_table));
-    table->name = malloc(sizeof(char *) * V_TABLE_INIT_SIZE);
-    table->used = 0;
-    table->size = V_TABLE_INIT_SIZE;
-    return table;
+#include <string.h>
+v_table* v_table_make()
+{
+	v_table* table = malloc(sizeof(v_table));
+	table->name = malloc(sizeof(char*) * V_TABLE_INIT_SIZE);
+	table->used = 0;
+	table->size = V_TABLE_INIT_SIZE;
+	return table;
 }
 
-size_t v_table_add(v_table *table, const char *str) {
-    if (table->size == table->used) {
-        table->name = realloc(table->name, table->size * 2 * sizeof(char *));
-        table->size *= 2;
-    }
-    table->name[table->used] = malloc((1 + strlen(str)));
-    strcpy(table->name[table->used], str);
-    return table->used ++;
+size_t v_table_add(v_table* table, const char* str)
+{
+	if (table->size == table->used) {
+		table->name = realloc(table->name, table->size * 2 * sizeof(char*));
+		table->size *= 2;
+	}
+	table->name[table->used] = malloc((1 + strlen(str)));
+	strcpy(table->name[table->used], str);
+	return table->used++;
 }
 
-const char * v_table_get(v_table *table, size_t id) {
-    if(id >= table->used) {
-        printf("IR_GEN: undefined error in ir generation. Programm will end.");
-        _Exit(1);
-    }
-    return table->name[id];
+const char* v_table_get(v_table* table, size_t id)
+{
+	if (id >= table->used) {
+		printf("IR_GEN: undefined error in ir generation. Programm will end.");
+		_Exit(1);
+	}
+	return table->name[id];
 }
 
-void ir_gen_err() {
+void ir_gen_err()
+{
 	printf("IR_GEN: Undefined error in ir gen, program ends now");
 	_Exit(1);
 }
 
-ir_gen_result generate(parser_result parser_out) {
-    ir_gen_result result;
-    result.table = v_table_make();
-    result.code = three_address_code_make();
-    ast *tree = parser_out.tree;
-    symbol_table *table = parser_out.table;
-    node *curr;
-    while(1) {
-        
-    }
+ir_gen_result generate(parser_result parser_out)
+{
+	ir_gen_result result;
+	result.table = v_table_make();
+	result.code = three_address_code_make();
+	ast* tree = parser_out.tree;
+	symbol_table* table = parser_out.table;
+	node* curr;
+	while (1) {
+	}
 }
 
-ir_gen_result *translate(ir_gen_result *i_result, ast *tree, symbol_table *table, long place) {
-    switch (tree->n.type) {
-        case function_n:
-			three_address_code_add(i_result->code, MAXIMUM_LABEL, funheader, UNDEFINED, UNDEFINED, UNDEFINED);
-			if (tree->children[2]->n.type == parameter_list_n) {
-				long offset = 0;
-				for(int i = 0; i < tree->children[2]->used; i ++) {
-					three_address_code_add(i_result->code, MAXIMUM_LABEL, mem_copy_op, offset, typetable_get_size(typetable *table, int id), -offset)
-					offset
-				}
+ir_gen_result* translate(ir_gen_result* i_result, parser_result parser_result, long place)
+{
+	switch (tree->n.type) {
+	case function_n:
+		three_address_code_add(i_result->code, MAXIMUM_LABEL, funheader, address_undefined, UNDEFINED, address_undefined, UNDEFINED, address_undefined, UNDEFINED);
+		if (tree->children[2]->n.type == parameter_list_n) {
+			long offset = 0;
+			for (int i = 0; i < tree->children[2]->used; i++) {
+				three_address_code_add(i_result->code, MAXIMUM_LABEL, mem_copy_op, address_memory, -offset, address_undefined, typetable_get_size(parser_result.type_table, ), address_memory, offset);
+				offset
 			}
-		
-		case expression_n:
-            if (tree->used == 3) {
-                long place1 = new_var();
-                long place2 = new_var();
-                translate(i_result, tree, table, place1);
-                translate(i_result, tree, table, place2);
-                three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, place2);
-            } else if (tree->used == 1) {
-                long place1 = new_var();
-                translate(i_result, tree, table, place1);
-            } else {
-                ir_gen_err();
-            }
-            break;
-        case simple_expression_n:
-            if(tree->used == 3) {
-                long place1 = new_var();
-                long place2 = new_var();
-                translate(i_result, tree, table, place1);
-                translate(i_result, tree, table, place2);
-                three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, place2);
-            } else if (tree->used == 1) {
-                long place1 = new_var();
-                translate(i_result, tree, table, place1);
-            } else {
-                ir_gen_err();
-            }
-            break;
-        case term_n:
-            if(tree->used == 3) {
-                long place1 = new_var();
-                long place2 = new_var();
-                translate(i_result, tree, table, place1);
-                translate(i_result, tree, table, place2);
-                three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, place2);
-            } else if (tree->used == 1) {
-                long place1 = new_var();
-                translate(i_result, tree, table, place1);
-            } else {
-                ir_gen_err();
-            }
-            break;
-        case factor_n:
-            if(tree->used == 3) {
-                long place1 = new_var();
-                translate(i_result, tree, table, place1);
-                three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, );
-            } else if (tree->used == 1) {
-                long place1 = new_var();
-                translate(i_result, tree, table, place1);
-            } else {
-                ir_gen_err();
-            }
-            break;
-        default:
-    }
-    }
+		}
+
+	case expression_n:
+		if (tree->used == 3) {
+			long place1 = new_var();
+			long place2 = new_var();
+			translate(i_result, tree, table, place1);
+			translate(i_result, tree, table, place2);
+			three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, place2);
+		} else if (tree->used == 1) {
+			translate(i_result, tree, table, place);
+		} else {
+			ir_gen_err();
+		}
+		break;
+	case simple_expression_n:
+		if (tree->used == 3) {
+			long place1 = new_var();
+			long place2 = new_var();
+			translate(i_result, tree, table, place1);
+			translate(i_result, tree, table, place2);
+			three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, place2);
+		} else if (tree->used == 1) {
+			long place1 = new_var();
+			translate(i_result, tree, table, place);
+		} else {
+			ir_gen_err();
+		}
+		break;
+	case term_n:
+		if (tree->used == 3) {
+			long place1 = new_var();
+			long place2 = new_var();
+			translate(i_result, tree, table, place1);
+			translate(i_result, tree, table, place2);
+			three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, place2);
+		} else if (tree->used == 1) {
+			long place1 = new_var();
+			translate(i_result, tree, table, place);
+		} else {
+			ir_gen_err();
+		}
+		break;
+	case factor_n:
+		if (tree->children[0]->n.type == var_n) {
+			long place1 = new_var();
+			translate(i_result, tree, table, place1);
+			three_address_code_add(i_result->code, MAXIMUM_LABEL, get_op(tree->children[1]->n.type), place, place1, );
+		} else if (tree->used == 1) {
+			long place1 = new_var();
+			translate(i_result, tree, table, place1);
+		} else {
+			ir_gen_err();
+		}
+		break;
+	default:
+	}
+}
 }
 
-three_address_code_op get_op(node_type type) {
+three_address_code_op get_op(node_type type)
+{
 	if (type == identifier_token) {
 		return "identifier_token";
 	} else if (type == assignment_token) {
@@ -189,7 +195,7 @@ three_address_code_op get_op(node_type type) {
 	} else if (type == include_directive_subselect_n) {
 		return "include_directive_subselect_n";
 	} else if (type == functions_n) {
-		return "functions_n"; 
+		return "functions_n";
 	} else if (type == program_directive_n) {
 		return "program_directive_n";
 	} else if (type == module_directive_n) {
@@ -208,18 +214,18 @@ three_address_code_op get_op(node_type type) {
 		return "parameter_list_n";
 	} else if (type == type_n) {
 		return "type_n";
-	} else if (type == 	block_n) {
-		return "block_n";	
+	} else if (type == block_n) {
+		return "block_n";
 	} else if (type == declaration_n) {
-		return "declaration_n";	
+		return "declaration_n";
 	} else if (type == simple_expression_n) {
-		return "simple_expression_n";	
+		return "simple_expression_n";
 	} else if (type == expression_n) {
-		return "expression_n";	
+		return "expression_n";
 	} else if (type == factor_n) {
-		return "factor_n";	
+		return "factor_n";
 	} else if (type == term_n) {
-		return "term_n";	
+		return "term_n";
 	} else if (type == if_statement_n) {
 		return "if_statement_n";
 	} else if (type == statement_n) {
@@ -229,11 +235,11 @@ three_address_code_op get_op(node_type type) {
 	} else if (type == for_statement_n) {
 		return "for_statement_n";
 	} else if (type == function_call_n) {
-		return "fun_call_n";	
+		return "fun_call_n";
 	} else if (type == argument_list_n) {
-		return "argument_list_n";	
+		return "argument_list_n";
 	} else if (type == argument_n) {
-		return "argument_n";	
+		return "argument_n";
 	} else if (type == return_keyword_token) {
 		return "return_keyword_token";
 	} else if (type == for_keyword_token) {
@@ -245,7 +251,8 @@ three_address_code_op get_op(node_type type) {
 	}
 }
 
-long new_var() {
-    static long current;
-    return current++;
+long new_var()
+{
+	static long current;
+	return current++;
 }

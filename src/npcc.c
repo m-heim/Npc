@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
 		printf("Failed to open file %s, exit\n", file);
 		return 2;
 	}
+	// first scan the program for tokens and save as symbol table + tokens
 	scanner_result result = lex(read_program(fp));
 	int i;
 	for(i = 0; i < result.node_array->used; i++) {
@@ -28,6 +29,11 @@ int main(int argc, char **argv) {
 	return 0;
 	
 }
+/**
+*
+*
+*
+**/
 char *read_program(FILE *fp) {
 	// determine file size
 	fseek(fp, 0L, SEEK_END);
