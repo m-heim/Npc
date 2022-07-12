@@ -23,6 +23,7 @@ typedef enum {
 
 	// DIRECTIVES
 	program_directive_token,
+	end_directive_token,
 	module_directive_token,
 	include_directive_token,
 	macro_directive_token,

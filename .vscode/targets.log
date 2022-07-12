@@ -8,7 +8,7 @@ make: *** /home/max/workspace/NPCc/src/Makefile: Not a directory.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul 12 09:40:09 2022
+# Make data base, printed on Tue Jul 12 15:23:15 2022
 
 # Variables
 
@@ -20,8 +20,6 @@ LC_ALL = C
 NO_AT_BRIDGE = 1
 # environment
 GJS_DEBUG_OUTPUT = stderr
-# environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-bd4f984c-7ed5-4e39-900a-8fd884d52303.sock
 # environment
 LC_NAME = de_DE.UTF-8
 # environment
@@ -49,17 +47,13 @@ MAIL = /var/spool/mail/max
 # environment
 XDG_DATA_DIRS = /home/max/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
-VSCODE_LOG_STACK = false
-# environment
-VSCODE_CODE_CACHE_PATH = /home/max/.config/Code - OSS/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+VSCODE_CODE_CACHE_PATH = /home/max/.config/Code - OSS/CachedData/92d25e35d9bf1a6b16f7d0758f25d48ace11e5b9
 # environment
 LANG = C
 # environment
 XAUTHORITY = /run/user/1000/gdm/Xauthority
 # default
 .LOADED := 
-# environment
-VSCODE_PIPE_LOGGING = true
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
@@ -69,9 +63,7 @@ SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
 XDG_SESSION_DESKTOP = gnome-xorg
 # environment
-VSCODE_VERBOSE_LOGGING = true
-# environment
-VSCODE_PID = 2244
+VSCODE_PID = 28658
 # environment
 MOZ_ENABLE_WAYLAND = 1
 # environment
@@ -109,8 +101,6 @@ LC_TIME = de_DE.UTF-8
 # environment
 INVOCATION_ID = 2810a63e4c1f4b629f19cef541f13e6d
 # environment
-VSCODE_LOG_NATIVE = false
-# environment
 USERNAME = max
 # environment
 LC_TELEPHONE = de_DE.UTF-8
@@ -139,7 +129,7 @@ MANAGERPID = 1245
 # environment
 LC_MEASUREMENT = de_DE.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2220
+GIO_LAUNCHED_DESKTOP_FILE_PID = 28640
 # environment
 _ = /usr/bin/make
 # environment
@@ -159,7 +149,7 @@ QT_IM_MODULE = ibus
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-d7b60617-1.68.1-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-d7b60617-1.69.0-main.sock
 # default
 .RECIPEPREFIX := 
 # environment
@@ -177,7 +167,7 @@ GDMSESSION = gnome-xorg
 # environment
 LC_IDENTIFICATION = de_DE.UTF-8
 # variable set hash-table stats:
-# Load=82/1024=8%, Rehash=0, Collisions=2/86=2%
+# Load=77/1024=8%, Rehash=0, Collisions=2/81=2%
 
 # Pattern-specific Variable Values
 
@@ -215,6 +205,6 @@ all:
 # strcache performance: lookups = 4 / hit rate = 50%
 # hash-table stats:
 # Load=2/8192=0%, Rehash=0, Collisions=0/4=0%
-# Finished Make data base on Tue Jul 12 09:40:09 2022
+# Finished Make data base on Tue Jul 12 15:23:15 2022
 
  

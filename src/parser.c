@@ -181,7 +181,6 @@ void program_directive(ast* tree, node_array* arr, symbol_table* table, long* lo
 
 	match_no_append(tree, arr, table, program_directive_token, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
-	match_no_append(tree, arr, table, semicolon_token, lookahead);
 	if (parser_debug) {
 		printf("done Parsing PROGRAM DIRECTIVE\n");
 	}
@@ -200,7 +199,6 @@ void module_directive(ast* tree, node_array* arr, symbol_table* table, long* loo
 
 	match_no_append(tree, arr, table, module_directive_token, lookahead);
 	match(tree, arr, table, identifier_token, lookahead);
-	match_no_append(tree, arr, table, semicolon_token, lookahead);
 }
 
 void include_directive(ast* tree, node_array* arr, symbol_table* table, long* lookahead)
@@ -215,7 +213,6 @@ void include_directive(ast* tree, node_array* arr, symbol_table* table, long* lo
 
 	match_no_append(tree, arr, table, include_directive_token, lookahead);
 	include_directive_select(tree, arr, table, lookahead);
-	match_no_append(tree, arr, table, semicolon_token, lookahead);
 }
 
 void if_statement(ast* tree, node_array* arr, symbol_table* table, long* lookahead)

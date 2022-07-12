@@ -45,7 +45,9 @@ scanner_result lex(char* code)
 		if (debug == 0) {
 			printf("char= %c, state %d\n", *cur, state);
 		}
+		// if we arent in any specific state rn
 		if (state == 0) {
+			// if starts with latin or underscore is identifier
 			if (is_latin(cur) || is_underscore(cur)) {
 				state = 1;
 			} else if (*cur == ' ') {
@@ -101,7 +103,7 @@ scanner_result lex(char* code)
 			} else {
 				lexing_error(start_position, line, cur);
 			}
-			// id
+		// if we have an identifier we can have latin underscore or a number
 		} else if (state == 1) {
 			if (is_latin(cur) || is_underscore(cur) || is_number(cur)) {
 				state = 1;
@@ -362,6 +364,9 @@ scanner_result lex(char* code)
 				} else if (len == 6 && strncmp(start, "#macro", len) == 0) {
 					ntype = macro_directive_token;
 					type_class = sec_directive_c;
+				} else if (len == 4 && strncmp(start, "#END", len) == 0) {
+					ntype = end_directive_token;
+					type_class = prim_directive_c;
 				} else {
 					lexing_error(start_position, line, cur);
 				}
