@@ -8,7 +8,7 @@ make: *** /home/max/workspace/NPCc/src/Makefile: Not a directory.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul 12 15:23:15 2022
+# Make data base, printed on Wed Jul 13 17:22:05 2022
 
 # Variables
 
@@ -63,13 +63,13 @@ SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
 XDG_SESSION_DESKTOP = gnome-xorg
 # environment
-VSCODE_PID = 28658
+VSCODE_PID = 9723
 # environment
 MOZ_ENABLE_WAYLAND = 1
 # environment
 XDG_SESSION_TYPE = x11
 # environment
-SESSION_MANAGER = local/max-desktop:@/tmp/.ICE-unix/1313,unix/max-desktop:/tmp/.ICE-unix/1313
+SESSION_MANAGER = local/max-desktop:@/tmp/.ICE-unix/1303,unix/max-desktop:/tmp/.ICE-unix/1303
 # environment
 QT_QPA_PLATFORMTHEME = qt5ct
 # environment
@@ -99,7 +99,7 @@ MOTD_SHOWN = pam
 # environment
 LC_TIME = de_DE.UTF-8
 # environment
-INVOCATION_ID = 2810a63e4c1f4b629f19cef541f13e6d
+INVOCATION_ID = 2efce120114b401ab5d1c9df9f30fe69
 # environment
 USERNAME = max
 # environment
@@ -117,7 +117,7 @@ LOGNAME = max
 # environment
 GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code-oss.desktop
 # environment
-SYSTEMD_EXEC_PID = 1328
+SYSTEMD_EXEC_PID = 1318
 # environment
 EDITOR = /usr/bin/nano
 # environment
@@ -125,11 +125,11 @@ DISPLAY = :1
 # environment
 USER = max
 # environment
-MANAGERPID = 1245
+MANAGERPID = 1234
 # environment
 LC_MEASUREMENT = de_DE.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 28640
+GIO_LAUNCHED_DESKTOP_FILE_PID = 9710
 # environment
 _ = /usr/bin/make
 # environment
@@ -137,7 +137,7 @@ LC_PAPER = de_DE.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-JOURNAL_STREAM = 8:20917
+JOURNAL_STREAM = 8:24572
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -205,6 +205,6 @@ all:
 # strcache performance: lookups = 4 / hit rate = 50%
 # hash-table stats:
 # Load=2/8192=0%, Rehash=0, Collisions=0/4=0%
-# Finished Make data base on Tue Jul 12 15:23:15 2022
+# Finished Make data base on Wed Jul 13 17:22:05 2022
 
  
