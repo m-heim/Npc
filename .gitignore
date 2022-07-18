@@ -1,3 +1,2 @@
 *.o
-build/npc
 src/Npc_build/*
