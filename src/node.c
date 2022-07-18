@@ -1,4 +1,5 @@
 #include "node.h"
+#include <stdio.h>
 
 // make a new node with the given type and the value which is an entry in the symbol table
 node* node_make(node_type type, node_type_class type_class, long value)
@@ -53,6 +54,12 @@ node* node_array_get_node(node_array* arr, long position)
 long* node_array_get_val(node_array* arr, long position)
 {
 	return &(arr->node_array[position].value);
+}
+
+void print_tokens(node_array *arr) {
+	for (int i = 0; i < arr->used; i++) {
+		printf("%i %s", i, node_type_get_canonial(node_array_get_node_type(arr, i)));
+	}
 }
 
 char* node_type_get_canonial(node_type type)
@@ -205,6 +212,10 @@ char* node_type_get_canonial(node_type type)
 		return "for_keyword_token";
 	} else if (type == if_keyword_token) {
 		return "IF_keyword_token";
+	} else if (type == long_type_token) {
+		return "long_type_token";	
+	} else if (type == end_directive_token) {
+		return "end_directive_token";	
 	} else {
 		return "Tes";
 	}

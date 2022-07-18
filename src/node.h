@@ -67,6 +67,7 @@ typedef enum {
 	char_type_token,
 	int_type_token,
 	float_type_token,
+	long_type_token,
 
 	// Control flow
 	return_keyword_token,

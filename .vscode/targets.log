@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 18 02:11:20 2022
+# Make data base, printed on Mon Jul 18 19:12:39 2022
 
 # Variables
 
@@ -49,7 +49,7 @@ VSCODE_CODE_CACHE_PATH = /home/max/.config/Code - OSS/CachedData/b06ae3b2d2dbfe2
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.XPKMP1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.X3VAP1
 # default
 .LOADED := 
 # default
@@ -79,13 +79,13 @@ MAKEFILE_LIST :=
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 27130
+VSCODE_PID = 26772
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/maxharch:@/tmp/.ICE-unix/952,unix/maxharch:/tmp/.ICE-unix/952
+SESSION_MANAGER = local/maxharch:@/tmp/.ICE-unix/933,unix/maxharch:/tmp/.ICE-unix/933
 # automatic
 *F = $(notdir $*)
 # environment
@@ -119,7 +119,7 @@ MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
 # environment
-INVOCATION_ID = 566f7b6d7f3b4a23ac84b8259df5fda2
+INVOCATION_ID = aafa85345f694465aa166ad5559b7edf
 # environment
 USERNAME = max
 # environment
@@ -143,7 +143,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code-oss.desktop
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 967
+SYSTEMD_EXEC_PID = 948
 # environment
 DISPLAY = :0
 # environment
@@ -151,15 +151,15 @@ USER = max
 # default
 MAKE_VERSION := 4.3
 # environment
-MANAGERPID = 896
+MANAGERPID = 873
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 27111
+GIO_LAUNCHED_DESKTOP_FILE_PID = 26750
 # environment
 _ = /usr/bin/make
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-JOURNAL_STREAM = 8:21210
+JOURNAL_STREAM = 8:27108
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -195,9 +195,9 @@ GDMSESSION = gnome
 
 # Directories
 
-# . (device 2083, inode 2359297): 13 files, no impossibilities.
+# . (device 2083, inode 2359297): 14 files, no impossibilities.
 
-# 13 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -224,7 +224,6 @@ all:
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has not been updated.
- 
 
 # Not a target:
 makefile:
@@ -248,12 +247,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 21 / storage = 194 B / avg = 9 B
-# current buf: size = 8162 B / used = 194 B / count = 21 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 22 / storage = 208 B / avg = 9 B
+# current buf: size = 8162 B / used = 208 B / count = 22 / avg = 9 B
 
-# strcache performance: lookups = 24 / hit rate = 12%
+# strcache performance: lookups = 25 / hit rate = 12%
 # hash-table stats:
-# Load=21/8192=0%, Rehash=0, Collisions=0/24=0%
-# Finished Make data base on Mon Jul 18 02:11:20 2022
+# Load=22/8192=0%, Rehash=0, Collisions=0/25=0%
+# Finished Make data base on Mon Jul 18 19:12:39 2022
 
  

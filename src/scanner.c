@@ -226,6 +226,9 @@ scanner_result lex(char* code)
 				if (len == 3 && strncmp(start, "int", len) == 0) {
 					ntype = int_type_token;
 					type_class = type_c;
+				} else if (len == 4 && strncmp(start, "long", len) == 0) {
+					ntype = long_type_token;
+					type_class = type_c;
 				} else if (len == 6 && strncmp(start, "string", len) == 0) {
 					ntype = string_type_token;
 					type_class = type_c;
