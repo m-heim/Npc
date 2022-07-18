@@ -2,8 +2,8 @@
 #using std.core
 #using std.system.println
 
-int main(int argc, char[] *argv) {
-	const int i = 2;
+int main(int argc, string[] argv) {
+	int i = 2;
 	long b = i * 30 * 8 + (20*3) + 1834 * 83;
 	long d = b ** i;
 	if (argc < i) {
@@ -11,7 +11,7 @@ int main(int argc, char[] *argv) {
 		return 2;
 	};
 	char[12] str = "Hello World";
-	char *str2 = "Hello World";
+	string str2 = "Hello World";
 	for (int j = 0; i < sizeof(str); i++) {
 		if (str[i] <= 91) {
 			println("lower");
