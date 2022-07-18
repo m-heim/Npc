@@ -1,14 +1,15 @@
 #include "symbol_table.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 symbol_table* symbol_table_make()
 {
 	// allocate memory for a table
 	symbol_table* table = malloc(sizeof(symbol_table));
 	// allocate memory for the id array ....
-	table->position = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(long));
-	table->line = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(long));
+	table->position = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(size_t));
+	table->line = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(size_t));
 	table->value = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(void*));
 	// Size is 10
 	table->size = SYMBOL_TABLE_INIT_SIZE;
@@ -18,16 +19,16 @@ symbol_table* symbol_table_make()
 }
 
 // add an entry to the symbol table
-void symbol_table_add(symbol_table* table, long position, long line, char* value, size_t val_len)
+void symbol_table_add(symbol_table* table, size_t position, size_t line, char* value, size_t val_len)
 {
 	// store the length
-	long used = table->used;
+	size_t used = table->used;
 	// if our array is full
 	if (table->size == table->used) {
 		// double the size of it
-		table->position = realloc(table->position, table->size * 2 * sizeof(long));
-		table->line = realloc(table->position, table->size * 2 * sizeof(long));
-		table->value = realloc(table->position, table->size * 2 * sizeof(void*));
+		table->position = realloc(table->position, table->size * 2 * sizeof(size_t));
+		table->line = realloc(table->line, table->size * 2 * sizeof(size_t));
+		table->value = realloc(table->value, table->size * 2 * sizeof(void*));
 		table->size *= 2;
 	}
 	// assign each value to the next position in the arrays
@@ -45,17 +46,24 @@ void symbol_table_add(symbol_table* table, long position, long line, char* value
 	return;
 }
 
-long symbol_table_get_position(symbol_table* table, long id)
+long symbol_table_get_position(symbol_table* table, size_t id)
 {
 	return table->position[id];
 }
 
-long symbol_table_get_line(symbol_table* table, long id)
+long symbol_table_get_line(symbol_table* table, size_t id)
 {
 	return table->line[id];
 }
 
-char* symbol_table_get_value(symbol_table* table, long id)
+char* symbol_table_get_value(symbol_table* table, size_t id)
 {
 	return table->value[id];
+}
+void print_symbol_table(symbol_table *table) {
+	for (size_t i = 0; i < table->used; i++) {
+		printf("%ld\t %ld\t%s\n", 	symbol_table_get_position(table, i),
+										symbol_table_get_line(table, i),
+										symbol_table_get_value(table, i));
+	}
 }

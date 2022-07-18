@@ -36,7 +36,7 @@ scanner_result lex(char *code) {
   char *start = code;
 
   int state = 0;
-  long line = 0;
+  size_t line = 0;
   size_t node_index = 0;
 
   while (*(code + position) != '\0') {
@@ -383,7 +383,7 @@ scanner_result lex(char *code) {
       // re set cur because we did position-- above;
       cur = code + position;
       // get length of the token
-      len = cur - start;
+      len = cur - start + 1;
 
       node_array_add(arr, ntype, type_class, node_index);
       if (debug == 0) {
