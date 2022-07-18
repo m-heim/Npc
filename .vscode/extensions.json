@@ -1,6 +1,8 @@
 {
     "recommendations": [
-        "ms-vscode.cpptools",
-        "cschlosser.doxdocgen"
+        "cschlosser.doxdocgen",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "franneck94.c-cpp-runner",
+        "ms-vscode.makefile-tools"
     ]
 }

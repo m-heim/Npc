@@ -1,6 +1,6 @@
-make -f /home/max/workspace/NPCc/src/Makefile -C /home/max/workspace/NPCc/src/Makefile --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/max/workspace/NPCc'
-make: Leaving directory '/home/max/workspace/NPCc'
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/max/workspace/Npc'
+make: Leaving directory '/home/max/workspace/Npc'
  
-make: *** /home/max/workspace/NPCc/src/Makefile: Not a directory.  Stop.
+make: *** No targets specified and no makefile found.  Stop.
 
