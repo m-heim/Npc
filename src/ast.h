@@ -16,7 +16,7 @@
 #define AST_INIT_SIZE 10
 typedef struct ast ast;
 /**
- * @brief The abstract syntax tree is a core component
+ * @brief The abstract syntax tree is a tree representation of the source program
  * 
  */
 struct ast {
