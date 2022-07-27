@@ -1,6 +1,9 @@
 {
     "recommendations": [
         "cschlosser.doxdocgen",
-        "llvm-vs-code-extensions.vscode-clangd"
+        "llvm-vs-code-extensions.vscode-clangd",
+        "twxs.cmake",
+        "ms-vscode.cmake-tools",
+        "jbockle.jbockle-format-files"
     ]
 }
