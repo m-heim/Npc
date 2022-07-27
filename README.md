@@ -1,4 +1,4 @@
-![example workflow](https://github.com/m-heim/Npc/actions/workflows/c.yml/badge.svg)
+[![CMake](https://github.com/m-heim/Npc/actions/workflows/cmake.yml/badge.svg)](https://github.com/m-heim/Npc/actions/workflows/cmake.yml)
 
 *NPC*
 
