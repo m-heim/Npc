@@ -7,10 +7,10 @@
 // The type typetable is a list that holds the name of the type and the size of
 // the type in Byte!
 typedef struct typetable {
-  char **name;
-  size_t *type_size;
-  size_t used;
-  size_t size;
+	char **name;
+	size_t *type_size;
+	size_t used;
+	size_t size;
 } typetable;
 
 // Get the size of the typetable

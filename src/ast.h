@@ -22,12 +22,12 @@ typedef struct ast ast;
  *
  */
 struct ast {
-  node n;
-  // Pointer to the array of children
-  ast **children;
-  ast *parent;
-  long used;
-  long size;
+	node n;
+	// Pointer to the array of children
+	ast **children;
+	ast *parent;
+	long used;
+	long size;
 };
 
 ast *ast_make();

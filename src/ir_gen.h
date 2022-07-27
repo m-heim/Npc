@@ -6,16 +6,16 @@
 #include "parser.h"
 #include "three_address_code.h"
 typedef struct v_table {
-  char **name;
-  size_t size;
-  size_t used;
+	char **name;
+	size_t size;
+	size_t used;
 } v_table;
 
 // The result of the IR generation, it holds the three address code and the
 // variable table
 typedef struct ir_gen_result {
-  three_address_code *code;
-  v_table *table;
+	three_address_code *code;
+	v_table *table;
 } ir_gen_result;
 
 v_table *v_table_make();
