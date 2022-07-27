@@ -8,7 +8,7 @@ symbol_table* symbol_table_make()
 	// allocate memory for a table
 	symbol_table* table = malloc(sizeof(symbol_table));
 	// allocate memory for the id array ....
-	table->position = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(size_t));
+	table->position = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(*(table->position)));
 	table->line = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(size_t));
 	table->value = malloc(SYMBOL_TABLE_INIT_SIZE * sizeof(void*));
 	// Size is 10
