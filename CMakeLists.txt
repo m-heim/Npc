@@ -4,5 +4,5 @@ cmake_minimum_required(VERSION 3.10)
 project(Npc)
 
 # add the executable
-file(GLOB SRC ../src/*.c)
+file(GLOB SRC ./src/*.c)
 add_executable(npc ${SRC})
