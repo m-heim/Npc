@@ -1,2 +1,4 @@
 *.o
-src/Npc_build/*
+build/*
+!build/test_program.npc
+!build/CMakeLists.txt
