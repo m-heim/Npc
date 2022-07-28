@@ -1,510 +1,546 @@
 #include "parser.h"
 #include "ast.h"
-#include "node.h"
+#include "log.h"
+#include "token.h"
 #include "scanner.h"
 #include "symbol_table.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-int parser_debug = 1;
-
-parser_result parser_result_make(ast *tree, symbol_table *table,
-								 typetable *type_table) {
-	parser_result res;
-	res.type_table = type_table;
-	res.table = table;
-	res.tree = tree;
+parser_result *parser_result_make(ast *tree, symbol_table *table,
+								  typetable *type_table) {
+	parser_result *res = malloc(sizeof(parser_result));
+	res->type_table = type_table;
+	res->table = table;
+	res->tree = tree;
 	return res;
 }
-
-parser_result parse_program(scanner_result res) {
-	typetable *type_table = typetable_make();
-	symbol_table *symbol_table = res.table;
-	size_t l = 0;
-	size_t *position = &l;
-	ast *tree = ast_make();
-	program(tree, res.node_array, res.table, position);
-	return parser_result_make(tree, symbol_table, type_table);
+parser *parser_make(ast *tree, symbol_table *table, int debug,
+					token_array *arr) {
+	parser *p = malloc(sizeof(parser));
+	p->debug = debug;
+	p->tree = tree;
+	p->arr = arr;
+	p->table = table;
+	p->position = 0;
+	return p;
 }
 
-void parse_syntax_err(symbol_table *table, size_t *position, char *err) {
-	printf("ERROR: line %ld on token %s, %s\n",
-		   symbol_table_get_line(table, *position),
-		   symbol_table_get_value(table, *position), err);
+parser_result *parse_program(scanner_result res, int debug) {
+	typetable *type_table = typetable_make();
+	parser *parser = parser_make(ast_make(), res.table, debug, res.token_array);
+	npc_debug_log(debug, "{Parse} - Parsing program now.");
+	program(parser);
+	npc_debug_log(debug, "{Parse} - Done parsing program.");
+	parser->tree = ast_get_root(parser->tree);
+	if (debug) {
+		print_tree(parser->tree, 0);
+	}
+	return parser_result_make(parser->tree, res.table, type_table);
+}
+
+void parse_syntax_err(parser *parser, char *err) {
+	printf("ERROR: line %ld on token %s\n",
+		   symbol_table_get_line(parser->table, parser->position),
+		   symbol_table_get_value(parser->table, parser->position));
 	_Exit(1);
 }
 
-void program(ast *tree, node_array *arr, symbol_table *table,
-			 size_t *position) {
-	if (parser_debug) {
+void program(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing PROGRAM now\n");
 	}
-	// set top node
-	ast_set_node(tree, node_make(program_n, nont_c, -1));
+	// set top token
+	ast_set_token(parser->tree, token_make(program_n, nont_c, -1));
 	// match program directive
-	program_directive(tree, arr, table, position);
+	program_directive(parser);
 	// option
-	if (node_array_get_node_type_class(arr, *position) == sec_directive_c) {
-		secondary_directive_list(tree, arr, table, position);
+	if (token_array_get_token_type_class(parser->arr, parser->position) ==
+		sec_directive_c) {
+		secondary_directive_list(parser);
 	}
 
-	functions(tree, arr, table, position);
-	match_no_append(tree, arr, table, end_directive_token, position);
+	functions(parser);
+	match_no_append(parser, end_directive_token);
 }
 
-void function(ast *tree, node_array *arr, symbol_table *table,
-			  size_t *position) {
-	if (parser_debug) {
+void function(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing FUNCTION\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(function_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(function_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	type(tree, arr, table, position);
-	match(tree, arr, table, identifier_token, position);
-	match_no_append(tree, arr, table, opening_bracket_token, position);
+	type(parser);
+	match(parser, identifier_token);
+	match_no_append(parser, opening_bracket_token);
 
-	if (node_array_get_node_type(arr, *position) == closing_bracket_token) {
-		match_no_append(tree, arr, table, closing_bracket_token, position);
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		closing_bracket_token) {
+		match_no_append(parser, closing_bracket_token);
 	} else {
-		parameter_list(tree, arr, table, position);
-		match_no_append(tree, arr, table, closing_bracket_token, position);
+		parameter_list(parser);
+		match_no_append(parser, closing_bracket_token);
 	}
-	block(tree, arr, table, position);
+	block(parser);
 
-	// cont;
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void type(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void type(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing TYPES\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(type_n, type_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(type_n, type_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_by_class(tree, arr, table, type_c, position);
-	if (node_array_get_node_type(arr, *position) == opening_s_bracket_token) {
-		while (node_array_get_node_type(arr, *position) ==
+	match_by_class(parser, type_c);
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		opening_s_bracket_token) {
+		while (token_array_get_token_type(parser->arr, parser->position) ==
 			   opening_s_bracket_token) {
-			match_no_append(tree, arr, table, opening_s_bracket_token,
-							position);
-			if (node_array_get_node_type(arr, *position) == int_literal) {
-				match(tree, arr, table, int_literal, position);
+			match_no_append(parser, opening_s_bracket_token);
+			if (token_array_get_token_type(parser->arr, parser->position) ==
+				int_literal_token) {
+				match(parser, int_literal_token);
 			}
 
-			match_no_append(tree, arr, table, closing_s_bracket_token,
-							position);
+			match_no_append(parser, closing_s_bracket_token);
 		}
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
 // Parses multiple functions, but at least one.
-void functions(ast *tree, node_array *arr, symbol_table *table,
-			   size_t *position) {
-	if (parser_debug) {
+void functions(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing FUNCTIONS\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(functions_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(functions_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 	do {
-		function(tree, arr, table, position);
-	} while (node_array_get_node_type_class(arr, *position) == type_c);
-	return;
+		function(parser);
+	} while (token_array_get_token_type_class(parser->arr, parser->position) ==
+			 type_c);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void parameter(ast *tree, node_array *arr, symbol_table *table,
-			   size_t *position) {
-	if (parser_debug) {
+void parameter(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing PARAM\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(parameter_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(parameter_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	type(tree, arr, table, position);
+	type(parser);
 
-	match(tree, arr, table, identifier_token, position);
-	return;
+	match(parser, identifier_token);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void parameter_list(ast *tree, node_array *arr, symbol_table *table,
-					size_t *position) {
-	if (parser_debug) {
+void parameter_list(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing PARAMETER LIST\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(parameter_list_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(parameter_list_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
-	parameter(tree, arr, table, position);
-	while (node_array_get_node_type(arr, *position) == comma_token) {
-		if (node_array_get_node_type(arr, *position) == comma_token) {
-			match_no_append(tree, arr, table, comma_token, position);
-		}
-		parameter(tree, arr, table, position);
+	parser->tree = ast_get_last(parser->tree);
+	parameter(parser);
+	while (token_array_get_token_type(parser->arr, parser->position) ==
+		   comma_token) {
+		match_no_append(parser, comma_token);
+		parameter(parser);
 	}
-	return;
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void unop(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void unop(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing UNOP\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(unop_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(unop_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_by_class(tree, arr, table, unop_c, position);
+	match_by_class(parser, unop_c);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void binop(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void binop(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing BINOP\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(binop_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(binop_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_by_class(tree, arr, table, binop_c, position);
+	match_by_class(parser, binop_c);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void program_directive(ast *tree, node_array *arr, symbol_table *table,
-					   size_t *position) {
-	if (parser_debug) {
+void program_directive(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing PROGRAM DIRECTIVE\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree),
-				 node_make(program_directive_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(program_directive_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, program_directive_token, position);
-	match(tree, arr, table, identifier_token, position);
-	if (parser_debug) {
+	match_no_append(parser, program_directive_token);
+	match(parser, identifier_token);
+	if (parser->debug) {
 		printf("done Parsing PROGRAM DIRECTIVE\n");
 	}
-	return;
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void module_directive(ast *tree, node_array *arr, symbol_table *table,
-					  size_t *position) {
-	if (parser_debug) {
+void module_directive(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing MODULE DIRECTIVE\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(module_directive_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(module_directive_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, module_directive_token, position);
-	match(tree, arr, table, identifier_token, position);
+	match_no_append(parser, module_directive_token);
+	match(parser, identifier_token);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void include_directive(ast *tree, node_array *arr, symbol_table *table,
-					   size_t *position) {
-	if (parser_debug) {
+void include_directive(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing INC DIRECTIVE\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree),
-				 node_make(include_directive_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(include_directive_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, include_directive_token, position);
-	include_directive_select(tree, arr, table, position);
+	match_no_append(parser, include_directive_token);
+	include_directive_select(parser);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void if_statement(ast *tree, node_array *arr, symbol_table *table,
-				  size_t *position) {
-	if (parser_debug) {
+void if_statement(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing IF\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(if_statement_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(if_statement_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, if_keyword_token, position);
-	match_no_append(tree, arr, table, opening_bracket_token, position);
+	match_no_append(parser, if_keyword_token);
+	match_no_append(parser, opening_bracket_token);
 
-	expression(tree, arr, table, position);
+	expression(parser);
 
-	match_no_append(tree, arr, table, closing_bracket_token, position);
+	match_no_append(parser, closing_bracket_token);
 
-	block(tree, arr, table, position);
-
-	if (parser_debug) {
+	block(parser);
+	parser->tree = ast_get_parent(parser->tree);
+	if (parser->debug) {
 		printf("Parsing IF done\n");
 	}
 }
 
-void return_statement(ast *tree, node_array *arr, symbol_table *table,
-					  size_t *position) {
-	if (parser_debug) {
+void return_statement(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing return statement\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(return_statement_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(return_statement_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, return_keyword_token, position);
+	match_no_append(parser, return_keyword_token);
 	// should also be able to return statement?
-	expression(tree, arr, table, position);
+	expression(parser);
 
-	if (parser_debug) {
+	parser->tree = ast_get_parent(parser->tree);
+	if (parser->debug) {
 		printf("Parsing return statement done\n");
 	}
 }
 
-void for_statement(ast *tree, node_array *arr, symbol_table *table,
-				   size_t *position) {
-	if (parser_debug) {
+void for_statement(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing for statement\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(for_statement_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(for_statement_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, for_keyword_token, position);
+	match_no_append(parser, for_keyword_token);
 	// should also be able to return statement?
 
-	match_no_append(tree, arr, table, opening_bracket_token, position);
-	declaration(tree, arr, table, position);
-	match_no_append(tree, arr, table, semicolon_token, position);
-	expression(tree, arr, table, position);
-	match_no_append(tree, arr, table, semicolon_token, position);
-	expression(tree, arr, table, position);
-	match_no_append(tree, arr, table, closing_bracket_token, position);
+	match_no_append(parser, opening_bracket_token);
+	declaration(parser);
+	match_no_append(parser, semicolon_token);
+	expression(parser);
+	match_no_append(parser, semicolon_token);
+	expression(parser);
+	match_no_append(parser, closing_bracket_token);
 
-	block(tree, arr, table, position);
+	block(parser);
 
-	if (parser_debug) {
+	parser->tree = ast_get_parent(parser->tree);
+	if (parser->debug) {
 		printf("Parsing for statement done\n");
 	}
 }
 
-void assignment(ast *tree, node_array *arr, symbol_table *table,
-				size_t *position) {
-	if (parser_debug) {
+void assignment(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Assignment\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(if_statement_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(if_statement_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	var(tree, arr, table, position);
+	var(parser);
 
-	match_by_class(tree, arr, table, assign_c, position);
+	match_by_class(parser, assign_c);
 
-	expression(tree, arr, table, position);
+	expression(parser);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void statement(ast *tree, node_array *arr, symbol_table *table,
-			   size_t *position) {
-	if (parser_debug) {
+void statement(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Statement\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(statement_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(statement_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	if (node_array_get_node_type(arr, *position) == if_keyword_token) {
-		if_statement(tree, arr, table, position);
-	} else if (node_array_get_node_type_class(arr, *position) == type_c) {
-		declaration(tree, arr, table, position);
-	} else if (node_array_get_node_type(arr, *position) == for_keyword_token) {
-		for_statement(tree, arr, table, position);
-	} else if (node_array_get_node_type(arr, *position) == identifier_token) {
-		if (node_array_get_node_type(arr, *position + 1) ==
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		if_keyword_token) {
+		if_statement(parser);
+	} else if (token_array_get_token_type_class(parser->arr, parser->position) ==
+			   type_c) {
+		declaration(parser);
+	} else if (token_array_get_token_type(parser->arr, parser->position) ==
+			   for_keyword_token) {
+		for_statement(parser);
+	} else if (token_array_get_token_type(parser->arr, parser->position) ==
+			   identifier_token) {
+		if (token_array_get_token_type(parser->arr, parser->position + 1) ==
 			opening_bracket_token) {
-			fun_call(tree, arr, table, position);
-		} else if (node_array_get_node_type_class(arr, *position) == type_c) {
-			declaration(tree, arr, table, position);
+			fun_call(parser);
+		} else if (token_array_get_token_type_class(parser->arr,
+												  parser->position) == type_c) {
+			declaration(parser);
 		}
-	} else if (node_array_get_node_type(arr, *position) ==
+	} else if (token_array_get_token_type(parser->arr, parser->position) ==
 			   return_keyword_token) {
-		return_statement(tree, arr, table, position);
+		return_statement(parser);
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void simple_expression(ast *tree, node_array *arr, symbol_table *table,
-					   size_t *position) {
-	if (parser_debug) {
+void simple_expression(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing simple exp\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree),
-				 node_make(simple_expression_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(simple_expression_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	term(tree, arr, table, position);
+	term(parser);
 
-	if (node_array_get_node_type(arr, *position) == plus_operator_token) {
-		match(tree, arr, table, plus_operator_token, position);
-		simple_expression(tree, arr, table, position);
-	} else if (node_array_get_node_type(arr, *position) ==
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		plus_operator_token) {
+		match(parser, plus_operator_token);
+		simple_expression(parser);
+	} else if (token_array_get_token_type(parser->arr, parser->position) ==
 			   minus_operator_token) {
-		match(tree, arr, table, minus_operator_token, position);
-		simple_expression(tree, arr, table, position);
+		match(parser, minus_operator_token);
+		simple_expression(parser);
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void expression(ast *tree, node_array *arr, symbol_table *table,
-				size_t *position) {
-	if (parser_debug) {
+void expression(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Exp\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(expression_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(expression_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	simple_expression(tree, arr, table, position);
+	simple_expression(parser);
 
-	if (node_array_get_node_type_class(arr, *position) == relop_c) {
-		match_by_class(tree, arr, table, relop_c, position);
-		simple_expression(tree, arr, table, position);
+	if (token_array_get_token_type_class(parser->arr, parser->position) ==
+		relop_c) {
+		match_by_class(parser, relop_c);
+		simple_expression(parser);
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void term(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void term(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing terms\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(term_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(term_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	factor(tree, arr, table, position);
+	factor(parser);
 
-	if (node_array_get_node_type(arr, *position) ==
+	if (token_array_get_token_type(parser->arr, parser->position) ==
 		multiplication_operator_token) {
-		match(tree, arr, table, multiplication_operator_token, position);
-		term(tree, arr, table, position);
-	} else if (node_array_get_node_type(arr, *position) ==
+		match(parser, multiplication_operator_token);
+		term(parser);
+	} else if (token_array_get_token_type(parser->arr, parser->position) ==
 			   division_operator_token) {
-		match(tree, arr, table, division_operator_token, position);
-		term(tree, arr, table, position);
+		match(parser, division_operator_token);
+		term(parser);
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void var(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void var(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing var\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(if_statement_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(if_statement_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match(tree, arr, table, identifier_token, position);
-	if (node_array_get_node_type(arr, *position) == opening_s_bracket_token) {
-		match_no_append(tree, arr, table, opening_s_bracket_token, position);
-		expression(tree, arr, table, position);
-		match_no_append(tree, arr, table, closing_s_bracket_token, position);
+	match(parser, identifier_token);
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		opening_s_bracket_token) {
+		match_no_append(parser, opening_s_bracket_token);
+		expression(parser);
+		match_no_append(parser, closing_s_bracket_token);
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void declaration(ast *tree, node_array *arr, symbol_table *table,
-				 size_t *position) {
-	if (parser_debug) {
+void declaration(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Decl\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(declaration_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(declaration_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	type(tree, arr, table, position);
-	match(tree, arr, table, identifier_token, position);
-	if (node_array_get_node_type(arr, *position) == assignment_token) {
-		match(tree, arr, table, assignment_token, position);
-		expression(tree, arr, table, position);
+	type(parser);
+	match(parser, identifier_token);
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		assignment_token) {
+		match(parser, assignment_token);
+		expression(parser);
 	} else {
-		parse_syntax_err(table, position, "expected assignment token");
+		parse_syntax_err(parser, "expected assignment token");
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void fun_call(ast *tree, node_array *arr, symbol_table *table,
-			  size_t *position) {
-	if (parser_debug) {
+void fun_call(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Functioncall\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(function_call_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(function_call_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match(tree, arr, table, identifier_token, position);
+	match(parser, identifier_token);
 
-	match_no_append(tree, arr, table, opening_bracket_token, position);
+	match_no_append(parser, opening_bracket_token);
 
-	if (node_array_get_node_type(arr, *position) != opening_bracket_token) {
-		argument_list(tree, arr, table, position);
+	if (token_array_get_token_type(parser->arr, parser->position) !=
+		closing_bracket_token) {
+		argument_list(parser);
 	}
-	match_no_append(tree, arr, table, closing_bracket_token, position);
+	match_no_append(parser, closing_bracket_token);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void argument(ast *tree, node_array *arr, symbol_table *table,
-			  size_t *position) {
-	if (parser_debug) {
+void argument(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Argument\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(argument_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(argument_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	expression(tree, arr, table, position);
+	expression(parser);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void argument_list(ast *tree, node_array *arr, symbol_table *table,
-				   size_t *position) {
-	if (parser_debug) {
+void argument_list(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Argumentlist\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(argument_list_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(argument_list_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
-	node_type next = node_array_get_node_type(arr, *position);
+	parser->tree = ast_get_last(parser->tree);
+	token_type next = token_array_get_token_type(parser->arr, parser->position);
 
 	do {
-		argument(tree, arr, table, position);
-		next = node_array_get_node_type(arr, *position);
+		argument(parser);
+		next = token_array_get_token_type(parser->arr, parser->position);
 		if (next == comma_token) {
-			match_no_append(tree, arr, table, comma_token, position);
+			match_no_append(parser, comma_token);
 		}
 	} while (next == comma_token);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void factor(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void factor(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing Factor\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(factor_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(factor_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	switch (node_array_get_node_type(arr, *position)) {
+	switch (token_array_get_token_type(parser->arr, parser->position)) {
 	case not_token:
 		break;
 	case increment_operator_token:
@@ -512,127 +548,135 @@ void factor(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
 	case decrement_operator_token:
 		break;
 	case opening_bracket_token:
-		match_no_append(tree, arr, table, opening_bracket_token, position);
-		expression(tree, arr, table, position);
-		match_no_append(tree, arr, table, closing_bracket_token, position);
+		match_no_append(parser, opening_bracket_token);
+		expression(parser);
+		match_no_append(parser, closing_bracket_token);
 		break;
 	case identifier_token:
-		if (node_array_get_node_type(arr, *position + 1) ==
+		if (token_array_get_token_type(parser->arr, parser->position + 1) ==
 			opening_bracket_token) {
-			fun_call(tree, arr, table, position);
-		} else if (node_array_get_node_type(arr, *position + 1) ==
+			fun_call(parser);
+		} else if (token_array_get_token_type(parser->arr,
+											parser->position + 1) ==
 				   increment_operator_token) {
-			var(tree, arr, table, position);
-			match(tree, arr, table, increment_operator_token, position);
-		} else if (node_array_get_node_type(arr, *position + 1) ==
+			var(parser);
+			match(parser, increment_operator_token);
+		} else if (token_array_get_token_type(parser->arr,
+											parser->position + 1) ==
 				   decrement_operator_token) {
-			var(tree, arr, table, position);
-			match(tree, arr, table, decrement_operator_token, position);
+			var(parser);
+			match(parser, decrement_operator_token);
 		} else {
-			var(tree, arr, table, position);
+			var(parser);
 		}
 		break;
-	case float_literal:
-		match(tree, arr, table, float_literal, position);
+	case float_literal_token:
+		match(parser, float_literal_token);
 		break;
-	case string_literal:
-		match(tree, arr, table, string_literal, position);
+	case string_literal_token:
+		match(parser, string_literal_token);
 		break;
-	case int_literal:
-		match(tree, arr, table, int_literal, position);
+	case int_literal_token:
+		match(parser, int_literal_token);
 		break;
-	case char_literal:
-		match(tree, arr, table, char_literal, position);
+	case char_literal_token:
+		match(parser, char_literal_token);
 		break;
 
 	default:
 		break;
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void block(ast *tree, node_array *arr, symbol_table *table, size_t *position) {
-	if (parser_debug) {
+void block(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing block\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree), node_make(block_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(block_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	match_no_append(tree, arr, table, opening_c_bracket_token, position);
+	match_no_append(parser, opening_c_bracket_token);
 
-	while (node_array_get_node_type(arr, *position) !=
+	while (token_array_get_token_type(parser->arr, parser->position) !=
 		   closing_c_bracket_token) {
-		statement(tree, arr, table, position);
-		match_no_append(tree, arr, table, semicolon_token, position);
+		statement(parser);
+		match_no_append(parser, semicolon_token);
 	}
 
-	match_no_append(tree, arr, table, closing_c_bracket_token, position);
-	if (parser_debug) {
+	match_no_append(parser, closing_c_bracket_token);
+	parser->tree = ast_get_parent(parser->tree);
+	if (parser->debug) {
 		printf("Parsing block done.\n");
 	}
+
 }
 
-void include_directive_select(ast *tree, node_array *arr, symbol_table *table,
-							  size_t *position) {
-	if (parser_debug) {
+void include_directive_select(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing DIR SELECTT\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree),
-				 node_make(include_directive_subselect_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(include_directive_subselect_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 	do {
-		match(tree, arr, table, identifier_token, position);
-		if (node_array_get_node_type(arr, *position) == selector_token) {
-			match_no_append(tree, arr, table, selector_token, position);
+		match(parser, identifier_token);
+		if (token_array_get_token_type(parser->arr, parser->position) ==
+			selector_token) {
+			match_no_append(parser, selector_token);
 		}
 		// maybe change this
-	} while (node_array_get_node_type(arr, *position) == identifier_token);
+	} while (token_array_get_token_type(parser->arr, parser->position) ==
+			 identifier_token);
 
-	if (parser_debug) {
+	parser->tree = ast_get_parent(parser->tree);
+	if (parser->debug) {
 		printf("Parsing DIR SELECTT done.\n");
 	}
 }
 
-void secondary_directives(ast *tree, node_array *arr, symbol_table *table,
-						  size_t *position) {
-	if (parser_debug) {
+void secondary_directives(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing SEC DIR\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree),
-				 node_make(secondarydirective_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(secondarydirective_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
-	switch (node_array_get_node_type(arr, *position)) {
+	switch (token_array_get_token_type(parser->arr, parser->position)) {
 	case include_directive_token:
-		include_directive(tree, arr, table, &*position);
+		include_directive(parser);
 		break;
 	case macro_directive_token:
-		// impleme
+		// implement
 		break;
 	default:
 		_Exit(1);
 	}
+	parser->tree = ast_get_parent(parser->tree);
 }
 
-void secondary_directive_list(ast *tree, node_array *arr, symbol_table *table,
-							  size_t *position) {
-	if (parser_debug) {
+void secondary_directive_list(parser *parser) {
+	if (parser->debug) {
 		printf("Parsing SEC DIR LIST\n");
 	}
-	ast_add(tree, ast_make());
-	ast_set_node(ast_get_last(tree),
-				 node_make(secondarydirective_list_n, nont_c, -1));
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				 token_make(secondarydirective_list_n, nont_c, -1));
 
-	tree = ast_get_last(tree);
+	parser->tree = ast_get_last(parser->tree);
 
 	do {
-		secondary_directives(tree, arr, table, position);
-	} while (node_array_get_node_type_class(arr, *position) == sec_directive_c);
+		secondary_directives(parser);
+	} while (token_array_get_token_type_class(parser->arr, parser->position) ==
+			 sec_directive_c);
+	parser->tree = ast_get_parent(parser->tree);
 }
 
 void print_tree(ast *tree, int depth) {
@@ -640,60 +684,58 @@ void print_tree(ast *tree, int depth) {
 	for (i = 0; i < depth; i++) {
 		printf("  ");
 	}
-	printf("> %s\n", node_type_get_canonial(tree->n.type));
+	printf("> %s\n", token_type_get_canonial(tree->n.type));
 	for (i = 0; i < tree->used; i++) {
 		print_tree(tree->children[i], depth + 1);
 	}
 }
 
-void match(ast *tree, node_array *arr, symbol_table *table, node_type type,
-		   size_t *position) {
-	printf("Matching %s at %ld\n", node_type_get_canonial(type), *position);
-	if (node_array_get_node_type(arr, *position) == type) {
-		ast_add(tree, ast_make());
-		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *position));
-		(*position)++;
+void match(parser *parser, token_type type) {
+	printf("Matching %s at %ld\n", token_type_get_canonial(type),
+		   parser->position);
+	if (token_array_get_token_type(parser->arr, parser->position) == type) {
+		ast_add(parser->tree, ast_make());
+		ast_set_token(ast_get_last(parser->tree),
+					 token_array_get_token(parser->arr, parser->position));
+		parser->position++;
 	} else {
-		parse_syntax_err(table, position, "expected differently in match");
+		parse_syntax_err(parser, "expected differently in match");
 	}
 	return;
 }
 
-void match_no_append(ast *tree, node_array *arr, symbol_table *table,
-					 node_type type, size_t *position) {
-	printf("Matching %s at %ld\n", node_type_get_canonial(type), *position);
-	if (node_array_get_node_type(arr, *position) == type) {
-		(*position)++;
+void match_no_append(parser *parser, token_type type) {
+	printf("Matching %s at %ld\n", token_type_get_canonial(type),
+		   parser->position);
+	if (token_array_get_token_type(parser->arr, parser->position) == type) {
+		parser->position++;
 	} else {
-		parse_syntax_err(table, position,
-						 "expected differently in match non append");
+		parse_syntax_err(parser, "expected differently in match non append");
 	}
 	return;
 }
 
-void match_by_class(ast *tree, node_array *arr, symbol_table *table,
-					node_type_class type, size_t *position) {
-	printf("Matching %s at position nr %ld\n", node_type_get_class(type),
-		   *position);
-	if (node_array_get_node_type_class(arr, *position) == type) {
-		ast_add(tree, ast_make());
-		ast_set_node(ast_get_last(tree), node_array_get_node(arr, *position));
-		(*position)++;
+void match_by_class(parser *parser, token_type_class type) {
+	printf("Matching %s at position nr %ld\n", token_type_get_class(type),
+		   parser->position);
+	if (token_array_get_token_type_class(parser->arr, parser->position) == type) {
+		ast_add(parser->tree, ast_make());
+		ast_set_token(ast_get_last(parser->tree),
+					 token_array_get_token(parser->arr, parser->position));
+		parser->position++;
 	} else {
-		parse_syntax_err(table, position,
-						 "expected differently in match by class");
+		parse_syntax_err(parser, "expected differently in match by class");
 	}
 	return;
 }
 
-void match_by_class_no_append(ast *tree, node_array *arr, symbol_table *table,
-							  node_type_class type, size_t *position) {
-	printf("Matching %s at position nr %ld\n", node_type_get_class(type),
-		   *position);
-	if (node_array_get_node_type_class(arr, *position) == type) {
-		(*position)++;
+void match_by_class_no_append(parser *parser, token_type_class type) {
+	printf("Matching %s at position nr %ld\n", token_type_get_class(type),
+		   parser->position);
+	if (token_array_get_token_type_class(parser->arr, parser->position) == type) {
+		parser->position++;
 	} else {
-		parse_syntax_err(table, position,
+		parse_syntax_err(parser,
 						 "expected differently in match by class non append");
 	}
 	return;

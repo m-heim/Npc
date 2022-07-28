@@ -58,10 +58,11 @@ long symbol_table_get_line(symbol_table *table, size_t id) {
 char *symbol_table_get_value(symbol_table *table, size_t id) {
 	return table->value[id];
 }
-void print_symbol_table(symbol_table *table) {
+void write_symbol_table(FILE * file, symbol_table *table) {
 	for (size_t i = 0; i < table->used; i++) {
-		printf("%ld\t %ld\t%s\n", symbol_table_get_position(table, i),
+		fprintf(file, "%ld\t %ld\t%s\n", symbol_table_get_position(table, i),
 			   symbol_table_get_line(table, i),
 			   symbol_table_get_value(table, i));
 	}
+	fflush(file);
 }

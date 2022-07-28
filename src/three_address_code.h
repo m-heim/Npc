@@ -41,10 +41,10 @@ typedef enum three_address_code_op {
 } three_address_code_op;
 
 typedef enum {
-	address_int_literal,
-	address_float_literal,
-	address_char_literal,
-	address_string_literal,
+	address_int_literal_token,
+	address_float_literal_token,
+	address_char_literal_token,
+	address_string_literal_token,
 	address_variable,
 	address_function,
 	address_temporary,

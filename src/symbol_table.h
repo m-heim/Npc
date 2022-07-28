@@ -2,7 +2,7 @@
 #define SYMBOL_TABLE_H
 #define SYMBOL_TABLE_INIT_SIZE 10
 #include <stdlib.h>
-
+#include <stdio.h>
 typedef struct {
 	size_t *position;
 	size_t *line;
@@ -21,5 +21,5 @@ long symbol_table_get_position(symbol_table *table, size_t id);
 long symbol_table_get_line(symbol_table *table, size_t id);
 
 char *symbol_table_get_value(symbol_table *table, size_t id);
-void print_symbol_table(symbol_table *table);
+void write_symbol_table(FILE * file, symbol_table *table);
 #endif

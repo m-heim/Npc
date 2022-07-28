@@ -2,7 +2,7 @@
 #define PARSER_H
 
 #include "ast.h"
-#include "node.h"
+#include "token.h"
 #include "scanner.h"
 #include "symbol_table.h"
 #include "typetable.h"
@@ -13,73 +13,66 @@ typedef struct parser_result {
 	typetable *type_table;
 } parser_result;
 
-parser_result parse_program(scanner_result res);
+typedef struct parser {
+	ast *tree;
+	symbol_table *table;
+	token_array *arr;
+	size_t position;
+	int debug;
+} parser;
 
-void parse_syntax_err(symbol_table *table, size_t *position, char *err);
+parser_result *parse_program(scanner_result res, int debug);
+parser_result *parser_result_make(ast *tree, symbol_table *table,
+								  typetable *type_table);
+parser *parser_make(ast *tree, symbol_table *table, int debug, token_array *arr);
 
-void program(ast *tree, node_array *arr, symbol_table *table, size_t *position);
+void parse_syntax_err(parser *parser, char *err);
 
-void parameter_list(ast *tree, node_array *arr, symbol_table *table,
-					size_t *position);
+void program(parser *parser);
 
-void function(ast *tree, node_array *arr, symbol_table *table,
-			  size_t *position);
+void parameter_list(parser *parser);
 
-void program_directive(ast *tree, node_array *arr, symbol_table *table,
-					   size_t *position);
+void function(parser *parser);
 
-void secondary_directive_list(ast *tree, node_array *arr, symbol_table *table,
-							  size_t *position);
+void program_directive(parser *parser);
 
-void match(ast *tree, node_array *arr, symbol_table *table, node_type type,
-		   size_t *position);
+void secondary_directive_list(parser *parser);
 
-void match_no_append(ast *tree, node_array *arr, symbol_table *table,
-					 node_type type, size_t *position);
+void match(parser *parser, token_type type);
 
-void type(ast *tree, node_array *arr, symbol_table *table, size_t *position);
+void match_no_append(parser *parser, token_type type);
 
-void functions(ast *tree, node_array *arr, symbol_table *table,
-			   size_t *position);
+void type(parser *parser);
 
-void match_by_class(ast *tree, node_array *arr, symbol_table *table,
-					node_type_class type, size_t *position);
+void functions(parser *parser);
 
-void match_by_class_no_append(ast *tree, node_array *arr, symbol_table *table,
-							  node_type_class type, size_t *position);
+void match_by_class(parser *parser, token_type_class type);
 
-void include_directive_select(ast *tree, node_array *arr, symbol_table *table,
-							  size_t *position);
+void match_by_class_no_append(parser *parser, token_type_class type);
 
-void var(ast *tree, node_array *arr, symbol_table *table, size_t *position);
+void include_directive_select(parser *parser);
+
+void var(parser *parser);
 
 void print_tree(ast *tree, int depth);
 
-void declaration(ast *tree, node_array *arr, symbol_table *table,
-				 size_t *position);
+void declaration(parser *parser);
 
-void factor(ast *tree, node_array *arr, symbol_table *table, size_t *position);
-void expression(ast *tree, node_array *arr, symbol_table *table,
-				size_t *position);
-void simple_expression(ast *tree, node_array *arr, symbol_table *table,
-					   size_t *position);
+void factor(parser *parser);
+void expression(parser *parser);
+void simple_expression(parser *parser);
 
-void block(ast *tree, node_array *arr, symbol_table *table, size_t *position);
+void block(parser *parser);
 
-void argument_list(ast *tree, node_array *arr, symbol_table *table,
-				   size_t *position);
+void argument_list(parser *parser);
 
-void term(ast *tree, node_array *arr, symbol_table *table, size_t *position);
-void fun_call(ast *tree, node_array *arr, symbol_table *table,
-			  size_t *position);
+void term(parser *parser);
+void fun_call(parser *parser);
 
-void return_statement(ast *tree, node_array *arr, symbol_table *table,
-					  size_t *position);
+void return_statement(parser *parser);
 
-void for_statement(ast *tree, node_array *arr, symbol_table *table,
-				   size_t *position);
+void for_statement(parser *parser);
 
-void secondary_directives(ast *tree, node_array *arr, symbol_table *table,
-						  size_t *position);
+void secondary_directives(parser *parser);
 
 #endif

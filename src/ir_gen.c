@@ -1,6 +1,6 @@
 #include "ir_gen.h"
 #include "ast.h"
-#include "node.h"
+#include "token.h"
 #include "parser.h"
 #include "three_address_code.h"
 #include "typetable.h"
@@ -43,7 +43,7 @@ ir_gen_result generate(parser_result parser_out) {
 	result.code = three_address_code_make();
 	ast *tree = parser_out.tree;
 	symbol_table *table = parser_out.table;
-	node *curr;
+	token *curr;
 	while (1) {
 	}
 }
@@ -132,7 +132,7 @@ ir_gen_result *translate(ir_gen_result *i_result, parser_result parser_result,
 }
 */
 
-/*three_address_code_op get_op(node_type type) {
+/*three_address_code_op get_op(token_type type) {
   if (type == identifier_token) {
 	return "identifier_token";
   } else if (type == assignment_token) {
@@ -173,14 +173,14 @@ ir_gen_result *translate(ir_gen_result *i_result, parser_result parser_result,
 	return "not-token";
   } else if (type == increment_operator_token) {
 	return "increment_operator_token";
-  } else if (type == string_literal) {
-	return "string_literal";
-  } else if (type == char_literal) {
-	return "char_literal";
-  } else if (type == int_literal) {
-	return "int_literal";
-  } else if (type == float_literal) {
-	return "float_literal";
+  } else if (type == string_literal_token) {
+	return "string_literal_token";
+  } else if (type == char_literal_token) {
+	return "char_literal_token";
+  } else if (type == int_literal_token) {
+	return "int_literal_token";
+  } else if (type == float_literal_token) {
+	return "float_literal_token";
   } else if (type == string_type_token) {
 	return "string_type_token";
   } else if (type == char_type_token) {

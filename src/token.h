@@ -1,6 +1,6 @@
-#ifndef NODE_H
-#define NODE_H
-#define NODE_ARRAY_INIT_SIZE 10
+#ifndef token_H
+#define token_H
+#define token_array_INIT_SIZE 10
 #include <stdlib.h>
 typedef enum {
 	// A token that is an identifier to some variable or function
@@ -57,10 +57,10 @@ typedef enum {
 	closing_c_bracket_token,
 
 	// Literals
-	string_literal,
-	char_literal,
-	int_literal,
-	float_literal,
+	string_literal_token,
+	char_literal_token,
+	int_literal_token,
+	float_literal_token,
 
 	// types
 	string_type_token,
@@ -111,7 +111,7 @@ typedef enum {
 	simple_expression_n,
 	function_call_n
 
-} node_type;
+} token_type;
 
 typedef enum {
 	unop_c,
@@ -129,34 +129,34 @@ typedef enum {
 	directive_c,
 	relop_c
 
-} node_type_class;
+} token_type_class;
 
 typedef struct {
-	node_type type;
-	node_type_class type_class;
+	token_type type;
+	token_type_class type_class;
 	long value;
-} node;
+} token;
 
 typedef struct {
-	node *node_array;
+	token *token_array;
 	long used;
 	long size;
-} node_array;
+} token_array;
 
-node_array *node_array_make();
-void node_array_add(node_array *arr, node_type type, node_type_class type_class,
+token_array *token_array_make();
+void token_array_add(token_array *arr, token_type type, token_type_class type_class,
 					long value);
 
-node_type node_array_get_node_type(node_array *arr, long position);
-node_type_class node_array_get_node_type_class(node_array *arr, long position);
+token_type token_array_get_token_type(token_array *arr, long position);
+token_type_class token_array_get_token_type_class(token_array *arr, long position);
 
-node *node_array_get_node(node_array *arr, long position);
+token *token_array_get_token(token_array *arr, long position);
 
-long *node_array_get_val(node_array *arr, long position);
-node *node_make(node_type type, node_type_class type_class, long value);
+long *token_array_get_val(token_array *arr, long position);
+token *token_make(token_type type, token_type_class type_class, long value);
 
-char *node_type_get_canonial(node_type type);
+char *token_type_get_canonial(token_type type);
 
-char *node_type_get_class(node_type_class type);
+char *token_type_get_class(token_type_class type);
 
 #endif

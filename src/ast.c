@@ -7,6 +7,7 @@ ast *ast_make() {
 	tree->children = malloc(AST_INIT_SIZE * sizeof(void *));
 	tree->used = 0;
 	tree->size = AST_INIT_SIZE;
+	tree->parent = NULL;
 	return tree;
 }
 
@@ -22,7 +23,7 @@ void ast_add(ast *parent, ast *tree) {
 	return;
 }
 
-void ast_set_node(ast *tree, node *n) {
+void ast_set_token(ast *tree, token *n) {
 	tree->n = *n;
 	return;
 }
@@ -41,4 +42,12 @@ ast *ast_get_last(ast *tree) {
 
 ast *ast_get_parent(ast *tree) {
 	return tree->parent;
+}
+
+ast *ast_get_root(ast *tree) {
+	ast *root = tree;
+	while(root->parent != NULL) {
+		root = root->parent;
+	}
+	return root;
 }

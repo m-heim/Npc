@@ -1,65 +1,65 @@
-#include "node.h"
+#include "token.h"
 #include <stdio.h>
 
-// make a new node with the given type and the value which is an entry in the
+// make a new token with the given type and the value which is an entry in the
 // symbol table
-node *node_make(node_type type, node_type_class type_class, long value) {
-	node *n = malloc(sizeof(node));
+token *token_make(token_type type, token_type_class type_class, long value) {
+	token *n = malloc(sizeof(token));
 	n->type = type;
 	n->type_class = type_class;
 	n->value = value;
 	return n;
 }
 
-// make a new node array
-node_array *node_array_make() {
-	node_array *arr = malloc(sizeof(node_array));
-	arr->node_array = malloc(sizeof(node) * NODE_ARRAY_INIT_SIZE);
+// make a new token array
+token_array *token_array_make() {
+	token_array *arr = malloc(sizeof(token_array));
+	arr->token_array = malloc(sizeof(token) * token_array_INIT_SIZE);
 	arr->used = 0;
-	arr->size = NODE_ARRAY_INIT_SIZE;
+	arr->size = token_array_INIT_SIZE;
 	return arr;
 }
 
-node_type_class node_array_get_node_type_class(node_array *arr, long position) {
-	return arr->node_array[position].type_class;
+token_type_class token_array_get_token_type_class(token_array *arr, long position) {
+	return arr->token_array[position].type_class;
 }
 
-// add a new entry to the node array
-void node_array_add(node_array *arr, node_type type, node_type_class type_class,
+// add a new entry to the token array
+void token_array_add(token_array *arr, token_type type, token_type_class type_class,
 					long value) {
 	if (arr->used == arr->size) {
-		arr->node_array =
-			realloc(arr->node_array, arr->size * 2 * sizeof(node));
+		arr->token_array =
+			realloc(arr->token_array, arr->size * 2 * sizeof(token));
 		arr->size = arr->size * 2;
 	}
-	arr->node_array[arr->used].type = type;
-	arr->node_array[arr->used].type_class = type_class;
-	arr->node_array[arr->used].value = value;
+	arr->token_array[arr->used].type = type;
+	arr->token_array[arr->used].type_class = type_class;
+	arr->token_array[arr->used].value = value;
 	arr->used += 1;
 }
 
-// get the node type of a node
-node_type node_array_get_node_type(node_array *arr, long position) {
-	return (arr->node_array[position]).type;
+// get the token type of a token
+token_type token_array_get_token_type(token_array *arr, long position) {
+	return (arr->token_array[position]).type;
 }
 
-// get a pointer to the node of an array
-node *node_array_get_node(node_array *arr, long position) {
-	return &(arr->node_array[position]);
+// get a pointer to the token of an array
+token *token_array_get_token(token_array *arr, long position) {
+	return &(arr->token_array[position]);
 }
 
-long *node_array_get_val(node_array *arr, long position) {
-	return &(arr->node_array[position].value);
+long *token_array_get_val(token_array *arr, long position) {
+	return &(arr->token_array[position].value);
 }
 
-void print_tokens(node_array *arr) {
+void print_tokens(token_array *arr) {
 	for (int i = 0; i < arr->used; i++) {
 		printf("%i %s", i,
-			   node_type_get_canonial(node_array_get_node_type(arr, i)));
+			   token_type_get_canonial(token_array_get_token_type(arr, i)));
 	}
 }
 
-char *node_type_get_canonial(node_type type) {
+char *token_type_get_canonial(token_type type) {
 	if (type == identifier_token) {
 		return "identifier_token";
 	} else if (type == assignment_token) {
@@ -128,14 +128,14 @@ char *node_type_get_canonial(node_type type) {
 		return "opening_s_bracket_token";
 	} else if (type == closing_s_bracket_token) {
 		return "opening_s_bracket_token";
-	} else if (type == string_literal) {
-		return "string_literal";
-	} else if (type == char_literal) {
-		return "char_literal";
-	} else if (type == int_literal) {
-		return "int_literal";
-	} else if (type == float_literal) {
-		return "float_literal";
+	} else if (type == string_literal_token) {
+		return "string_literal_token";
+	} else if (type == char_literal_token) {
+		return "char_literal_token";
+	} else if (type == int_literal_token) {
+		return "int_literal_token";
+	} else if (type == float_literal_token) {
+		return "float_literal_token";
 	} else if (type == string_type_token) {
 		return "string_type_token";
 	} else if (type == char_type_token) {
@@ -217,7 +217,7 @@ char *node_type_get_canonial(node_type type) {
 	}
 }
 
-char *node_type_get_class(node_type_class type) {
+char *token_type_get_class(token_type_class type) {
 	if (type == unop_c) {
 		return "unop_c";
 	} else if (type == binop_c) {

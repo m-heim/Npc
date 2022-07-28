@@ -1,7 +1,7 @@
 #include "scanner.h"
 #include "char_utils.h"
 #include "log.h"
-#include "node.h"
+#include "token.h"
 #include "symbol_table.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +13,7 @@ void lexing_error(size_t position, size_t line, char *code, size_t length) {
 	char format[1024];
 	char message[1024];
 	sprintf(format,
-			"Lexing - on char %%lu in line %%ld\n%%.10s%s%%.%lds%s%%.%lds\n",
+			"{Lex} - on char %%lu in line %%ld\n%%.10s%s%%.%lds%s%%.%lds\n",
 			red_on, length, red_off, 10 - length);
 	sprintf(message, format, position, line, code - 10, code, code + length);
 	size_t len = strlen(message);
@@ -21,13 +21,13 @@ void lexing_error(size_t position, size_t line, char *code, size_t length) {
 	exit(1);
 }
 
-scanner_result lex(char *code, int debug) {
+scanner_result lex(char *code, int debug, int export_symbol) {
 	symbol_table *table = symbol_table_make();
-	node_array *arr = node_array_make();
+	token_array *arr = token_array_make();
 
 	scanner_result result;
 	result.table = table;
-	result.node_array = arr;
+	result.token_array = arr;
 
 	// current position in stream
 	size_t position = 0;
@@ -43,11 +43,12 @@ scanner_result lex(char *code, int debug) {
 
 	int state = 0;
 	size_t line = 0;
-	size_t node_index = 0;
-	npc_debug_log(debug, "Lexing - now lexing.");
+	npc_debug_log(debug, "{Lex} - now lexing.");
 	char outputbuf[20];
+	size_t token_index = 0;
 	while (*(code + position) != '\0') {
 		cur = code + position;
+		token_index = arr->used;
 		sprintf(outputbuf, "{char=%c|state=%d}\n", *cur, state);
 		npc_debug_log(debug, outputbuf);
 		// if we arent in any specific state rn
@@ -225,14 +226,11 @@ scanner_result lex(char *code, int debug) {
 			}
 		}
 		if (state > 99 && state <= 199) {
-			node_type ntype;
-			node_type_class type_class;
+			token_type ntype;
+			token_type_class type_class;
 			if (state == 100) {
-				ntype = identifier_token;
-				type_class = nac_c;
 				position--;
 				len = position - start_position + 1;
-				printf("Len is %lu\n", len);
 				if (len == 3 && strncmp(start, "int", len) == 0) {
 					ntype = int_type_token;
 					type_class = type_c;
@@ -263,6 +261,9 @@ scanner_result lex(char *code, int debug) {
 				} else if (len == 6 && strncmp(start, "return", len) == 0) {
 					ntype = return_keyword_token;
 					type_class = keyword_c;
+				} else {
+					ntype = identifier_token;
+					type_class = nac_c;
 				}
 			} else if (state == 102) {
 				ntype = imm_plus_operator_token;
@@ -274,12 +275,12 @@ scanner_result lex(char *code, int debug) {
 				ntype = increment_operator_token;
 				type_class = unop_c;
 			} else if (state == 105) {
-				ntype = int_literal;
+				ntype = int_literal_token;
 				position--;
 				type_class = literal_c;
 			} else if (state == 101) {
 				position--;
-				ntype = float_literal;
+				ntype = float_literal_token;
 				type_class = literal_c;
 			} else if (state == 106) {
 				ntype = imm_minus_operator_token;
@@ -323,10 +324,10 @@ scanner_result lex(char *code, int debug) {
 				ntype = floor_div_operator_token;
 				type_class = binop_c;
 			} else if (state == 119) {
-				ntype = string_literal;
+				ntype = string_literal_token;
 				type_class = literal_c;
 			} else if (state == 120) {
-				ntype = char_literal;
+				ntype = char_literal_token;
 				type_class = literal_c;
 			} else if (state == 121) {
 				ntype = opening_bracket_token;
@@ -364,7 +365,6 @@ scanner_result lex(char *code, int debug) {
 			} else if (state == 132) {
 				position--;
 				len = position - start_position + 1;
-				printf("%ld\n", len);
 				if (len == 8 && strncmp(start, "#PROGRAM", len) == 0) {
 					ntype = program_directive_token;
 					type_class = prim_directive_c;
@@ -388,7 +388,7 @@ scanner_result lex(char *code, int debug) {
 				ntype = comma_token;
 				type_class = punctuation_c;
 			} else {
-				printf("Not implemented, state %d", state);
+				npc_log(log_bad, "Not implemented, state");
 				lexing_error(start_position, line, start,
 							 position - start_position + 1);
 			}
@@ -397,12 +397,14 @@ scanner_result lex(char *code, int debug) {
 			// get length of the token
 			len = cur - start + 1;
 
-			node_array_add(arr, ntype, type_class, node_index);
-			if (debug == 0) {
-				printf("Added %s\n", node_type_get_canonial(ntype));
+			token_array_add(arr, ntype, type_class, token_index);
+			if (debug != 0) {
+				printf("Added %s\n", token_type_get_canonial(ntype));
 			}
-			symbol_table_add(table, start_position, line, start, len);
-			node_index++;
+			if (ntype == identifier_token || type_class == literal_c) {
+				symbol_table_add(table, start_position, line, start, len);
+			}
+			token_index++;
 			start = cur + 1;
 			start_position = position + 1;
 			state = 0;
@@ -414,6 +416,9 @@ scanner_result lex(char *code, int debug) {
 				state = 0;
 			} else if (state == 202) {
 				state = 0;
+			} else {
+				lexing_error(start_position, line, start,
+							 position - start_position + 1);
 			}
 			start = cur + 1;
 			start_position = position + 1;
@@ -421,6 +426,15 @@ scanner_result lex(char *code, int debug) {
 			state = 0;
 		}
 		position++;
+	}
+	npc_debug_log(debug, "{Lex} - done lexing.");
+	if (export_symbol != 0) {
+		FILE *file = fopen("symbol_table.exp", "w");
+		write_symbol_table(file, result.table);
+		fclose(file);
+	}
+	if (debug != 0) {
+		write_symbol_table(stdout, result.table);
 	}
 	return result;
 }

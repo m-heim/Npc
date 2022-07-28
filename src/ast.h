@@ -12,7 +12,7 @@
 #ifndef AST_H
 #define AST_H
 
-#include "node.h"
+#include "token.h"
 #include <stdlib.h>
 #define AST_INIT_SIZE 10
 typedef struct ast ast;
@@ -22,7 +22,7 @@ typedef struct ast ast;
  *
  */
 struct ast {
-	node n;
+	token n;
 	// Pointer to the array of children
 	ast **children;
 	ast *parent;
@@ -44,12 +44,14 @@ void ast_add(ast *parent, ast *tree);
 ast *ast_get_child(ast *tree, long id);
 
 // set the value of the ast
-void ast_set_node(ast *tree, node *n);
+void ast_set_token(ast *tree, token *n);
 
 // get the last child
 ast *ast_get_last(ast *tree);
 
 // get the parent
 ast *ast_get_parent(ast *tree);
+
+ast *ast_get_root(ast *tree);
 
 #endif
