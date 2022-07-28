@@ -1,10 +1,9 @@
 #PROGRAM main
 #using std.core
 #using std.system.println
-
 int main(int argc, string[] argv) {
 	int i = 2;
-	long b = i * 30 * 8 + (20*3) + 1834 * 83;
+	long =? b = i * 30 * 8 + (20*3) + 1834 * 83;
 	long d = b * i;
 	if (argc < i) {
 		println("ERROR: Program requires at least 1 argument");

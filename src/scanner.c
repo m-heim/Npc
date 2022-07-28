@@ -1,21 +1,27 @@
 #include "scanner.h"
 #include "char_utils.h"
+#include "log.h"
 #include "node.h"
 #include "symbol_table.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int debug = 0;
-
-void lexing_error(size_t position, size_t line, char *code) {
-	printf("Error on char %lu in line %ld\n", position, line);
-	printf("%.20s\n", code);
-	printf("^\n");
+void lexing_error(size_t position, size_t line, char *code, size_t length) {
+	char *red_on = "\033[0;31m";
+	char *red_off = "\033[0m";
+	char format[1024];
+	char message[1024];
+	sprintf(format,
+			"Lexing - on char %%lu in line %%ld\n%%.10s%s%%.%lds%s%%.%lds\n",
+			red_on, length, red_off, 10 - length);
+	sprintf(message, format, position, line, code - 10, code, code + length);
+	size_t len = strlen(message);
+	npc_log(log_bad, message);
 	exit(1);
 }
 
-scanner_result lex(char *code) {
+scanner_result lex(char *code, int debug) {
 	symbol_table *table = symbol_table_make();
 	node_array *arr = node_array_make();
 
@@ -27,23 +33,23 @@ scanner_result lex(char *code) {
 	size_t position = 0;
 	// start of current token
 	size_t start_position = 0;
-	// length of token
+	// length of lexeme
 	size_t len = 0;
 
 	// curr char
 	char *cur = code;
-	// start char
+	// start char of c
 	char *start = code;
 
 	int state = 0;
 	size_t line = 0;
 	size_t node_index = 0;
-
+	npc_debug_log(debug, "Lexing - now lexing.");
+	char outputbuf[20];
 	while (*(code + position) != '\0') {
 		cur = code + position;
-		if (debug == 0) {
-			printf("char= %c, state %d\n", *cur, state);
-		}
+		sprintf(outputbuf, "{char=%c|state=%d}\n", *cur, state);
+		npc_debug_log(debug, outputbuf);
 		// if we arent in any specific state rn
 		if (state == 0) {
 			// if starts with latin or underscore is identifier
@@ -100,7 +106,8 @@ scanner_result lex(char *code) {
 			} else if (*cur == ',') {
 				state = 133;
 			} else {
-				lexing_error(start_position, line, cur);
+				lexing_error(start_position, line, start,
+							 position - start_position + 1);
 			}
 			// if we have an identifier we can have latin underscore or a number
 		} else if (state == 1) {
@@ -152,7 +159,8 @@ scanner_result lex(char *code) {
 			}
 		} else if (state == 38) {
 			if (*cur == '\'') {
-				lexing_error(position, line, cur);
+				lexing_error(start_position, line, start,
+							 position - start_position + 1);
 			} else if (*cur == '\\') {
 				state = 44;
 			} else {
@@ -163,13 +171,15 @@ scanner_result lex(char *code) {
 				*cur == 'f' || *cur == '\'' || *cur == '\\') {
 				state = 39;
 			} else {
-				lexing_error(start_position, line, cur);
+				lexing_error(start_position, line, start,
+							 position - start_position + 1);
 			}
 		} else if (state == 39) {
 			if (*cur == '\'') {
 				state = 120;
 			} else {
-				lexing_error(start_position, line, cur);
+				lexing_error(start_position, line, start,
+							 position - start_position + 1);
 			}
 		} else if (state == 5) {
 			if (*cur == '.') {
@@ -371,14 +381,16 @@ scanner_result lex(char *code) {
 					ntype = end_directive_token;
 					type_class = prim_directive_c;
 				} else {
-					lexing_error(start_position, line, cur);
+					lexing_error(start_position, line, start,
+								 position - start_position + 1);
 				}
 			} else if (state == 133) {
 				ntype = comma_token;
 				type_class = punctuation_c;
 			} else {
 				printf("Not implemented, state %d", state);
-				lexing_error(start_position, line, cur);
+				lexing_error(start_position, line, start,
+							 position - start_position + 1);
 			}
 			// re set cur because we did position-- above;
 			cur = code + position;

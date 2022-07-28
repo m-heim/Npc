@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 		}
 	}
 	npc_debug_log(main_debug, "Scanning now...");
-	scanner_result lexer_result = lex(read_program(fp));
+	scanner_result lexer_result = lex(read_program(fp), main_debug);
 	if (main_debug) {
 		printf("Pos\tType\n");
 		for (int i = 0; i < lexer_result.node_array->used; i++) {
