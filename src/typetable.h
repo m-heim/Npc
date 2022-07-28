@@ -4,8 +4,11 @@
 
 #include <stdlib.h>
 
-// The type typetable is a list that holds the name of the type and the size of
-// the type in Byte!
+/**
+ * @brief Contains all types available, consists of a string and the size in
+ * bytes
+ *
+ */
 typedef struct typetable {
 	char **name;
 	size_t *type_size;
@@ -13,13 +16,12 @@ typedef struct typetable {
 	size_t size;
 } typetable;
 
-// Get the size of the typetable
-size_t typetable_get_size(typetable *table, int id);
-// make a new typetable
+size_t typetable_get_size(typetable *table, size_t id);
+
 typetable *typetable_make();
-// add a new type to the typetable
+
 void typetable_add(typetable *table, char *name, size_t size);
-// checks wether a given type exists
+
 int typetable_exists(typetable *table, char *name);
 
 #endif
