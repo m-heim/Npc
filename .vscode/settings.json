@@ -1,2 +1,13 @@
 {
+    "doxdocgen.c.triggerSequence": "/dox",
+    "doxdocgen.generic.authorName": "Maximilian Heim",
+    "doxdocgen.generic.authorEmail": "MaximilianHeim@protonmail.com",
+    "doxdocgen.generic.briefTemplate": "@brief {text}",
+    "doxdocgen.generic.linesToGet": 1000,
+    "doxdocgen.generic.order": [
+    "brief",
+    "author",
+    "date",
+    "version"
+    ]
 }

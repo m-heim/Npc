@@ -2,19 +2,24 @@
 #define token_H
 #define token_array_INIT_SIZE 10
 #include <stdlib.h>
-typedef enum {
-	// A token that is an identifier to some variable or function
+
+/**
+ * @brief The types provided for lexing and parsing
+ * @author Maximilian Heim (MaximilianHeim@protonmail.com)
+ * @date 2022-07-28
+ * @version 0.1
+ */
+typedef enum token_type {
 	identifier_token,
-	// A simple assignment
 	assignment_token,
-	// Immediate minus assignment
+
+	///@{ 
+	/* operators += /= *= -= */
 	imm_minus_operator_token,
-	// Immediate minus assignment
 	imm_plus_operator_token,
-	// Immediate minus assignment
 	imm_mul_operator_token,
-	// Immediate minus assignment
 	imm_division_operator_token,
+	///@}
 
 	selector_token,
 	semicolon_token,
@@ -69,7 +74,7 @@ typedef enum {
 	float_type_token,
 	long_type_token,
 
-	// Control flow
+	
 	return_keyword_token,
 	for_keyword_token,
 	while_keyword_token,
@@ -113,7 +118,7 @@ typedef enum {
 
 } token_type;
 
-typedef enum {
+typedef enum token_type_class{
 	unop_c,
 	binop_c,
 	assign_c,
@@ -131,13 +136,13 @@ typedef enum {
 
 } token_type_class;
 
-typedef struct {
+typedef struct token {
 	token_type type;
 	token_type_class type_class;
 	long value;
 } token;
 
-typedef struct {
+typedef struct token_array{
 	token *token_array;
 	long used;
 	long size;
