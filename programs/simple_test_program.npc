@@ -1,0 +1,12 @@
+#PROGRAM test
+#using std.system.println
+int main() {
+    int x = 3;
+    long y = 2;
+    int a = x + y * 3;
+    if (a > 8) {
+        println("We are good");
+    }
+    return 0;
+}
+#END

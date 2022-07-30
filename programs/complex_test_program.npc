@@ -1,0 +1,37 @@
+#PROGRAM main
+#using std.core
+#using std.system.println
+int main(int argc, string[] argv) {
+	int i = 2;
+	long b = i * 30 * 8 + (20*3) + 1834 * 83;
+	long d = b * i;
+	int c = b > d;
+	int x = i >= d;
+	int y = b <= d;
+	int u = i < d;
+	if (argc < i) {
+		println("ERROR: Program requires at least 1 argument");
+		return 2;
+	};
+	char[12] str = "Hello World";
+	string str2 = "Hello World";
+	for (int j = 0; i < sizeof(str); i++) {
+		if (str[i] <= 91) {
+			println("lower");
+		};
+	};
+	println("\n");
+	println("Program exit successful!");
+	return 0;
+}
+#END
+
+#MODULE util
+#using std.core
+void sort(int[] arr) {
+	for(long i = 0; i < sizeof(arr); i++) {
+		printf("Not today");
+	}
+	return;
+}
+#END

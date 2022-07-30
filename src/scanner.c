@@ -46,7 +46,8 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 	npc_debug_log(debug, "{Lex} - now lexing.");
 	char outputbuf[100];
 	size_t token_index = 0;
-	while (*(code + position) != '\0') {
+	// is a hack to prevent it from stopping to scanning when we found the #end token
+	while (state != 0 || *(code + position) != '\0') {
 		cur = code + position;
 		token_index = arr->used;
 		sprintf(outputbuf, "{char=%c|state=%d}", *cur, state);

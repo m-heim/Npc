@@ -36,7 +36,7 @@ parser_result *parse_program(scanner_result res, int debug) {
 	if (debug) {
 		print_tree(parser->tree, 0);
 	}
-	return parser_result_make(parser->tree, res.table, type_table);
+	return parser_result_make(parser->tree, res.table,type_table);
 }
 
 void parse_syntax_err(parser *parser, char *err) {
@@ -278,6 +278,7 @@ void return_statement(parser *parser) {
 	match_no_append(parser, return_keyword_token);
 	// should also be able to return statement?
 	expression(parser);
+	match_no_append(parser, semicolon_token);
 
 	parser->tree = ast_get_parent(parser->tree);
 	if (parser->debug) {
@@ -329,6 +330,7 @@ void assignment(parser *parser) {
 	match_by_class(parser, assign_c);
 
 	expression(parser);
+	match(parser, semicolon_token);
 	parser->tree = ast_get_parent(parser->tree);
 }
 
@@ -357,8 +359,10 @@ void statement(parser *parser) {
 			opening_bracket_token) {
 			fun_call(parser);
 		} else if (token_array_get_token_type_class(
-					   parser->arr, parser->position) == type_c) {
-			declaration(parser);
+					   parser->arr, parser->position + 1) == assign_c) {
+			assignment(parser);
+		} else {
+			parse_syntax_err(parser, "Expected Function call or assignment");
 		}
 	} else if (token_array_get_token_type(parser->arr, parser->position) ==
 			   return_keyword_token) {
@@ -468,8 +472,9 @@ void declaration(parser *parser) {
 	match(parser, identifier_token);
 	if (token_array_get_token_type(parser->arr, parser->position) ==
 		assignment_token) {
-		match(parser, assignment_token);
+		match_no_append(parser, assignment_token);
 		expression(parser);
+		match_no_append(parser, semicolon_token);
 	} else {
 		parse_syntax_err(parser, "expected assignment token");
 	}
@@ -495,7 +500,9 @@ void fun_call(parser *parser) {
 		argument_list(parser);
 	}
 	match_no_append(parser, closing_bracket_token);
+	match_no_append(parser, semicolon_token);
 	parser->tree = ast_get_parent(parser->tree);
+	npc_debug_log(parser->debug, "Parsing function call done");
 }
 
 void argument(parser *parser) {
@@ -605,7 +612,6 @@ void block(parser *parser) {
 	while (token_array_get_token_type(parser->arr, parser->position) !=
 		   closing_c_bracket_token) {
 		statement(parser);
-		match_no_append(parser, semicolon_token);
 	}
 
 	match_no_append(parser, closing_c_bracket_token);
@@ -692,8 +698,8 @@ void print_tree(ast *tree, int depth) {
 
 void match(parser *parser, token_type type) {
 	if (parser->debug) {
-		printf("Matching %s at %ld\n", token_type_get_canonial(type),
-			   parser->position);
+		printf("Matching %s at %ld, got %s\n", token_type_get_canonial(type),
+			   parser->position, token_type_get_canonial(token_array_get_token_type(parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type(parser->arr, parser->position) == type) {
 		ast_append(parser->tree,
@@ -707,8 +713,8 @@ void match(parser *parser, token_type type) {
 
 void match_no_append(parser *parser, token_type type) {
 	if (parser->debug) {
-		printf("Matching %s at %ld\n", token_type_get_canonial(type),
-			   parser->position);
+		printf("Matching %s at %ld, got %s\n", token_type_get_canonial(type),
+			   parser->position, token_type_get_canonial(token_array_get_token_type(parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type(parser->arr, parser->position) == type) {
 		parser->position++;
@@ -720,8 +726,8 @@ void match_no_append(parser *parser, token_type type) {
 
 void match_by_class(parser *parser, token_type_class type) {
 	if (parser->debug) {
-		printf("Matching %s at %ld\n", token_type_get_class(type),
-			   parser->position);
+		printf("Matching %s at %ld, got %s\n", token_type_get_class(type),
+			   parser->position, token_type_get_class(token_array_get_token_type_class(parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type_class(parser->arr, parser->position) ==
 		type) {
@@ -736,8 +742,8 @@ void match_by_class(parser *parser, token_type_class type) {
 
 void match_by_class_no_append(parser *parser, token_type_class type) {
 	if (parser->debug) {
-		printf("Matching %s at %ld\n", token_type_get_class(type),
-			   parser->position);
+		printf("Matching %s at %ld, got %s\n", token_type_get_class(type),
+			   parser->position, token_type_get_class(token_array_get_token_type_class(parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type_class(parser->arr, parser->position) ==
 		type) {

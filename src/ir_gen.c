@@ -47,13 +47,12 @@ ir_gen_result generate(parser_result parser_out) {
 	while (1) {
 	}
 }
-/*
-ir_gen_result *translate(ir_gen_result *i_result, parser_result parser_result,
+/*ir_gen_result *translate(ir_gen *ir_gen,
 						 long place) {
-  ast *tree = parser_result.tree;
+  ast *tree = ir_gen->parser_result.tree;
   switch (tree->n.type) {
   case function_n:
-	three_address_code_add(i_result->code, MAXIMUM_LABEL, funheader,
+	three_address_code_add(ir_gen.code, MAXIMUM_LABEL, funheader,
 						   address_undefined, UNDEFINED, address_undefined,
 						   UNDEFINED, address_undefined, UNDEFINED);
 	if (tree->children[2]->n.type == parameter_list_n) {
@@ -131,8 +130,8 @@ ir_gen_result *translate(ir_gen_result *i_result, parser_result parser_result,
   }
 }
 */
-
-/*three_address_code_op get_op(token_type type) {
+/*
+three_address_code_op get_op(token_type type) {
   if (type == identifier_token) {
 	return "identifier_token";
   } else if (type == assignment_token) {
@@ -258,8 +257,9 @@ ir_gen_result *translate(ir_gen_result *i_result, parser_result parser_result,
   }
 }
 */
-
+/*
 long new_var() {
 	static long current;
 	return current++;
 }
+*/

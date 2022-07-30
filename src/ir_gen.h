@@ -11,8 +11,15 @@ typedef struct v_table {
 	size_t used;
 } v_table;
 
-// The result of the IR generation, it holds the three address code and the
-// variable table
+typedef struct ir_gen {
+	parser_result parser_result;
+	v_table v_table;
+	three_address_code code;
+} ir_gen;
+
+/**
+* @brief Holds the output of the intermediate repr. generation, consists of the corresponding three address code and the
+*/
 typedef struct ir_gen_result {
 	three_address_code *code;
 	v_table *table;
