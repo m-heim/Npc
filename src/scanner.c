@@ -1,8 +1,8 @@
 #include "scanner.h"
 #include "char_utils.h"
 #include "log.h"
-#include "token.h"
 #include "symbol_table.h"
+#include "token.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,12 +44,12 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 	int state = 0;
 	size_t line = 0;
 	npc_debug_log(debug, "{Lex} - now lexing.");
-	char outputbuf[20];
+	char outputbuf[100];
 	size_t token_index = 0;
 	while (*(code + position) != '\0') {
 		cur = code + position;
 		token_index = arr->used;
-		sprintf(outputbuf, "{char=%c|state=%d}\n", *cur, state);
+		sprintf(outputbuf, "{char=%c|state=%d}", *cur, state);
 		npc_debug_log(debug, outputbuf);
 		// if we arent in any specific state rn
 		if (state == 0) {
@@ -107,6 +107,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 			} else if (*cur == ',') {
 				state = 133;
 			} else {
+				npc_log(log_bad, "Unknown start of token");
 				lexing_error(start_position, line, start,
 							 position - start_position + 1);
 			}
@@ -160,6 +161,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 			}
 		} else if (state == 38) {
 			if (*cur == '\'') {
+				npc_log(log_bad, "Empty char not allowed");
 				lexing_error(start_position, line, start,
 							 position - start_position + 1);
 			} else if (*cur == '\\') {
@@ -172,6 +174,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 				*cur == 'f' || *cur == '\'' || *cur == '\\') {
 				state = 39;
 			} else {
+				npc_log(log_bad, "Unknown escape");
 				lexing_error(start_position, line, start,
 							 position - start_position + 1);
 			}
@@ -228,6 +231,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 		if (state > 99 && state <= 199) {
 			token_type ntype;
 			token_type_class type_class;
+			// We have an identifier
 			if (state == 100) {
 				position--;
 				len = position - start_position + 1;
@@ -363,6 +367,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 				ntype = colon_token;
 				type_class = punctuation_c;
 			} else if (state == 132) {
+				// directive
 				position--;
 				len = position - start_position + 1;
 				if (len == 8 && strncmp(start, "#PROGRAM", len) == 0) {
@@ -381,6 +386,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 					ntype = end_directive_token;
 					type_class = prim_directive_c;
 				} else {
+					npc_log(log_bad, "Not a valid directive");
 					lexing_error(start_position, line, start,
 								 position - start_position + 1);
 				}
@@ -388,7 +394,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 				ntype = comma_token;
 				type_class = punctuation_c;
 			} else {
-				npc_log(log_bad, "Not implemented, state");
+				npc_log(log_intern, "Not implemented, state");
 				lexing_error(start_position, line, start,
 							 position - start_position + 1);
 			}
@@ -397,9 +403,10 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 			// get length of the token
 			len = cur - start + 1;
 
-			token_array_add(arr, ntype, type_class, token_index);
+			token_array_add(arr, ntype, type_class, start_position);
 			if (debug != 0) {
-				printf("Added %s\n", token_type_get_canonial(ntype));
+				sprintf(outputbuf, "Added %s", token_type_get_canonial(ntype));
+				npc_debug_log(debug, outputbuf);
 			}
 			if (ntype == identifier_token || type_class == literal_c) {
 				symbol_table_add(table, start_position, line, start, len);
@@ -423,7 +430,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 			start = cur + 1;
 			start_position = position + 1;
 		} else if (state > 299) {
-			state = 0;
+			npc_log(log_intern, "Not implemented state");
 		}
 		position++;
 	}
@@ -434,7 +441,14 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 		fclose(file);
 	}
 	if (debug != 0) {
+		printf("--------Start of symbol table--------\n");
 		write_symbol_table(stdout, result.table);
+		printf("--------End of symbol table--------\n");
+	}
+	if (debug != 0) {
+		printf("--------Start of tokens--------\n");
+		print_tokens(result.token_array);
+		printf("--------End of tokens--------\n");
 	}
 	return result;
 }

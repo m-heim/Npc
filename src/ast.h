@@ -54,4 +54,6 @@ ast *ast_get_parent(ast *tree);
 
 ast *ast_get_root(ast *tree);
 
+void ast_append(ast *tree, token *token);
+
 #endif

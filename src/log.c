@@ -19,6 +19,9 @@ int npc_log(log_level level, const char *message) {
 	if (level == log_debug) {
 		printf("[DEB] %s\n", message);
 	}
+	if (level == log_intern) {
+		printf("[INTERN] %s\n", message);
+	}
 	return 0;
 }
 int npc_debug_log(int is_debug, const char *message) {

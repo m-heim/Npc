@@ -51,3 +51,9 @@ ast *ast_get_root(ast *tree) {
 	}
 	return root;
 }
+
+void ast_append(ast *tree, token *token) {
+	ast_add(tree, ast_make());
+	ast_set_token(ast_get_last(tree), token);
+	return;
+}

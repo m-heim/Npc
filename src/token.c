@@ -3,11 +3,11 @@
 
 // make a new token with the given type and the value which is an entry in the
 // symbol table
-token *token_make(token_type type, token_type_class type_class, long value) {
+token *token_make(token_type type, token_type_class type_class, size_t position) {
 	token *n = malloc(sizeof(token));
 	n->type = type;
 	n->type_class = type_class;
-	n->value = value;
+	n->position = position;
 	return n;
 }
 
@@ -20,13 +20,13 @@ token_array *token_array_make() {
 	return arr;
 }
 
-token_type_class token_array_get_token_type_class(token_array *arr, long position) {
-	return arr->token_array[position].type_class;
+token_type_class token_array_get_token_type_class(token_array *arr, size_t index) {
+	return arr->token_array[index].type_class;
 }
 
 // add a new entry to the token array
 void token_array_add(token_array *arr, token_type type, token_type_class type_class,
-					long value) {
+					size_t position) {
 	if (arr->used == arr->size) {
 		arr->token_array =
 			realloc(arr->token_array, arr->size * 2 * sizeof(token));
@@ -34,27 +34,24 @@ void token_array_add(token_array *arr, token_type type, token_type_class type_cl
 	}
 	arr->token_array[arr->used].type = type;
 	arr->token_array[arr->used].type_class = type_class;
-	arr->token_array[arr->used].value = value;
+	arr->token_array[arr->used].position = position;
 	arr->used += 1;
 }
 
 // get the token type of a token
-token_type token_array_get_token_type(token_array *arr, long position) {
-	return (arr->token_array[position]).type;
+token_type token_array_get_token_type(token_array *arr, size_t index) {
+	return (arr->token_array[index]).type;
 }
 
 // get a pointer to the token of an array
-token *token_array_get_token(token_array *arr, long position) {
-	return &(arr->token_array[position]);
+token *token_array_get_token(token_array *arr, size_t index) {
+	return &(arr->token_array[index]);
 }
 
-long *token_array_get_val(token_array *arr, long position) {
-	return &(arr->token_array[position].value);
-}
 
 void print_tokens(token_array *arr) {
 	for (int i = 0; i < arr->used; i++) {
-		printf("%i %s", i,
+		printf("%i %s\n", i,
 			   token_type_get_canonial(token_array_get_token_type(arr, i)));
 	}
 }

@@ -1,9 +1,9 @@
 #include "parser.h"
 #include "ast.h"
 #include "log.h"
-#include "token.h"
 #include "scanner.h"
 #include "symbol_table.h"
+#include "token.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -69,7 +69,8 @@ void function(parser *parser) {
 		printf("Parsing FUNCTION\n");
 	}
 	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree), token_make(function_n, nont_c, -1));
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(function_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -122,7 +123,7 @@ void functions(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(functions_n, nont_c, -1));
+				  token_make(functions_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 	do {
@@ -138,7 +139,7 @@ void parameter(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(parameter_n, nont_c, -1));
+				  token_make(parameter_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -154,7 +155,7 @@ void parameter_list(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(parameter_list_n, nont_c, -1));
+				  token_make(parameter_list_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 	parameter(parser);
@@ -198,7 +199,7 @@ void program_directive(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(program_directive_n, nont_c, -1));
+				  token_make(program_directive_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -216,7 +217,7 @@ void module_directive(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(module_directive_n, nont_c, -1));
+				  token_make(module_directive_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -231,7 +232,7 @@ void include_directive(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(include_directive_n, nont_c, -1));
+				  token_make(include_directive_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -246,7 +247,7 @@ void if_statement(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(if_statement_n, nont_c, -1));
+				  token_make(if_statement_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -270,7 +271,7 @@ void return_statement(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(return_statement_n, nont_c, -1));
+				  token_make(return_statement_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -290,7 +291,7 @@ void for_statement(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(for_statement_n, nont_c, -1));
+				  token_make(for_statement_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -319,7 +320,7 @@ void assignment(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(if_statement_n, nont_c, -1));
+				  token_make(if_statement_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -337,15 +338,15 @@ void statement(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(statement_n, nont_c, -1));
+				  token_make(statement_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
 	if (token_array_get_token_type(parser->arr, parser->position) ==
 		if_keyword_token) {
 		if_statement(parser);
-	} else if (token_array_get_token_type_class(parser->arr, parser->position) ==
-			   type_c) {
+	} else if (token_array_get_token_type_class(parser->arr,
+												parser->position) == type_c) {
 		declaration(parser);
 	} else if (token_array_get_token_type(parser->arr, parser->position) ==
 			   for_keyword_token) {
@@ -355,8 +356,8 @@ void statement(parser *parser) {
 		if (token_array_get_token_type(parser->arr, parser->position + 1) ==
 			opening_bracket_token) {
 			fun_call(parser);
-		} else if (token_array_get_token_type_class(parser->arr,
-												  parser->position) == type_c) {
+		} else if (token_array_get_token_type_class(
+					   parser->arr, parser->position) == type_c) {
 			declaration(parser);
 		}
 	} else if (token_array_get_token_type(parser->arr, parser->position) ==
@@ -372,7 +373,7 @@ void simple_expression(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(simple_expression_n, nont_c, -1));
+				  token_make(simple_expression_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -396,7 +397,7 @@ void expression(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(expression_n, nont_c, -1));
+				  token_make(expression_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -439,7 +440,7 @@ void var(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(if_statement_n, nont_c, -1));
+				  token_make(if_statement_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -459,7 +460,7 @@ void declaration(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(declaration_n, nont_c, -1));
+				  token_make(declaration_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -481,7 +482,7 @@ void fun_call(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(function_call_n, nont_c, -1));
+				  token_make(function_call_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -502,7 +503,8 @@ void argument(parser *parser) {
 		printf("Parsing Argument\n");
 	}
 	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree), token_make(argument_n, nont_c, -1));
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(argument_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -516,7 +518,7 @@ void argument_list(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(argument_list_n, nont_c, -1));
+				  token_make(argument_list_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 	token_type next = token_array_get_token_type(parser->arr, parser->position);
@@ -557,12 +559,12 @@ void factor(parser *parser) {
 			opening_bracket_token) {
 			fun_call(parser);
 		} else if (token_array_get_token_type(parser->arr,
-											parser->position + 1) ==
+											  parser->position + 1) ==
 				   increment_operator_token) {
 			var(parser);
 			match(parser, increment_operator_token);
 		} else if (token_array_get_token_type(parser->arr,
-											parser->position + 1) ==
+											  parser->position + 1) ==
 				   decrement_operator_token) {
 			var(parser);
 			match(parser, decrement_operator_token);
@@ -611,7 +613,6 @@ void block(parser *parser) {
 	if (parser->debug) {
 		printf("Parsing block done.\n");
 	}
-
 }
 
 void include_directive_select(parser *parser) {
@@ -620,7 +621,7 @@ void include_directive_select(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(include_directive_subselect_n, nont_c, -1));
+				  token_make(include_directive_subselect_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 	do {
@@ -645,7 +646,7 @@ void secondary_directives(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(secondarydirective_n, nont_c, -1));
+				  token_make(secondarydirective_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -668,7 +669,7 @@ void secondary_directive_list(parser *parser) {
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				 token_make(secondarydirective_list_n, nont_c, -1));
+				  token_make(secondarydirective_list_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 
@@ -680,23 +681,23 @@ void secondary_directive_list(parser *parser) {
 }
 
 void print_tree(ast *tree, int depth) {
-	int i;
-	for (i = 0; i < depth; i++) {
+	for (int i = 0; i < depth; i++) {
 		printf("  ");
 	}
 	printf("> %s\n", token_type_get_canonial(tree->n.type));
-	for (i = 0; i < tree->used; i++) {
+	for (int i = 0; i < tree->used; i++) {
 		print_tree(tree->children[i], depth + 1);
 	}
 }
 
 void match(parser *parser, token_type type) {
-	printf("Matching %s at %ld\n", token_type_get_canonial(type),
-		   parser->position);
+	if (parser->debug) {
+		printf("Matching %s at %ld\n", token_type_get_canonial(type),
+			   parser->position);
+	}
 	if (token_array_get_token_type(parser->arr, parser->position) == type) {
-		ast_add(parser->tree, ast_make());
-		ast_set_token(ast_get_last(parser->tree),
-					 token_array_get_token(parser->arr, parser->position));
+		ast_append(parser->tree,
+				   token_array_get_token(parser->arr, parser->position));
 		parser->position++;
 	} else {
 		parse_syntax_err(parser, "expected differently in match");
@@ -705,8 +706,10 @@ void match(parser *parser, token_type type) {
 }
 
 void match_no_append(parser *parser, token_type type) {
-	printf("Matching %s at %ld\n", token_type_get_canonial(type),
-		   parser->position);
+	if (parser->debug) {
+		printf("Matching %s at %ld\n", token_type_get_canonial(type),
+			   parser->position);
+	}
 	if (token_array_get_token_type(parser->arr, parser->position) == type) {
 		parser->position++;
 	} else {
@@ -716,12 +719,14 @@ void match_no_append(parser *parser, token_type type) {
 }
 
 void match_by_class(parser *parser, token_type_class type) {
-	printf("Matching %s at position nr %ld\n", token_type_get_class(type),
-		   parser->position);
-	if (token_array_get_token_type_class(parser->arr, parser->position) == type) {
-		ast_add(parser->tree, ast_make());
-		ast_set_token(ast_get_last(parser->tree),
-					 token_array_get_token(parser->arr, parser->position));
+	if (parser->debug) {
+		printf("Matching %s at %ld\n", token_type_get_class(type),
+			   parser->position);
+	}
+	if (token_array_get_token_type_class(parser->arr, parser->position) ==
+		type) {
+		ast_append(parser->tree,
+				   token_array_get_token(parser->arr, parser->position));
 		parser->position++;
 	} else {
 		parse_syntax_err(parser, "expected differently in match by class");
@@ -730,9 +735,12 @@ void match_by_class(parser *parser, token_type_class type) {
 }
 
 void match_by_class_no_append(parser *parser, token_type_class type) {
-	printf("Matching %s at position nr %ld\n", token_type_get_class(type),
-		   parser->position);
-	if (token_array_get_token_type_class(parser->arr, parser->position) == type) {
+	if (parser->debug) {
+		printf("Matching %s at %ld\n", token_type_get_class(type),
+			   parser->position);
+	}
+	if (token_array_get_token_type_class(parser->arr, parser->position) ==
+		type) {
 		parser->position++;
 	} else {
 		parse_syntax_err(parser,

@@ -13,7 +13,7 @@ typedef enum token_type {
 	identifier_token,
 	assignment_token,
 
-	///@{ 
+	///@{
 	/* operators += /= *= -= */
 	imm_minus_operator_token,
 	imm_plus_operator_token,
@@ -74,7 +74,6 @@ typedef enum token_type {
 	float_type_token,
 	long_type_token,
 
-	
 	return_keyword_token,
 	for_keyword_token,
 	while_keyword_token,
@@ -118,7 +117,7 @@ typedef enum token_type {
 
 } token_type;
 
-typedef enum token_type_class{
+typedef enum token_type_class {
 	unop_c,
 	binop_c,
 	assign_c,
@@ -139,26 +138,29 @@ typedef enum token_type_class{
 typedef struct token {
 	token_type type;
 	token_type_class type_class;
-	long value;
+	size_t position;
 } token;
 
-typedef struct token_array{
+typedef struct token_array {
 	token *token_array;
-	long used;
-	long size;
+	size_t used;
+	size_t size;
 } token_array;
 
 token_array *token_array_make();
-void token_array_add(token_array *arr, token_type type, token_type_class type_class,
-					long value);
+void token_array_add(token_array *arr, token_type type,
+					 token_type_class type_class, size_t position);
 
-token_type token_array_get_token_type(token_array *arr, long position);
-token_type_class token_array_get_token_type_class(token_array *arr, long position);
+token_type token_array_get_token_type(token_array *arr, size_t index);
+token_type_class token_array_get_token_type_class(token_array *arr,
+												  size_t index);
 
-token *token_array_get_token(token_array *arr, long position);
+token *token_array_get_token(token_array *arr, size_t index);
 
-long *token_array_get_val(token_array *arr, long position);
-token *token_make(token_type type, token_type_class type_class, long value);
+void print_tokens(token_array *arr);
+
+token *token_make(token_type type, token_type_class type_class,
+				  size_t position);
 
 char *token_type_get_canonial(token_type type);
 

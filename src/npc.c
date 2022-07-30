@@ -11,7 +11,7 @@ int main_debug = 0;
 int export_symbol = 0;
 int export_tree = 0;
 int lexer_debug = 0;
-int parser_debug = 0;
+int parse_debug = 0;
 int ir_debug = 0;
 int main(int argc, char **argv) {
 	if (argc <= 1) {
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	}
 	// set debug flag
 	for (int i = 1; i <= argc - 1; i++) {
-		if (strcmp(argv[i], "-d") == 0) {
+		if (strcmp(argv[i], "--debug") == 0) {
 			main_debug = 1;
 		}
 		if (strcmp(argv[i], "--export-symbol") == 0) {
@@ -41,18 +41,12 @@ int main(int argc, char **argv) {
 		if (strcmp(argv[i], "--ir-debug") == 0) {
 			lexer_debug = 1;
 		}
-	}
-	scanner_result lexer_result = lex(read_program(fp), lexer_debug || main_debug, export_tree);
-	if (main_debug) {
-		printf("Pos\tType\n");
-		for (int i = 0; i < lexer_result.token_array->used; i++) {
-			printf("%d, %s\n", i,
-				   token_type_get_canonial(
-					   token_array_get_token_type(lexer_result.token_array, i)));
+		if (strcmp(argv[i], "--parse-debug") == 0) {
+			parse_debug = 1;
 		}
-		printf("Position,\tline\tval\n");
 	}
-	parser_result *parser_res = parse_program(lexer_result, main_debug || parser_debug);
+	scanner_result lexer_result = lex(read_program(fp), lexer_debug || main_debug, export_symbol);
+	parser_result *parser_res = parse_program(lexer_result, main_debug || parse_debug);
 	return 0;
 }
 char *read_program(FILE *fp) {
