@@ -1,4 +1,3 @@
 *.o
-build/*
-!build/test_program.npc
-!build/CMakeLists.txt
+build
+.cache

@@ -9,5 +9,8 @@
     "author",
     "date",
     "version"
-    ]
+    ],
+    "cmake.sourceDirectory": "${workspaceFolder}/src",
+    "cmake.configureOnOpen": true,
+    "C_Cpp.intelliSenseEngine": "Disabled"
 }
