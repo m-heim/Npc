@@ -11,5 +11,6 @@
     "version"
     ],
     "cmake.sourceDirectory": "${workspaceFolder}/src",
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "C_Cpp.intelliSenseEngine": "Disabled"
 }
