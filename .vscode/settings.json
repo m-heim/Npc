@@ -9,5 +9,6 @@
     "author",
     "date",
     "version"
-    ]
+    ],
+    "cmake.sourceDirectory": "${workspaceFolder}/src"
 }
