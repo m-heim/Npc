@@ -10,5 +10,6 @@
     "date",
     "version"
     ],
-    "cmake.sourceDirectory": "${workspaceFolder}/src"
+    "cmake.sourceDirectory": "${workspaceFolder}/src",
+    "cmake.configureOnOpen": true
 }
