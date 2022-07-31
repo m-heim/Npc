@@ -11,6 +11,11 @@
 			"group": "build",
 			"problemMatcher": [],
 			"detail": "CMake template build task"
+		},
+		{
+			"type": "shell",
+			"label": "generate doc",
+			"command": "sh ${workspaceFolder}/documentation/make_doc.sh",
 		}
 	]
 }

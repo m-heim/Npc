@@ -1,4 +1,5 @@
-rm refman.pdf
+cd $(dirname "$0")
+rm -f refman.pdf
 doxygen doxygen.conf
 cd latex
 make
