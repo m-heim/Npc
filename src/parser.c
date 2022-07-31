@@ -330,7 +330,7 @@ void assignment(parser *parser) {
 	match_by_class(parser, assign_c);
 
 	expression(parser);
-	match(parser, semicolon_token);
+	match_no_append(parser, semicolon_token);
 	parser->tree = ast_get_parent(parser->tree);
 }
 
@@ -474,7 +474,7 @@ void declaration(parser *parser) {
 		assignment_token) {
 		match_no_append(parser, assignment_token);
 		expression(parser);
-		match_no_append(parser, semicolon_token);
+		match(parser, semicolon_token);
 	} else {
 		parse_syntax_err(parser, "expected assignment token");
 	}
@@ -500,7 +500,6 @@ void fun_call(parser *parser) {
 		argument_list(parser);
 	}
 	match_no_append(parser, closing_bracket_token);
-	match_no_append(parser, semicolon_token);
 	parser->tree = ast_get_parent(parser->tree);
 	npc_debug_log(parser->debug, "Parsing function call done");
 }

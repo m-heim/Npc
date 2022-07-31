@@ -12,14 +12,14 @@ int main(int argc, string[] argv) {
 	if (argc < i) {
 		println("ERROR: Program requires at least 1 argument");
 		return 2;
-	};
+	}
 	char[12] str = "Hello World";
 	string str2 = "Hello World";
 	for (int j = 0; i < sizeof(str); i++) {
 		if (str[i] <= 91) {
 			println("lower");
-		};
-	};
+		}
+	}
 	println("\n");
 	println("Program exit successful!");
 	return 0;
