@@ -1,4 +1,4 @@
 *.o
 build
 .cache
-documentation/parser/The syntax of C in Backus-Naur form.htm
+documentation/parser/c-syntax.html

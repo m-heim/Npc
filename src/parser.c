@@ -330,7 +330,36 @@ void assignment(parser *parser) {
 	match_by_class(parser, assign_c);
 
 	expression(parser);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void expression_statement(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing Expression Statement\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(expression_statement_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+	expression(parser);
 	match_no_append(parser, semicolon_token);
+
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void jump_statement(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing Jump Statement\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(expression_statement_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+	if()
+	match_no_append(parser, semicolon_token);
+
 	parser->tree = ast_get_parent(parser->tree);
 }
 
@@ -474,7 +503,6 @@ void declaration(parser *parser) {
 		assignment_token) {
 		match_no_append(parser, assignment_token);
 		expression(parser);
-		match(parser, semicolon_token);
 	} else {
 		parse_syntax_err(parser, "expected assignment token");
 	}

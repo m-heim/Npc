@@ -112,6 +112,8 @@ typedef enum token_type {
 	parameter_list_n,
 	type_n,
 	statement_n,
+	jump_statement_n,
+	expression_statement_n,
 	simple_expression_n,
 	function_call_n
 
