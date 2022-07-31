@@ -459,7 +459,6 @@ void statement(parser *parser) {
 				   continue_keyword_token ||
 			   token_array_get_token_type(parser->arr, parser->position) ==
 				   break_keyword_token) {
-		jum
 	}
 	parser->tree = ast_get_parent(parser->tree);
 }
@@ -786,6 +785,7 @@ void match_by_class(parser *parser, token_type_class type) {
 			   token_type_get_class(token_array_get_token_type_class(
 				   parser->arr, parser->position)));
 	}
+	int i = 0;
 	if (token_array_get_token_type_class(parser->arr, parser->position) ==
 		type) {
 		ast_append(parser->tree,
