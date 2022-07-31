@@ -1,4 +1,4 @@
 *.o
 build
 .cache
-documentation/parser/c-syntax.html
+c-syntax.html

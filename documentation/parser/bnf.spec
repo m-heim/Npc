@@ -3,13 +3,11 @@ unop 		::= ! | ++ | --
 binop 		::= + | - | * | / | ** | %  | < | <= | > | >=
 assignment	::= += | -= | *= | /= | =
 type            ::= "float" | "int" | "char" | "string"
-// Literals
 string_literal  ::= \"[[:any:]]*\"
 char_literal    ::= '[[:any:]]'
 int_literal     ::= [0-9]+
 float_literal   ::= [0-9]+.[0-9]+
 bool_literal    ::= "true" | "false"
-
 literal         ::= <string_literal> | <char_literal> | <int_literal> | <float_literal> | <bool_literal>
 
 
@@ -24,8 +22,8 @@ module			    ::= <module_directive> <secondary_directive_list>? <functions>
 function		    ::= <identifier_token> (<parameter_list>):<type> {statement}
 functions		    ::= function functions | function
 
-declaration     	::= <type> <identifier> <semicolon_token> | <type> <identifier> "=" <exp> ";"
-assignment_expressio::= <identifier> <assignment_operator> <expression> ";"
+declaration     	::= <type> <identifier> ; | <type> <identifier> = <exp> ;
+assignment_expressio::= <identifier> <assignment_operator> <expression>
 
 factor          	::= <unop> <factor> | <var> "++" | <var> "--" | "(" <exp> ")" | <float_literal> | <string_literal> | <char_literal> | <int_literal> | <bool_literal> | <var> | <function_call>
 term            	::= <factor> "*" <term> | <factor> "/" <term> | <factor>
@@ -35,7 +33,7 @@ expression          ::= <simple_exp> | <simple_exp> <relop> <simple_exp>
 var			        ::= <identifier> | <identifier> "[" <exp> "]"
 function_call		::= <identifier> "(" <argument_list> ")"
 
-parameter		    ::= <identifier> <identifier>
+parameter		    ::= <type> <identifier>
 parameter_list		::= <parameter> , <parameter_list> | <parameter>
 
 argument		    ::= <exp>

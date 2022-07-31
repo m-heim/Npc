@@ -266,6 +266,12 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 				} else if (len == 6 && strncmp(start, "return", len) == 0) {
 					ntype = return_keyword_token;
 					type_class = keyword_c;
+				} else if (len == 8 && strncmp(start, "continue", len) == 0) {
+					ntype = continue_keyword_token;
+					type_class = keyword_c;
+				} else if (len == 5 && strncmp(start, "break", len) == 0) {
+					ntype = break_keyword_token;
+					type_class = keyword_c;
 				} else {
 					ntype = identifier_token;
 					type_class = nac_c;

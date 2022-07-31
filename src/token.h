@@ -75,6 +75,8 @@ typedef enum token_type {
 	long_type_token,
 
 	return_keyword_token,
+	continue_keyword_token,
+	break_keyword_token,
 	for_keyword_token,
 	while_keyword_token,
 	if_keyword_token,
@@ -85,6 +87,8 @@ typedef enum token_type {
 	// Ntm
 	if_statement_n,
 	return_statement_n,
+	continue_statement_n,
+	break_statement_n,
 	for_statement_n,
 	expression_n,
 	factor_n,

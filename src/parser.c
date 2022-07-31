@@ -15,6 +15,7 @@ parser_result *parser_result_make(ast *tree, symbol_table *table,
 	res->tree = tree;
 	return res;
 }
+
 parser *parser_make(ast *tree, symbol_table *table, int debug,
 					token_array *arr) {
 	parser *p = malloc(sizeof(parser));
@@ -36,7 +37,7 @@ parser_result *parse_program(scanner_result res, int debug) {
 	if (debug) {
 		print_tree(parser->tree, 0);
 	}
-	return parser_result_make(parser->tree, res.table,type_table);
+	return parser_result_make(parser->tree, res.table, type_table);
 }
 
 void parse_syntax_err(parser *parser, char *err) {
@@ -64,132 +65,69 @@ void program(parser *parser) {
 	match_no_append(parser, end_directive_token);
 }
 
-void function(parser *parser) {
+// directives
+void include_directive_select(parser *parser) {
 	if (parser->debug) {
-		printf("Parsing FUNCTION\n");
+		printf("Parsing DIR SELECTT\n");
 	}
 	ast_add(parser->tree, ast_make());
 	ast_set_token(ast_get_last(parser->tree),
-				  token_make(function_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	type(parser);
-	match(parser, identifier_token);
-	match_no_append(parser, opening_bracket_token);
-
-	if (token_array_get_token_type(parser->arr, parser->position) ==
-		closing_bracket_token) {
-		match_no_append(parser, closing_bracket_token);
-	} else {
-		parameter_list(parser);
-		match_no_append(parser, closing_bracket_token);
-	}
-	block(parser);
-
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void type(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing TYPES\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree), token_make(type_n, type_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	match_by_class(parser, type_c);
-	if (token_array_get_token_type(parser->arr, parser->position) ==
-		opening_s_bracket_token) {
-		while (token_array_get_token_type(parser->arr, parser->position) ==
-			   opening_s_bracket_token) {
-			match_no_append(parser, opening_s_bracket_token);
-			if (token_array_get_token_type(parser->arr, parser->position) ==
-				int_literal_token) {
-				match(parser, int_literal_token);
-			}
-
-			match_no_append(parser, closing_s_bracket_token);
-		}
-	}
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-// Parses multiple functions, but at least one.
-void functions(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing FUNCTIONS\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(functions_n, nont_c, -1));
+				  token_make(include_directive_subselect_n, nont_c, -1));
 
 	parser->tree = ast_get_last(parser->tree);
 	do {
-		function(parser);
+		match(parser, identifier_token);
+		if (token_array_get_token_type(parser->arr, parser->position) ==
+			selector_token) {
+			match_no_append(parser, selector_token);
+		}
+		// maybe change this
+	} while (token_array_get_token_type(parser->arr, parser->position) ==
+			 identifier_token);
+
+	parser->tree = ast_get_parent(parser->tree);
+	if (parser->debug) {
+		printf("Parsing DIR SELECTT done.\n");
+	}
+}
+
+void secondary_directives(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing SEC DIR\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(secondarydirective_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	switch (token_array_get_token_type(parser->arr, parser->position)) {
+	case include_directive_token:
+		include_directive(parser);
+		break;
+	case macro_directive_token:
+		// implement
+		break;
+	default:
+		_Exit(1);
+	}
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void secondary_directive_list(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing SEC DIR LIST\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(secondarydirective_list_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	do {
+		secondary_directives(parser);
 	} while (token_array_get_token_type_class(parser->arr, parser->position) ==
-			 type_c);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void parameter(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing PARAM\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(parameter_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	type(parser);
-
-	match(parser, identifier_token);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void parameter_list(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing PARAMETER LIST\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(parameter_list_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-	parameter(parser);
-	while (token_array_get_token_type(parser->arr, parser->position) ==
-		   comma_token) {
-		match_no_append(parser, comma_token);
-		parameter(parser);
-	}
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void unop(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing UNOP\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree), token_make(unop_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	match_by_class(parser, unop_c);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void binop(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing BINOP\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree), token_make(binop_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	match_by_class(parser, binop_c);
+			 sec_directive_c);
 	parser->tree = ast_get_parent(parser->tree);
 }
 
@@ -241,6 +179,146 @@ void include_directive(parser *parser) {
 	parser->tree = ast_get_parent(parser->tree);
 }
 
+// functions
+void function(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing FUNCTION\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(function_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	type(parser);
+	match(parser, identifier_token);
+	match_no_append(parser, opening_bracket_token);
+
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		closing_bracket_token) {
+		match_no_append(parser, closing_bracket_token);
+	} else {
+		parameter_list(parser);
+		match_no_append(parser, closing_bracket_token);
+	}
+	block(parser);
+
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void functions(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing FUNCTIONS\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(functions_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+	do {
+		function(parser);
+	} while (token_array_get_token_type_class(parser->arr, parser->position) ==
+			 type_c);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void parameter(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing PARAM\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(parameter_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	type(parser);
+
+	match(parser, identifier_token);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void parameter_list(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing PARAMETER LIST\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(parameter_list_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+	parameter(parser);
+	while (token_array_get_token_type(parser->arr, parser->position) ==
+		   comma_token) {
+		match_no_append(parser, comma_token);
+		parameter(parser);
+	}
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void argument(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing Argument\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(argument_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	expression(parser);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void argument_list(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing Argumentlist\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(argument_list_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+	token_type next = token_array_get_token_type(parser->arr, parser->position);
+
+	do {
+		argument(parser);
+		next = token_array_get_token_type(parser->arr, parser->position);
+		if (next == comma_token) {
+			match_no_append(parser, comma_token);
+		}
+	} while (next == comma_token);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+// operators
+void unop(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing UNOP\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(unop_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	match_by_class(parser, unop_c);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void binop(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing BINOP\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(binop_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	match_by_class(parser, binop_c);
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+// statements
 void if_statement(parser *parser) {
 	if (parser->debug) {
 		printf("Parsing IF\n");
@@ -286,6 +364,36 @@ void return_statement(parser *parser) {
 	}
 }
 
+void continue_statement(parser *parser) {
+	npc_debug_log(parser->debug, "Parsing continue statement");
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(continue_statement_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	match_no_append(parser, continue_keyword_token);
+	match_no_append(parser, semicolon_token);
+
+	parser->tree = ast_get_parent(parser->tree);
+	npc_debug_log(parser->debug, "Parsing continue done");
+}
+
+void break_statement(parser *parser) {
+	npc_debug_log(parser->debug, "Parsing break statement");
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(break_statement_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	match_no_append(parser, break_keyword_token);
+	match_no_append(parser, semicolon_token);
+
+	parser->tree = ast_get_parent(parser->tree);
+	npc_debug_log(parser->debug, "Parsing break done");
+}
+
 void for_statement(parser *parser) {
 	if (parser->debug) {
 		printf("Parsing for statement\n");
@@ -315,54 +423,9 @@ void for_statement(parser *parser) {
 	}
 }
 
-void assignment(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing Assignment\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(if_statement_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	var(parser);
-
-	match_by_class(parser, assign_c);
-
-	expression(parser);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void expression_statement(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing Expression Statement\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(expression_statement_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-	expression(parser);
-	match_no_append(parser, semicolon_token);
-
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void jump_statement(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing Jump Statement\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(expression_statement_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-	if()
-	match_no_append(parser, semicolon_token);
-
-	parser->tree = ast_get_parent(parser->tree);
-}
-
+/* statement 	::= <jump_statement> | <while_statement> | <for_statement> |
+ * <if-statement> | <declaration>
+ */
 void statement(parser *parser) {
 	if (parser->debug) {
 		printf("Parsing Statement\n");
@@ -387,16 +450,50 @@ void statement(parser *parser) {
 		if (token_array_get_token_type(parser->arr, parser->position + 1) ==
 			opening_bracket_token) {
 			fun_call(parser);
-		} else if (token_array_get_token_type_class(
-					   parser->arr, parser->position + 1) == assign_c) {
-			assignment(parser);
 		} else {
 			parse_syntax_err(parser, "Expected Function call or assignment");
 		}
 	} else if (token_array_get_token_type(parser->arr, parser->position) ==
-			   return_keyword_token) {
-		return_statement(parser);
+				   return_keyword_token ||
+			   token_array_get_token_type(parser->arr, parser->position) ==
+				   continue_keyword_token ||
+			   token_array_get_token_type(parser->arr, parser->position) ==
+				   break_keyword_token) {
+		jum
 	}
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void expression_statement(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing Expression Statement\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(expression_statement_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+	expression(parser);
+	match_no_append(parser, semicolon_token);
+
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+void assignment(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing Assignment\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree),
+				  token_make(if_statement_n, nont_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	var(parser);
+
+	match_by_class(parser, assign_c);
+
+	expression(parser);
 	parser->tree = ast_get_parent(parser->tree);
 }
 
@@ -440,6 +537,33 @@ void expression(parser *parser) {
 		relop_c) {
 		match_by_class(parser, relop_c);
 		simple_expression(parser);
+	}
+	parser->tree = ast_get_parent(parser->tree);
+}
+
+// smalltokens
+void type(parser *parser) {
+	if (parser->debug) {
+		printf("Parsing TYPES\n");
+	}
+	ast_add(parser->tree, ast_make());
+	ast_set_token(ast_get_last(parser->tree), token_make(type_n, type_c, -1));
+
+	parser->tree = ast_get_last(parser->tree);
+
+	match_by_class(parser, type_c);
+	if (token_array_get_token_type(parser->arr, parser->position) ==
+		opening_s_bracket_token) {
+		while (token_array_get_token_type(parser->arr, parser->position) ==
+			   opening_s_bracket_token) {
+			match_no_append(parser, opening_s_bracket_token);
+			if (token_array_get_token_type(parser->arr, parser->position) ==
+				int_literal_token) {
+				match(parser, int_literal_token);
+			}
+
+			match_no_append(parser, closing_s_bracket_token);
+		}
 	}
 	parser->tree = ast_get_parent(parser->tree);
 }
@@ -532,41 +656,6 @@ void fun_call(parser *parser) {
 	npc_debug_log(parser->debug, "Parsing function call done");
 }
 
-void argument(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing Argument\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(argument_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	expression(parser);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void argument_list(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing Argumentlist\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(argument_list_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-	token_type next = token_array_get_token_type(parser->arr, parser->position);
-
-	do {
-		argument(parser);
-		next = token_array_get_token_type(parser->arr, parser->position);
-		if (next == comma_token) {
-			match_no_append(parser, comma_token);
-		}
-	} while (next == comma_token);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
 void factor(parser *parser) {
 	if (parser->debug) {
 		printf("Parsing Factor\n");
@@ -648,71 +737,6 @@ void block(parser *parser) {
 	}
 }
 
-void include_directive_select(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing DIR SELECTT\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(include_directive_subselect_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-	do {
-		match(parser, identifier_token);
-		if (token_array_get_token_type(parser->arr, parser->position) ==
-			selector_token) {
-			match_no_append(parser, selector_token);
-		}
-		// maybe change this
-	} while (token_array_get_token_type(parser->arr, parser->position) ==
-			 identifier_token);
-
-	parser->tree = ast_get_parent(parser->tree);
-	if (parser->debug) {
-		printf("Parsing DIR SELECTT done.\n");
-	}
-}
-
-void secondary_directives(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing SEC DIR\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(secondarydirective_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	switch (token_array_get_token_type(parser->arr, parser->position)) {
-	case include_directive_token:
-		include_directive(parser);
-		break;
-	case macro_directive_token:
-		// implement
-		break;
-	default:
-		_Exit(1);
-	}
-	parser->tree = ast_get_parent(parser->tree);
-}
-
-void secondary_directive_list(parser *parser) {
-	if (parser->debug) {
-		printf("Parsing SEC DIR LIST\n");
-	}
-	ast_add(parser->tree, ast_make());
-	ast_set_token(ast_get_last(parser->tree),
-				  token_make(secondarydirective_list_n, nont_c, -1));
-
-	parser->tree = ast_get_last(parser->tree);
-
-	do {
-		secondary_directives(parser);
-	} while (token_array_get_token_type_class(parser->arr, parser->position) ==
-			 sec_directive_c);
-	parser->tree = ast_get_parent(parser->tree);
-}
-
 void print_tree(ast *tree, int depth) {
 	for (int i = 0; i < depth; i++) {
 		printf("  ");
@@ -726,7 +750,9 @@ void print_tree(ast *tree, int depth) {
 void match(parser *parser, token_type type) {
 	if (parser->debug) {
 		printf("Matching %s at %ld, got %s\n", token_type_get_canonial(type),
-			   parser->position, token_type_get_canonial(token_array_get_token_type(parser->arr, parser->position)));
+			   parser->position,
+			   token_type_get_canonial(
+				   token_array_get_token_type(parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type(parser->arr, parser->position) == type) {
 		ast_append(parser->tree,
@@ -741,7 +767,9 @@ void match(parser *parser, token_type type) {
 void match_no_append(parser *parser, token_type type) {
 	if (parser->debug) {
 		printf("Matching %s at %ld, got %s\n", token_type_get_canonial(type),
-			   parser->position, token_type_get_canonial(token_array_get_token_type(parser->arr, parser->position)));
+			   parser->position,
+			   token_type_get_canonial(
+				   token_array_get_token_type(parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type(parser->arr, parser->position) == type) {
 		parser->position++;
@@ -754,7 +782,9 @@ void match_no_append(parser *parser, token_type type) {
 void match_by_class(parser *parser, token_type_class type) {
 	if (parser->debug) {
 		printf("Matching %s at %ld, got %s\n", token_type_get_class(type),
-			   parser->position, token_type_get_class(token_array_get_token_type_class(parser->arr, parser->position)));
+			   parser->position,
+			   token_type_get_class(token_array_get_token_type_class(
+				   parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type_class(parser->arr, parser->position) ==
 		type) {
@@ -770,7 +800,9 @@ void match_by_class(parser *parser, token_type_class type) {
 void match_by_class_no_append(parser *parser, token_type_class type) {
 	if (parser->debug) {
 		printf("Matching %s at %ld, got %s\n", token_type_get_class(type),
-			   parser->position, token_type_get_class(token_array_get_token_type_class(parser->arr, parser->position)));
+			   parser->position,
+			   token_type_get_class(token_array_get_token_type_class(
+				   parser->arr, parser->position)));
 	}
 	if (token_array_get_token_type_class(parser->arr, parser->position) ==
 		type) {
