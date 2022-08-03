@@ -236,22 +236,7 @@ scanner_result lex(char *code, int debug, int export_symbol) {
 			if (state == 100) {
 				position--;
 				len = position - start_position + 1;
-				if (len == 3 && strncmp(start, "int", len) == 0) {
-					ntype = int_type_token;
-					type_class = type_c;
-				} else if (len == 4 && strncmp(start, "long", len) == 0) {
-					ntype = long_type_token;
-					type_class = type_c;
-				} else if (len == 6 && strncmp(start, "string", len) == 0) {
-					ntype = string_type_token;
-					type_class = type_c;
-				} else if (len == 4 && strncmp(start, "char", len) == 0) {
-					ntype = char_type_token;
-					type_class = type_c;
-				} else if (len == 5 && strncmp(start, "float", len) == 0) {
-					ntype = float_type_token;
-					type_class = type_c;
-				} else if (len == 2 && strncmp(start, "if", len) == 0) {
+				if (len == 2 && strncmp(start, "if", len) == 0) {
 					ntype = if_keyword_token;
 					type_class = keyword_c;
 				} else if (len == 3 && strncmp(start, "for", len) == 0) {
