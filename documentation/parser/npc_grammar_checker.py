@@ -4,67 +4,60 @@ class production():
     def __init__(self, name):
         self.name = name
         self.productions = []
+        self.term: bool
     @staticmethod
-    def add_prototypes(productions):
-        for prod in productions:
-            production.all_productions.append(production(prod[0]))
-    def find_production(self, name):
+    def add_prototypes(productions: dict):
+        for nam in list(map(lambda x: x[0], productions)):
+            production.all_productions.append(production(nam))
+    @staticmethod
+    def find_production(name):
         for prod in production.all_productions:
             if prod.name == name:
                 return prod
         raise Exception
         return
-    def update_productions(self, productions: list):
-        print(productions)
+    @staticmethod
+    def update_productions(productions: list):
         for prod in productions:
-            self.productions.append([[self.find_production(token.replace("?", "")), not token.endswith("?")] for token in prod])
-    def update_tokens(self, token: list[str]):
-        self.productions = [[[token, True]]]
+            cur = production.find_production(prod[0])
+            if prod[1][0][0][0].startswith("\""):
+                cur.term = True
+                productions = prod[1]
+            else:
+                production.find_production(prod[0]).term = False
+                for prod2 in prod[1]:
+                    cur.productions.append([[production.find_production(x[0]), x[1]] for x in prod2])
     def check_first(self):
         for prod in self.productions:
-            
-    def __repr__(self) -> str:
-        return self.name
-class checker():
-    def __init__(self, tokens: str, productions: str):
-        self.tokens = self.parse_tokens(tokens)
-        self.productions = self.parse_productions(productions)
-    @staticmethod
-    def parse_tokens(tokens: str):
-        x = [x for x in tokens.splitlines() if (not x.startswith("//") and not x.__eq__(""))]
-        for i in range(len(x)):
-            x[i] = [x[i].split("::=")[0].strip(), x[i].split("::=")[1].strip()]
-        return x
-    @staticmethod
-    def parse_productions(productions: str):
-        x = [x for x in productions.splitlines() if (not x.startswith("//") and not x.__eq__(""))]
-        for i in range(len(x)):
-            left = x[i].split("::=")[0]
-            right = x[i].split("::=")[1].strip()
-            x[i] = [left.strip(), []]
-            for y, prod in enumerate(right.split("|")):
-                x[i][1].append([token.replace(">", "").replace("<","").replace("//", "").strip() for token in prod.strip().split(" ")])
-        return x
-        
-def main():
+            pass
+    def __repr__(self):
+        return "[" + self.name + "," + str(self.productions) + "]"
+def main2():
+    productions: list
     with open(sys.argv[1]) as f:
         content = f.read()
-    tokens = content[content.index("#tokens") + len("#tokens"):content.index("#endtokens")]
-    productions = content[content.index("#productions") + len("#productions"):content.index("#endproductions")]
-    check = checker(tokens, productions)
-    tokens = check.parse_tokens(tokens)
-    productions = check.parse_productions(productions)
-    print(tokens)
-    print(productions)
-    production.add_prototypes(tokens + productions)
-    for i, prod in enumerate(production.all_productions[:len(tokens)]):
-        prod.update_tokens(tokens[i][1])
-    for i, prod in enumerate(production.all_productions[len(tokens):]):
-        prod.update_productions(productions[i][1])
-    for prod in productions:
-        if prod[0] not in map(lambda y: y.name, production.all_productions):
-            print(prod[0])
-    for prod in production.all_productions:
-        print(prod.name, prod.productions)
+    productions = gen_productions(remove_comments_empty(content.splitlines()))
+    production.add_prototypes(productions)
+    production.update_productions(productions)
+    print(production.all_productions)
+
+def remove_comments_empty(string: str):
+    ret = []
+    for line in string:
+        if not line.startswith("//") and not line == "" and not line.startswith("#"):
+            ret.append(line)
+    return ret
+def gen_productions(lst: list):
+    ret = []
+    for line in lst:
+        splitted = line.split("::=")
+        right = splitted[1].strip()
+        left = splitted[0].strip()
+        if right.startswith("\""):
+            prods = [[[right, True]]]
+        else:
+            prods = [list(map(lambda y: [y.replace(">", "").replace("<", "").replace("?", ""), not "?" in y], x.strip().split())) for x in right.split("|")]
+        ret.append([left, prods])
+    return ret
 if __name__ == '__main__':
-    main()
+    main2()
