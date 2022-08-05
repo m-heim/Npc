@@ -60,6 +60,7 @@ closing_c_bracket_token ::= "}"
 dot_token               ::= "."
 semicolon_token         ::= ";"
 comma_token             ::= ","
+questionmark_token      ::= "?"
 #endtokens
 
 #productions
@@ -69,7 +70,7 @@ unop                    ::= <not_token> | <inc_token> | <dec_token>
 relop                   ::= <lower_than_token> | <greater_than_token> | <greater_equal_token> | <lower_equal_token>
 literal                 ::= <int_literal_token> | <bool_literal_token> | <float_literal_token> | <string_literal_token> | <long_literal_token> | <double_literal_token>
 // Types of source
-program			        ::= <program_directive> <secondary_directive_list>? <functions>
+program			        ::= <program_directive> <secondary_directive_list> <functions> | <program_directive> <functions>
 program_directive	    ::= <program_directive_token> <identifier_token>
 
 module_directive        ::= <module_directive_token> <identifier_token>
@@ -105,10 +106,10 @@ expression                  ::= <literal>
 //multiplicative-expression::= <unary-expression> | <unary-expression> * <multiplicative-expression> | <unary-expression> * <multiplicative-expression> | <unary-expression> % <multiplicative-expression>
 
 parameter		        ::= <type> <identifier_token>
-parameter_list		    ::= <parameter> <comma_token> <parameter_list>
+parameter_list		    ::= <parameter> <comma_token> <parameter_list> | <parameter>
 
 argument		        ::= <expression>
-argument_list		    ::= <argument> <comma_token> <argument_list>
+argument_list		    ::= <argument> <comma_token> <argument_list> | <argument>
 
 continue_statement	    ::= <continue_token> <semicolon_token>
 break_statement		    ::= <break_token> <semicolon_token>
