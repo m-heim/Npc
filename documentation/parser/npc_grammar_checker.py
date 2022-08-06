@@ -23,6 +23,7 @@ class production():
                 return prod
         raise Exception
         return
+
     def __repr__(self) -> str:
         ret = ""
         if self.term:
@@ -32,7 +33,7 @@ class production():
                 ret += "["
                 for symb in prod:
                     ret += symb.name + "," + str(symb.term) + ":"
-                ret +=  "]"
+                ret += "]"
         return "[" + self.name + "," + str(self.term) + "->" + ret + "]" + "\n"
 
     @staticmethod
@@ -55,8 +56,14 @@ class production():
             for prod in self.productions:
                 self.first = self.first.union(prod[0].set_first())
             return self.first
-
-
+def bnf_syntax_tree():
+    def __init__(self, productions):
+        self.productions = productions
+        self.out = []
+        for production in productions:
+            self.out.append(bnf_syntax_tree(production))
+    def add(self, symbol):
+        self.out.append(symbol)
 def main2():
     productions: list
     with open(sys.argv[1]) as f:
@@ -70,6 +77,7 @@ def main2():
         prod.set_first()
     for prod in production.all_productions:
         print(prod.name + " " + str(prod.first))
+
 
 def remove_comments_empty(string: str):
     ret = []
