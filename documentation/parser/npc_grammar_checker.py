@@ -56,12 +56,23 @@ class production():
             for prod in self.productions:
                 self.first = self.first.union(prod[0].set_first())
             return self.first
-def bnf_syntax_tree():
-    def __init__(self, productions):
+class bnf_syntax_tree():
+    dot = graphviz.Digraph('graph', comment='the syntax graph')  
+    def __init__(self, productions: production):
         self.productions = productions
         self.out = []
-        for production in productions:
-            self.out.append(bnf_syntax_tree(production))
+        bnf_syntax_tree.dot.node(str(id(self)), self.productions.name)
+        if not productions.term:
+            for production in productions.productions:
+                tree = self
+                for symbol in production:
+                    if symbol == productions:
+                        tree.out.append(self)
+                    else:
+                        tree.out.append(bnf_syntax_tree(symbol))
+                    bnf_syntax_tree.dot.edge(str(id(tree)), str(id(tree.out[-1])))
+                    bnf_syntax_tree.dot.render(directory='tree')
+                    tree = tree.out[-1]
     def add(self, symbol):
         self.out.append(symbol)
 def main2():
@@ -71,6 +82,8 @@ def main2():
     productions = gen_productions(remove_comments_empty(content.splitlines()))
     production.add_prototypes(productions)
     production.update_productions(productions)
+    tree = bnf_syntax_tree(production.find_production("program"))
+    print(tree)
     print(productions)
     print(production.all_productions)
     for prod in production.all_productions:
