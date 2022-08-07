@@ -21,6 +21,7 @@ class production():
         for prod in production.all_productions:
             if prod.name == name:
                 return prod
+        print("couldnt find " + name)
         raise Exception
         return
 
@@ -56,6 +57,27 @@ class production():
             for prod in self.productions:
                 self.first = self.first.union(prod[0].set_first())
             return self.first
+    def check_ll_one(self) -> bool:
+        for production in self.productions:
+            for production2 in [x for x in self.productions if not x == production]:
+                factor = longest_factor(production, production2)
+                if factor == len(production) or factor == len(production2):
+                    continue
+                #print("longest factor for" + " " + self.name + " " + str(factor) + " " + str(set(production[factor].first).union(production2[factor].first)))
+                if not set(production[factor].first).isdisjoint(production2[factor].first):
+                    return False
+        return True
+    @staticmethod
+    def verify() -> bool:
+        lst = [prod.check_ll_one() for prod in production.all_productions]
+        ret = str(all(lst))
+        print("The grammar has no first-first conflicts: " + ret)
+def longest_factor(lst1, lst2):
+    for i in range(min([len(lst1), len(lst2)])):
+        if not lst1[i] == lst2[i]:
+            return i
+    return min([len(lst1), len(lst2)])
+
 class bnf_syntax_tree():
     dot = graphviz.Digraph('graph', comment='the syntax graph')  
     def __init__(self, productions: production):
@@ -82,14 +104,17 @@ def main2():
     productions = gen_productions(remove_comments_empty(content.splitlines()))
     production.add_prototypes(productions)
     production.update_productions(productions)
-    tree = bnf_syntax_tree(production.find_production("program"))
-    print(tree)
+    #tree = bnf_syntax_tree(production.find_production("program"))
+    #print(tree)
     print(productions)
     print(production.all_productions)
     for prod in production.all_productions:
         prod.set_first()
-    for prod in production.all_productions:
-        print(prod.name + " " + str(prod.first))
+    #for prod in production.all_productions:
+    #srint(prod.name + " " + str(prod.first))
+    #for prod in production.all_productions:
+    #    print(prod.name + " " + str(prod.check_ll_one()))
+    production.verify()
 
 
 def remove_comments_empty(string: str):

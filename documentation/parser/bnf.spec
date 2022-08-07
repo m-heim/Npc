@@ -88,10 +88,10 @@ macro_directive_list    ::= <macro_directive> <macro_directive_list> | <macro_di
 
 
 // Functions and procedures
-function		        ::= <type> <identifier_token> <open_bracket_token> <parameter_list>? <closing_bracket_token> <block>
+function		        ::= <type> <identifier_token> <open_bracket_token> <parameter_list> <closing_bracket_token> <block> | <type> <identifier_token> <open_bracket_token> <closing_bracket_token> <block>
 functions		        ::= <function> <functions> | <function>
 
-type                    ::= <identifier_token> <dims>?
+type                    ::= <identifier_token> <dims> | <identifier_token>
 dim                     ::= <open_s_bracket_token> <closing_s_bracket_token>
 dims                    ::= <dim> <dims>
 declaration     	    ::= <type> <identifier_token> <assignment_token> <semicolon_token> | <type> <identifier_token> <assignment_token> <expression> <semicolon_token>
@@ -115,11 +115,11 @@ continue_statement	    ::= <continue_token> <semicolon_token>
 break_statement		    ::= <break_token> <semicolon_token>
 return_statement	    ::= <return_token> <semicolon_token> | <return_token> <expression> <semicolon_token>
 while_statement		    ::= <while_token> <open_bracket_token> <expression> <closing_bracket_token> <block>
-for_statement		    ::= <for_token> <open_bracket_token> <expression>? <semicolon_token> <expression>? <semicolon_token> <expression>? <closing_bracket_token> <block>
+for_statement		    ::= <for_token> <open_bracket_token> <expression> <semicolon_token> <expression> <semicolon_token> <expression> <closing_bracket_token> <block>
 if_statement		    ::= <if_token> <open_bracket_token> <expression> <closing_bracket_token> <block>
 
 statement               ::= <continue_statement> | <break_statement> | <return_statement> | <while_statement> | <for_statement> | <if_statement> | <expression_statement> | <declaration>
 statements              ::= <statement> <statements> | <statement>
-block                   ::= <open_c_bracket_token> <statements>? <closing_c_bracket_token>
+block                   ::= <open_c_bracket_token> <statements> <closing_c_bracket_token>
 
 #endproductions
