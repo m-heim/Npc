@@ -85,7 +85,7 @@ include_directive_list	::= <include_directive> <include_directive_list> | <inclu
 
 macro_directive		    ::= <macro_directive_token> <identifier_token> <expression>
 macro_directive_list    ::= <macro_directive> <macro_directive_list> | <macro_directive>
-
+block                   ::= <open_c_bracket_token> <statements> <closing_c_bracket_token>
 
 // Functions and procedures
 function		        ::= <type> <identifier_token> <open_bracket_token> <parameter_list> <closing_bracket_token> <block> | <type> <identifier_token> <open_bracket_token> <closing_bracket_token> <block>
@@ -111,6 +111,7 @@ parameter_list		    ::= <parameter> <comma_token> <parameter_list> | <parameter>
 argument		        ::= <expression>
 argument_list		    ::= <argument> <comma_token> <argument_list> | <argument>
 
+#STATEMENTS
 continue_statement	    ::= <continue_token> <semicolon_token>
 break_statement		    ::= <break_token> <semicolon_token>
 return_statement	    ::= <return_token> <semicolon_token> | <return_token> <expression> <semicolon_token>
@@ -120,6 +121,5 @@ if_statement		    ::= <if_token> <open_bracket_token> <expression> <closing_brac
 
 statement               ::= <continue_statement> | <break_statement> | <return_statement> | <while_statement> | <for_statement> | <if_statement> | <expression_statement> | <declaration>
 statements              ::= <statement> <statements> | <statement>
-block                   ::= <open_c_bracket_token> <statements> <closing_c_bracket_token>
 
 #endproductions
