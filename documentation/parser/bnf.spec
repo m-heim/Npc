@@ -74,10 +74,10 @@ program			        ::= <program_directive> <secondary_directive_list> <functions>
 program_directive	    ::= <program_directive_token> <identifier_token>
 
 module_directive        ::= <module_directive_token> <identifier_token>
-module			        ::= <module_directive> <secondary_directive_list> <functions>
+module			        ::= <module_directive> <secondary_directive_list> <functions> | <module_directive> <functions>
 module_subselect	    ::= <identifier_token> <dot_token> <module_subselect> | <identifier_token>
 
-secondary_directive_list::= <secondary_directive> <secondary_directive_list>
+secondary_directive_list::= <secondary_directive> <secondary_directive_list> | <secondary_directive>
 secondary_directive	    ::= <include_directive> | <macro_directive>
 
 include_directive       ::= <include_directive_token> <module_subselect>
@@ -94,7 +94,7 @@ functions		        ::= <function> <functions> | <function>
 type                    ::= <identifier_token> <dims> | <identifier_token>
 dim                     ::= <open_s_bracket_token> <closing_s_bracket_token>
 dims                    ::= <dim> <dims>
-declaration     	    ::= <type> <identifier_token> <assignment_token> <semicolon_token> | <type> <identifier_token> <assignment_token> <expression> <semicolon_token>
+declaration     	    ::= <type> <identifier_token> <semicolon_token> | <type> <identifier_token> <assignment_token> <expression> <semicolon_token>
 
 expression_statement        ::= <expression> <semicolon_token>
 expression                  ::= <literal>

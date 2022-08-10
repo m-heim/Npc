@@ -1,38 +1,33 @@
 import sys
 import graphviz
 
-
 class production_entry():
 
     def __init__(self, name):
         self.name = name
-        self.productions = []
+        self.productions: list[list[production_entry]] = []
         self.term = False
         self.first = set()
+        self.follow = set()
 
     @staticmethod
     def remove_lr(self):
         pass
 
-    def __repr__(self) -> str:
-        ret = ""
-        if self.term:
-            ret = self.productions[0][0]
-        else:
-            for prod in self.productions:
-                ret += "["
-                for symb in prod:
-                    ret += symb.name + "," + str(symb.term) + ":"
-                ret += "]"
-        return "[" + self.name + "," + str(self.term) + "->" + ret + "]" + "\n"
-
     def check_ll_one(self) -> bool:
         for production in self.productions:
             for production2 in [x for x in self.productions if not x == production]:
-                factor = production.longest_factor(production, production2)
+                factor = production_entry.longest_factor(production, production2)
+                #print("longest factor for" + " " + self.name + " " + str(factor) + " " + str(set(production[factor].first).union(production2[factor].first)))
+                print(self.name + " " + str(factor) + " " + str(len(production)) + " " + str(len(production2)))
+                if factor == len(production):
+                    if not production2[factor].first.isdisjoint(self.follow):
+                        return False
+                if factor == len(production2):
+                    if not production[factor].first.isdisjoint(self.follow):
+                        return False
                 if factor == len(production) or factor == len(production2):
                     continue
-                #print("longest factor for" + " " + self.name + " " + str(factor) + " " + str(set(production[factor].first).union(production2[factor].first)))
                 if not set(production[factor].first).isdisjoint(production2[factor].first):
                     return False
         return True
@@ -46,19 +41,33 @@ class production_entry():
 
     def set_first(self):
         if self.term:
-            return self
+            self.first = self.first.union(set([self]))
         else:
             for production in self.productions:
                 self.first = self.first.union(production[0].set_first())
-                return self.first 
-
+        return self.first
+    def set_follow(self):
+        for production in self.productions:
+            for entry in range(len(production) - 1):
+                if not production[entry].term:
+                    production[entry].follow = production[entry].follow.union(production[entry + 1].first)
+    def set_follow2(self):
+        for production in self.productions:
+            if not production[-1].term:
+                production[-1].follow = production[-1].follow.union(self.follow)
 
 class grammar():
     def __init__(self, file):
         self.productions = self.generate_productions(
             self.parse_productions(self.remove_comments_empty(self.read_file(file))))
+        for production in filter(lambda x: x.term, self.productions):
+            production.set_first()
         for production in filter(lambda x: not x.term, self.productions):
             production.set_first()
+        for production in filter(lambda x: not x.term, self.productions):
+            production.set_follow()
+        for production in filter(lambda x: not x.term, self.productions):
+            production.set_follow2()
 
     def read_file(self, filename: str) -> list[str]:
         with open(filename) as file:
@@ -105,7 +114,7 @@ class grammar():
     def verify(self) -> bool:
         lst = [prod.check_ll_one() for prod in self.productions]
         ret = str(all(lst))
-        print("The grammar has no first-first conflicts: " + ret)
+        return "The grammar has no first-first conflicts: " + ret
 
     def remove_comments_empty(self, string: str):
         ret = []
@@ -116,18 +125,17 @@ class grammar():
 
     def __repr__(self):
         ret: str = ""
-        ret.append("####TERM####")
+        ret += "####TERM####" + "\n"
         for production in filter(lambda x: x.term, self.productions):
-            ret.append(production.name + ":" + " " +
-                       production.productions[0][0][1:-1] + " " + "\n")
-        ret.append("####PRODUCTIONS####")
+            ret += production.name + ":" + " " + production.productions[0][0][1:-1] + " " + "\n"
+        ret += "####PRODUCTIONS####" + "\n"
         for production in filter(lambda x: not x.term, self.productions):
-            ret.append(production.name + ":" + " " + "\n")
-            ret.append(str(production.first) + "\n")
+            ret += production.name + ":" + " " + "\n"
+            ret += "FIRST:" + " " + str(list(map(lambda x: x.name, production.first))) + "\n"
+            ret += "FOLLOW:" + " " + str(list(map(lambda x: x.name, production.follow))) + "\n"
             for single_production in production.productions:
-                ret.append(
-                    str([entry.name for entry in single_production]) + "\n")
-        ret.append(self.verify())
+                ret += str([entry.name for entry in single_production]) + "\n"
+        ret += str(self.verify())
         return ret
 
 
