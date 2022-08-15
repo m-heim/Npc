@@ -11,20 +11,20 @@ The compiler is able to produce a tree of lexemes and a symbol table based upon 
 *GOALS*
 
 *Language goals:*
-- [] Low level (C style)
-- [] Simplicity (C style)
-- [] Fast (C style)
-- [] Useful builtins (Python style)
+- [ ] Low level (C style)
+- [ ] Simplicity (C style)
+- [ ] Fast (C style)
+- [ ] Useful builtins (Python style)
 *Compiler goals:*
-- [] Compiling process max. takes 100 % more than C
-- [] Useful error messages
+- [ ] Compiling process max. takes 100 % more than C
+- [ ] Useful error messages
 - [x] No external libraries
-- [] Using selfmade lex/parse generator
-- [] Executable process max. takes 100 % more than C
-- [] Self hosted
-- [] Supports Linux
-- [] Supports Windows
-- [] Supports ARM
+- [ ] Using selfmade lex/parse generator
+- [ ] Executable process max. takes 100 % more than C
+- [ ] Self hosted
+- [ ] Supports Linux
+- [ ] Supports Windows
+- [ ] Supports ARM
 
 *Done:*
 
