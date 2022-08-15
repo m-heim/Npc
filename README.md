@@ -2,11 +2,9 @@
 
 *NPC*
 
-A compiler project written in c, the language is called np (not pascal), its a weird mix between C and scripting languages.
-You can find an example of code based upon the grammar under ./src/test_program.npc.
+A compiler project written in c, the language is called np (not pascal), its supposed to be similar to c in terms of machine distance. However, it should provide features that make programming easier.
+You can find multiple examples of code under ./programs
 
-The progress has stalled since 2022 but i will maybe resume at some point.
-The compiler is able to produce a tree of lexemes and a symbol table based upon a specific grammar (code).
 
 *GOALS*
 
@@ -29,10 +27,10 @@ The compiler is able to produce a tree of lexemes and a symbol table based upon 
 
 *Done:*
 
-- Documentation
 - Scanner
 
 *In progress:*
+- Documentation
 - Parser
   
 *Todo:*
@@ -44,7 +42,7 @@ The compiler is able to produce a tree of lexemes and a symbol table based upon 
 Any contributions in any way appreciated.
 
 How to:
-- preferred way to contribute is via vscode in windows with wsl or simply in linux. If you want to use another IDE do so as you wish though.
+- recommended way to contribute is via vscode in windows with wsl or simply in linux. If you want to use another IDE do so as you wish though. The advantages are that the workflow is setup already.
 - the settings and extensions are provided in .vscode
 
 Would really appreciate to see a pull request from you

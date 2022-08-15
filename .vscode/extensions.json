@@ -4,6 +4,9 @@
         "llvm-vs-code-extensions.vscode-clangd",
         "twxs.cmake",
         "ms-vscode.cmake-tools",
-        "jbockle.jbockle-format-files"
+        "jbockle.jbockle-format-files",
+        "ms-vscode.cpptools",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
     ]
 }
