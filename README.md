@@ -15,6 +15,7 @@ The compiler is able to produce a tree of lexemes and a symbol table based upon 
 - [ ] Simplicity (C style)
 - [ ] Fast (C style)
 - [ ] Useful builtins (Python style)
+
 *Compiler goals:*
 - [ ] Compiling process max. takes 100 % more than C
 - [ ] Useful error messages
