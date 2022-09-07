@@ -1,0 +1,3 @@
+[submodule "gp-parsergen"]
+	path = gp-parsergen
+	url = https://github.com/m-heim/gp-parsergen
