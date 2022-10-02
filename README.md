@@ -10,15 +10,17 @@ You can find multiple examples of code under ./programs
 
 ## GOALS
 
-| <td colspan=2> *Language goals:* |
-| - | ----------------- |
+### Language Goals
+| Progress | Feature |
+| -------- | ------- |
 | :white_large_square | Low level (C style) |
 | :white_large_square | Simplicity (C style) |
 | :white_large_square | Fast (C style) |
 | :white_large_square | Useful builtins (Python style) |
 
-| <td colspan=2> *Compiler goals:* |
-| - | ----------------- |
+### Compiler Goals
+| Progress | Feature |
+| -------- | ------- |
 | :white_large_square   | Compiling process max. takes 100 % more than C |
 | :white_large_square   | Useful error messages |
 | :white_check_mark     | No external libraries |
