@@ -13,23 +13,23 @@ You can find multiple examples of code under ./programs
 ### Language Goals
 | Progress | Feature |
 | -------- | ------- |
-| :white_large_square | Low level (C style) |
-| :white_large_square | Simplicity (C style) |
-| :white_large_square | Fast (C style) |
-| :white_large_square | Useful builtins (Python style) |
+| :white_large_square: | Low level (C style) |
+| :white_large_square: | Simplicity (C style) |
+| :white_large_square: | Fast (C style) |
+| :white_large_square: | Useful builtins (Python style) |
 
 ### Compiler Goals
 | Progress | Feature |
 | -------- | ------- |
-| :white_large_square   | Compiling process max. takes 100 % more than C |
-| :white_large_square   | Useful error messages |
-| :white_check_mark     | No external libraries |
-| :white_large_square   | Using selfmade lex/parse generator |
-| :white_large_square   | Executable process max. takes 100 % more than C |
-| :white_large_square   | Self hosted |
-| :white_large_square   | Supports Linux |
-| :white_large_square   | Supports Windows |
-| :white_large_square   | Supports ARM |
+| :white_large_square:   | Compiling process max. takes 100 % more than C |
+| :white_large_square:   | Useful error messages |
+| :white_check_mark:     | No external libraries |
+| :white_large_square:   | Using selfmade lex/parse generator |
+| :white_large_square:   | Executable process max. takes 100 % more than C |
+| :white_large_square:   | Self hosted |
+| :white_large_square:   | Supports Linux |
+| :white_large_square:   | Supports Windows |
+| :white_large_square:   | Supports ARM |
 
 ## Done
 
