@@ -10,7 +10,7 @@ You can find multiple examples of code under ./programs
 
 |   | *Language goals:* |
 | - | ----------------- |
-| <ul><li>[ ]</li></ul> | Low level (C style) |
+| <ul><li>- [ ]</li></ul> | Low level (C style) |
 | - [ ] | Simplicity (C style) |
 | - [ ] | Fast (C style) |
 | - [ ] | Useful builtins (Python style) |
