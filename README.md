@@ -1,32 +1,35 @@
 [![CMake](https://github.com/m-heim/Npc/actions/workflows/cmake.yml/badge.svg)](https://github.com/m-heim/Npc/actions/workflows/cmake.yml)
 
-*NPC*
+# NPC
+
+## Description
 
 A compiler project written in c, the language is called np (not pascal), its supposed to be similar to c in terms of machine distance. However, it should provide features that make programming easier.
 You can find multiple examples of code under ./programs
 
 
-*GOALS*
+## GOALS
 
-|   | *Language goals:* |
+| *Language goals:* |
 | - | ----------------- |
-| <ul><li>- [ ]</li></ul> | Low level (C style) |
-| - [ ] | Simplicity (C style) |
-| - [ ] | Fast (C style) |
-| - [ ] | Useful builtins (Python style) |
+| :white_large_square | Low level (C style) |
+| :white_large_square | Simplicity (C style) |
+| :white_large_square | Fast (C style) |
+| :white_large_square | Useful builtins (Python style) |
 
-*Compiler goals:*
-- [ ] Compiling process max. takes 100 % more than C
-- [ ] Useful error messages
-- [x] No external libraries
-- [ ] Using selfmade lex/parse generator
-- [ ] Executable process max. takes 100 % more than C
-- [ ] Self hosted
-- [ ] Supports Linux
-- [ ] Supports Windows
-- [ ] Supports ARM
+| *Compiler goals:* |
+| - | ----------------- |
+| :white_large_square   | Compiling process max. takes 100 % more than C |
+| :white_large_square   | Useful error messages |
+| :white_check_mark     | No external libraries |
+| :white_large_square   | Using selfmade lex/parse generator |
+| :white_large_square   | Executable process max. takes 100 % more than C |
+| :white_large_square   | Self hosted |
+| :white_large_square   | Supports Linux |
+| :white_large_square   | Supports Windows |
+| :white_large_square   | Supports ARM |
 
-*Done:*
+## Done
 
 - Scanner
 
@@ -40,13 +43,13 @@ You can find multiple examples of code under ./programs
 - Code generation
 - (Peephole optimizations)
 
-Any contributions in any way appreciated.
-
-How to:
+## How to
 - recommended way to contribute is via vscode in windows with wsl or simply in linux. If you want to use another IDE do so as you wish though. The advantages are that the workflow is setup already.
 - the settings and extensions are provided in .vscode
 
 Would really appreciate to see a pull request from you
+
+## Overview of components
 
 | Directory/File | Purpose |
 | ---------------|-------- |
