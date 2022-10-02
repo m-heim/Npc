@@ -10,14 +10,14 @@ You can find multiple examples of code under ./programs
 
 ## GOALS
 
-| *Language goals:* |
+|   | *Language goals:* |
 | - | ----------------- |
 | :white_large_square | Low level (C style) |
 | :white_large_square | Simplicity (C style) |
 | :white_large_square | Fast (C style) |
 | :white_large_square | Useful builtins (Python style) |
 
-| *Compiler goals:* |
+|   | *Compiler goals:* |
 | - | ----------------- |
 | :white_large_square   | Compiling process max. takes 100 % more than C |
 | :white_large_square   | Useful error messages |
