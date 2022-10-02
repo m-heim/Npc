@@ -43,10 +43,9 @@ You can find multiple examples of code under ./programs
 | :x: | Optimizations |
 
 ## How to
-- recommended way to contribute is via vscode in windows with wsl or simply in linux. If you want to use another IDE do so as you wish though. The advantages are that the workflow is setup already.
-- the settings and extensions are provided in .vscode
-
-Would really appreciate to see a pull request from you
+- Recommended way to contribute is via vscode in Windows with wsl or simply in Linux. If you want to use another IDE do so as you wish though. The advantage of using vscode is that there is a proper workflow setup already.
+- The settings for formatting and the extensions are in the /.vscode directory, you can see the recommended extensions in the extensions tab.
+- Fork and make a pull request
 
 ## Overview of components
 
