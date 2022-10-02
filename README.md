@@ -31,19 +31,16 @@ You can find multiple examples of code under ./programs
 | :white_large_square:   | Supports Windows |
 | :white_large_square:   | Supports ARM |
 
-## Done
+## Progress
 
-- Scanner
-
-*In progress:*
-- Documentation
-- Parser
-  
-*Todo:*
-- Ir generation
-- Code optimization
-- Code generation
-- (Peephole optimizations)
+| Progress | Feature |
+| -------- | ------- |
+| :o: | Language specification | 
+| :heavy_check_mark: | Scanner |
+| :o: | Parser |
+| :o: | Irgen |
+| :x: | Codegen |
+| :x: | Optimizations |
 
 ## How to
 - recommended way to contribute is via vscode in windows with wsl or simply in linux. If you want to use another IDE do so as you wish though. The advantages are that the workflow is setup already.
