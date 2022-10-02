@@ -8,11 +8,12 @@ You can find multiple examples of code under ./programs
 
 *GOALS*
 
-*Language goals:*
-- [ ] Low level (C style)
-- [ ] Simplicity (C style)
-- [ ] Fast (C style)
-- [ ] Useful builtins (Python style)
+|   | *Language goals:* |
+| - | ----------------- |
+| - [ ] | Low level (C style) |
+| - [ ] | Simplicity (C style) |
+| - [ ] | Fast (C style) |
+| - [ ] | Useful builtins (Python style) |
 
 *Compiler goals:*
 - [ ] Compiling process max. takes 100 % more than C
