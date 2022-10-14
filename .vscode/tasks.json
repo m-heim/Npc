@@ -3,18 +3,18 @@
 	"tasks": [
 		{
 			"type": "cmake",
-			"label": "CMake: build",
+			"label": "CMake: build npc",
 			"command": "build",
 			"targets": [
 				"all"
 			],
 			"group": "build",
 			"problemMatcher": [],
-			"detail": "CMake template build task"
+			"detail": "CMake template build task",
 		},
 		{
 			"type": "shell",
-			"label": "generate doc",
+			"label": "Doxygen: document npc",
 			"command": "sh ${workspaceFolder}/documentation/make_doc.sh",
 		}
 	]
