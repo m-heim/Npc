@@ -30,7 +30,7 @@ int main(int argc, string[] argv) {
 #using std.core
 void sort(int[] arr) {
 	for(long i = 0; i < sizeof(arr); i++) {
-		printf("Not today");
+		printf("Lol");
 	}
 	return;
 }
