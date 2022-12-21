@@ -10,14 +10,14 @@ int main(int argc, string[] argv) {
 	int y = b <= d;
 	int u = i < d;
 	if (argc < i) {
-		println("ERROR: Program requires at least 1 argument");
+		println("ERROR: Program requires at least 1 argument!");
 		return 2;
 	}
 	char[12] str = "Hello World";
 	string str2 = "Hello World";
 	for (int j = 0; i < sizeof(str); i++) {
 		if (str[i] <= 91) {
-			println("lower");
+			println("lower than 91");
 		}
 	}
 	println("\n");
@@ -30,7 +30,7 @@ int main(int argc, string[] argv) {
 #using std.core
 void sort(int[] arr) {
 	for(long i = 0; i < sizeof(arr); i++) {
-		printf("Lol");
+		printf("Function not implemented");
 	}
 	return;
 }
