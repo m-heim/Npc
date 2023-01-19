@@ -59,3 +59,8 @@ You can find multiple examples of code under ./programs
 | /.vscode       | Contains launch settings, extension recommendations, settings and tasks |
 | /.github       | Contains all github workflows |
 | /.gitmodules   | Contains the link for github to get the parser generator |
+
+
+## Resources
+
+- https://media.handmade-seattle.com/the-race-to-replace-c-and-cpp/
